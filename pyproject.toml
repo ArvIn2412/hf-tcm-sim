@@ -12,7 +12,11 @@ authors = [{name = "HF-TCM-SIM research project"}]
 dependencies = ["numpy>=1.24"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "ruff>=0.6"]
+dev = [
+    "pytest>=8",
+    "ruff>=0.6",
+    "matplotlib>=3.8",
+]
 
 [project.scripts]
 hf-tcm = "hf_tcm.cli:main"
