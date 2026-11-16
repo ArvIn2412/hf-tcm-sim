@@ -3,6 +3,10 @@
 
   const $ = selector => document.querySelector(selector);
   const state = {jobId: null, timer: null, summary: null, pendingSweep: null, sampleTrials: 0, stage: 'sample', started: 0};
+  const energyStatus = (status, reason) => {
+    window.metricEnergyStatus = status;
+    window.dispatchEvent(new CustomEvent('metric-energy-status', {detail:{status,reason}}));
+  };
   const palette = {joint: "#087f8c", hamming: "#e8833f", target: "#7464a5", grid: "#dfe7e9"};
   const arms = [
     {key: "hamming", label: "Хемінг", result: "hamming", color: palette.hamming},
@@ -292,22 +296,37 @@
     const required = analysis.required_gamma_db;
     const gain = analysis.gain_db;
     const interval = analysis.bootstrap?.confidence_interval_db;
+    const id = summary.configuration?.experiment_id || summary.experiment_id || '';
+    if (id.endsWith('-sample') || summary.ui_run_kind === 'sample') {
+      element.textContent = 'NOT_RUN — виконано лише демонстраційний запуск. Увімкніть «Обчислювати енергетичний виграш» і запустіть окрему енергетичну серію.';
+      energyStatus('NOT_RUN', element.textContent);
+      return;
+    }
+    if (summary.status === 'incomplete') {
+      element.textContent = 'CANCELLED — серію завершено достроково; доступні тільки фактично збережені вимірювання.';
+      energyStatus('CANCELLED', element.textContent);
+      return;
+    }
     if (summary.configuration?.frontend_mode === "oracle_csi") {
       element.textContent = "Oracle-CSI є лише діагностичним контролем; результат не включається до практичних висновків.";
+      energyStatus('ENERGY_GAIN_NOT_ESTIMABLE', element.textContent);
       return;
     }
     if (!analysis.observed_crossing || !Number.isFinite(gain) || !Number.isFinite(required?.joint) || !Number.isFinite(required?.separate)) {
       element.textContent = `ENERGY_GAIN_NOT_ESTIMABLE — немає виміряного перетину обох кривих при BER ${summary.configuration?.target_ber}. Екстраполяція не застосовується.`;
+      energyStatus('ENERGY_GAIN_NOT_ESTIMABLE', element.textContent);
       return;
     }
     if (summary.configuration?.trials_per_point < 20 || !Array.isArray(interval) || Number(analysis.bootstrap?.valid_fraction || 0) < 0.95) {
       element.textContent = 'INSUFFICIENT_PRECISION — для довірчого виграшу потрібно щонайменше 20 незалежних кадрів на рівень і ≥95% валідних bootstrap-перетинів.';
+      energyStatus('INSUFFICIENT_PRECISION', element.textContent);
       return;
     }
     const intervalText = Array.isArray(interval)
       ? `95% парний кластерний bootstrap-ДІ: [${interval[0].toFixed(3)}, ${interval[1].toFixed(3)}] дБ.`
       : `ДІ не подано: валідних bootstrap-перетинів недостатньо (${(100 * Number(analysis.bootstrap?.valid_fraction || 0)).toFixed(1)}%).`;
-    element.textContent = `Розвідувальна модельна оцінка при BER ${summary.configuration?.target_ber}: γᵦ,ᵈ(E)=${required.joint.toFixed(3)} дБ, γᵦ,ᵈ(H)=${required.separate.toFixed(3)} дБ; Δ=H−E=${gain.toFixed(3)} дБ. ${intervalText} Не є фізичним Eb/N0 чи confirmatory-висновком.`;
+    element.textContent = `GAIN_ESTIMATED — розвідувальна модельна оцінка при BER ${summary.configuration?.target_ber}: γᵦ,ᵈ(E)=${required.joint.toFixed(3)} дБ, γᵦ,ᵈ(H)=${required.separate.toFixed(3)} дБ; Δ=H−E=${gain.toFixed(3)} дБ. ${intervalText} Не є фізичним Eb/N0 чи confirmatory-висновком.`;
+    energyStatus('GAIN_ESTIMATED', element.textContent);
   }
 
   function renderSummary(summary, preserveTrace = false) {
@@ -320,6 +339,7 @@
   }
 
   async function refreshSaved() {
+    if (window.studyCatalogEnabled) return;
     const response = await api("/api/scientific/metric-studies");
     const select = $("#mx-saved");
     const selected = select.value;
@@ -355,10 +375,11 @@
     try {
       const response = await api('/api/scientific/metric-studies',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
       state.jobId=response.job_id;$('#mx-run').disabled=true;$('#mx-stop').disabled=false;
+      energyStatus('RUNNING','Виконується окрема адаптивна енергетична серія.');
       $('#extension-plan').textContent=`Нова незалежна серія ${config.experiment_id}; сітка ${config.energy_grid_db.join(', ')} дБ; ${config.trials_per_point} trials/точку; всього ${config.energy_grid_db.length*config.trials_per_point}; root seed ${config.root_seed}; бюджет ${config.time_budget_seconds} с. Спроба ${extensionAttempts}/3.`;
       document.getElementById('extension-last-executed').textContent=$('#extension-plan').textContent;
       state.timer=window.setInterval(pollStudy,400);
-    } catch(e) { $('#mx-status').textContent=e.message; }
+    } catch(e) { $('#mx-status').textContent=e.message; energyStatus('FAILED',e.message); }
     finally { extensionSubmitting = false; }
   });
 
@@ -370,6 +391,7 @@
       const config = buildConfiguration();
       state.started = performance.now();
       state.stage = 'sample';
+      energyStatus('NOT_RUN','Демонстраційний запуск ще не є енергетичною серією.');
       state.sampleTrials = 0;
       state.pendingSweep = document.querySelector('#article-sweep')?.checked
         ? {...config, experiment_id: config.experiment_id + '-sweep'} : null;
@@ -386,6 +408,7 @@
     } catch (error) {
       $("#mx-status").textContent = `Серію не запущено: ${error.message}`;
       $("#mx-run").disabled = false;
+      energyStatus('FAILED',error.message);
     }
   }
 
@@ -412,9 +435,11 @@
           await refreshSaved();
           $("#mx-saved").value = job.experiment_id;
         }
+        if (job.status === 'failed') energyStatus('FAILED',job.error || 'Помилка енергетичної серії.');
         if (job.status === 'completed' && state.pendingSweep) {
           const config = state.pendingSweep; state.pendingSweep = null;
           state.stage = 'sweep';
+          energyStatus('RUNNING','Виконується окрема енергетична серія на спільних спостереженнях.');
           const response = await api('/api/scientific/metric-studies', {
             method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(config),
           });
@@ -431,6 +456,7 @@
       clearInterval(state.timer); state.timer = null;
       $("#mx-run").disabled = false; $("#mx-stop").disabled = true;
       $("#mx-status").textContent = `Не вдалося отримати стан серії: ${error.message}`;
+      energyStatus('FAILED',error.message);
     }
   }
 
@@ -441,6 +467,7 @@
       await api(`/api/scientific/jobs/${encodeURIComponent(state.jobId)}/stop`, {method: "POST"});
       $("#mx-status").textContent = "Зупинку запитано; поточний парний кадр буде збережено.";
       $("#mx-stop").disabled = true;
+      energyStatus('CANCELLED','Зупинку запитано; поточний парний кадр буде збережено.');
     } catch (error) { $("#mx-status").textContent = error.message; }
   }
 
@@ -523,6 +550,7 @@
   }
 
   $("#metric-study-form").addEventListener("submit", startStudy);
+  window.addEventListener('catalog-metric-summary',event=>renderSummary(event.detail));
   $("#mx-stop").addEventListener("click", stopStudy);
   $("#mx-open").addEventListener("click", () => openSaved().catch(error => { $("#mx-summary").textContent = error.message; }));
   $("#metric-ber-svg").addEventListener("click", () => exportSvg("metric-ber"));
@@ -538,5 +566,6 @@
     window.setTimeout(() => { if (state.summary) { renderMetricPlot("metric-ber"); renderMetricPlot("metric-ser"); } }, 0);
   });
   updatePilotOverhead();
+  energyStatus('NOT_RUN','Енергетична серія ще не запускалася.');
   refreshSaved().catch(error => { $("#mx-status").textContent = `Список серій недоступний: ${error.message}`; });
 })();

@@ -12,6 +12,7 @@ from hf_tcm.repro.metric_experiment import (
     run_metric_study,
     run_metric_trial,
 )
+from hf_tcm.studio.lab_window import load_lab_window
 from hf_tcm.studio.metric_trace import load_metric_trace
 
 
@@ -49,6 +50,28 @@ def test_saved_trace_replays_bits_and_real_rx(tmp_path, variance, frontend):
     residual = np.abs(rx - result.transmitted_samples)
     assert (np.max(residual) == 0) if variance == 0 else (np.max(residual) > 0)
     assert len(trace["arms"]["hamming"]["survivors"]) == 20
+    last = load_metric_trace(tmp_path, "live", start=31, count=1, limit=256)
+    compact = load_metric_trace(tmp_path, "live", start=31, count=1, compact=True)
+    assert compact["payload_count"] == len(trace["payload_positions"])
+    assert "payload_positions" not in compact
+    assert len(compact["arms"]["hamming"]["decoded_phases"]) == 1
+    window = load_lab_window(tmp_path, "live", start=248, count=8, selected=255)
+    assert window["inspector"]["sample"] == 255
+    assert window["inspector"]["rx_i"] == result.received_samples[255].real
+    assert window["inspector"]["rx_q"] == result.received_samples[255].imag
+    full = load_lab_window(tmp_path, "live", count=256, bins=32)
+    assert not full["series"]["RX I"]["raw"]
+    for index, lo, hi in full["series"]["RX I"]["points"]:
+        values = result.received_samples[index : index + 8].real
+        assert lo == float(np.min(values))
+        assert hi == float(np.max(values))
+    assert last["stop"] == 32
+    assert last["transmitter"]["rx_i"][-1] == result.received_samples[-1].real
+    assert last["transmitter"]["rx_q"][-1] == result.received_samples[-1].imag
+    assert len(last["payload_mask"]) == 1
+    assert last["payload_pair_indices"][0] == (
+        last["payload_positions"].index(31) if 31 in last["payload_positions"] else -1
+    )
     for arm in ("hamming", "euclidean"):
         assert trace["arms"][arm]["bits"] == getattr(result, f"decoded_{arm}_pairs")[:20].tolist()
     (folder / "trials/p000-t0000.npz").write_bytes(b"tampered")

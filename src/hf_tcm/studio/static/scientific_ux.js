@@ -41,7 +41,7 @@
   all('#mc-form label').forEach(el=>help(el,'Параметр відтворюваної парної серії. Статистика використовує завершені незалежні випробування.'));
   all('#mc-form small').forEach(el=>el.hidden=true);
   const mcNames=['Райсівський AR(1), два промені','Повільні завмирання, два промені','Невідомий статичний двопроменевий','Відомий статичний двопроменевий','Статичний однопроменевий','Райсівський однопроменевий','Одиничний коефіцієнт із шумом'];
-  [...$('#mc-profile').options].forEach((o,i)=>o.textContent=mcNames[i]);
+  [...($('#mc-profile')?.options||[])].forEach((o,i)=>o.textContent=mcNames[i]);
   document.addEventListener('click',e=>all('.help.open').forEach(el=>{if(!el.contains(e.target)){el.classList.remove('open');el.querySelector('button').setAttribute('aria-expanded','false');}}));
   const tools=document.createElement('div');tools.className='utility-buttons';tools.innerHTML='<button type="button" id="method-open" class="secondary-button">Методика й обмеження</button><button type="button" id="metadata-open" class="secondary-button">Відомості про експеримент</button>';
   $('.sync-toolbar').after(tools);

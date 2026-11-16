@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 from dataclasses import asdict
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +14,18 @@ import numpy as np
 
 from hf_tcm.repro.encoder import STATE_ORDER, encode, transition_table
 from hf_tcm.repro.metric_isolation import build_pilot_schedule, run_metric_viterbi
+
+
+@lru_cache(maxsize=4)
+def _replay(rows_bytes: bytes, dtype: str, size: int, constraint_bytes: bytes | None) -> Any:
+    """Bounded immutable-key cache; source hashes are checked on every request."""
+    rows = np.frombuffer(rows_bytes, dtype=dtype).reshape(size, -1)
+    constraints = (
+        None
+        if constraint_bytes is None
+        else np.frombuffer(constraint_bytes, dtype=np.int8).reshape(size, 2)
+    )
+    return run_metric_viterbi(rows, allowed_input_pairs=constraints)
 
 
 def load_metric_trace(
@@ -24,6 +37,7 @@ def load_metric_trace(
     start: int = 0,
     count: int = 20,
     limit: int = 1000,
+    compact: bool = False,
 ) -> dict[str, Any]:
     """Replay maintained decoder and require exact agreement with persisted bits."""
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,79}", study_id):
@@ -61,10 +75,15 @@ def load_metric_trace(
         arms = {}
         for arm in ("hamming", "euclidean"):
             rows = data[f"{arm}_branch_metrics"]
-            replay = run_metric_viterbi(rows, allowed_input_pairs=constraints)
+            replay = _replay(
+                rows.tobytes(),
+                rows.dtype.str,
+                size,
+                None if constraints is None else constraints.tobytes(),
+            )
             if not np.array_equal(replay.information_pairs, data[f"decoded_{arm}_pairs"]):
                 raise ValueError("decoder trace replay does not match saved result")
-            metrics = np.asarray(replay.state_metrics[start : stop + 1], dtype=float)
+            metrics = np.array(replay.state_metrics[start : stop + 1], dtype=float, copy=True)
             metrics[metrics > 1e18] = np.inf
             arms[arm] = {
                 "branch_metrics": rows[start:stop].tolist(),
@@ -84,6 +103,9 @@ def load_metric_trace(
         tx = data["transmitted_samples"].reshape(size, 8)[:, 0]
         inputs = np.empty((size, 2), dtype=np.int8)
         payload_mask = data["payload_mask"]
+        payload_positions = np.flatnonzero(payload_mask)
+        payload_indices = np.full(size, -1, dtype=int)
+        payload_indices[payload_positions] = np.arange(len(payload_positions))
         inputs[payload_mask] = data["reference_payload_pairs"]
         if constraints is not None:
             inputs[~payload_mask] = constraints[~payload_mask]
@@ -93,7 +115,12 @@ def load_metric_trace(
                 data[f"decoded_{arm}_pairs"] != inputs, axis=1
             ).tolist()
         phases = np.mod(np.rint(np.angle(tx) * 4 / np.pi), 8).astype(int)
-        indices = np.unique(np.linspace(0, size * 8 - 1, min(limit, size * 8), dtype=int))
+        # Include every exact sample in the selected window, even when the
+        # deterministic overview sample would otherwise miss that position.
+        indices = np.union1d(
+            np.linspace(0, size * 8 - 1, min(limit, size * 8), dtype=int),
+            np.arange(start * 8, stop * 8),
+        )
         symbol_indices = np.unique(indices // 8)
         rx = data["received_samples"][indices]
         frontend = data["equalized_symbols"][symbol_indices]
@@ -111,7 +138,7 @@ def load_metric_trace(
             {"symbol": int(i), "tx_phase": int(phases[i]), "i": float(z.real), "q": float(z.imag)}
             for i, z in zip(symbol_indices, frontend, strict=True)
         ]
-        return {
+        result = {
             "study_id": study_id,
             "trial_id": record["trial_id"],
             "configuration": config,
@@ -123,6 +150,9 @@ def load_metric_trace(
             and record["observation_sha256"] == record["paired_observation_sha256"],
             "replay_verified": True,
             "total_symbols": size,
+            "payload_positions": payload_positions.tolist(),
+            "payload_pair_indices": payload_indices[start:stop].tolist(),
+            "payload_mask": payload_mask[start:stop].tolist(),
             "total_received_samples": len(data["received_samples"]),
             "start": start,
             "stop": stop,
@@ -145,3 +175,11 @@ def load_metric_trace(
             },
             "visualization_only_sampling": True,
         }
+        if compact:
+            result["payload_count"] = len(payload_positions)
+            del result["payload_positions"]
+            result["compact"] = True
+            for arm in arms.values():
+                arm["decoded_phases"] = arm["decoded_phases"][start:stop]
+                arm["pair_error_mask"] = arm["pair_error_mask"][start:stop]
+        return result

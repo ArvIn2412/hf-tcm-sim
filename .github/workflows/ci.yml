@@ -10,6 +10,19 @@ on:
         required: true
         type: boolean
         default: false
+      historical_artifact_run_id:
+        description: Trusted same-repository Actions run containing reviewed historical fixtures
+        type: string
+        required: false
+      historical_artifact_name:
+        description: Artifact name (outputs/ SHA manifest, fixtures and original EXP-01 ZIP)
+        type: string
+        default: hf-tcm-historical-inputs
+        required: false
+
+permissions:
+  contents: read
+  actions: read
 
 jobs:
   portable:
@@ -29,14 +42,30 @@ jobs:
         run: python -m pip install -e '.[dev]'
       - name: Portable tests (historical artifact cases excluded by marker)
         run: python -m pytest -q -m "not historical"
-      - name: Ruff lint (CI infrastructure)
-        run: ruff check tests/conftest.py scripts/ci/verify_historical_bundle.py
-      - name: Ruff formatting check (CI infrastructure)
-        run: ruff format --check tests/conftest.py scripts/ci/verify_historical_bundle.py
       - name: CLI smoke
         run: |
           hf-tcm doctor
           hf-tcm check-config configs/m0_smoke.json
+
+  source-quality:
+    name: Source lint and format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -e '.[dev]'
+      - run: ruff check src tests scripts/ci
+      - run: ruff format --check src tests scripts/ci
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Browser source and QA syntax
+        run: |
+          for file in src/hf_tcm/studio/static/*.js scripts/*.mjs; do
+            node --check "$file"
+          done
 
   historical-audit:
     name: Historical audit (verified artifacts only)
@@ -49,7 +78,15 @@ jobs:
           python-version: "3.12"
       - name: Install test dependencies
         run: python -m pip install -e '.[dev]'
+      - name: Fetch explicitly supplied historical inputs outside source tree
+        if: inputs.historical_artifact_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.historical_artifact_name }}
+          run-id: ${{ inputs.historical_artifact_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: .historical-input
       - name: Verify historical artifact bundle and SHA-256 manifest
-        run: python scripts/ci/verify_historical_bundle.py
+        run: python scripts/ci/verify_historical_bundle.py --root .historical-input --install
       - name: Historical tests (no skips or xfails)
         run: python -m pytest -q -m historical

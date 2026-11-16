@@ -1,0 +1,113 @@
+/* Stage 4 container layout; scientific data and chart domains are unaffected. */
+html, body { min-width: 0; max-width: 100%; }
+[hidden] { display: none !important; }
+body { overflow-wrap: anywhere; }
+main { width: 100%; max-width: 1920px; padding: 16px clamp(10px, 2vw, 32px) 32px; }
+main > *, .view, .card, fieldset, .article-pair > *, .chart-grid > * { min-width: 0; }
+.topbar { position: sticky; top: 0; z-index: 30; gap: 12px; padding: 8px clamp(10px, 2vw, 32px); }
+.tabs { min-width: 0; }
+.tab { font-size: 13px; min-height: 40px; }
+.mobile-view-menu { display: none; }
+.card { padding: clamp(12px, 1.2vw, 20px); }
+.article-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: stretch; }
+.article-pair > article { min-width: 0; }
+.chart-grid, .comparison-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.table-wrap, .live-scroll { overflow: auto; max-width: 100%; }
+.table-wrap table { width: 100%; border-collapse: collapse; }
+.table-wrap th, .table-wrap td { padding: 6px 9px; text-align: left; }
+button, summary, input, select { font: inherit; }
+button, summary { cursor: pointer; }
+button:focus-visible, summary:focus-visible, canvas:focus-visible { outline: 3px solid #087f8c; outline-offset: 3px; }
+button { min-height: 40px; border-radius: 8px; padding: 7px 12px; }
+input:not([type=checkbox]):not([type=range]), select { min-height: 40px; max-width: 100%; }
+input[type=checkbox] { width: 20px; height: 20px; flex: none; }
+label:has(input[type=checkbox]) { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+#metric-active-source { padding: 8px 12px; margin: 0 0 12px; font-size: 12px; line-height: 1.45; }
+#metric-study-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 12px; }
+#metric-study-form > :not(.parameter-group) { grid-column: 1 / -1; }
+#metric-study-form > .parameter-section { grid-column: auto; }
+.parameter-section > summary { font-weight: 600; }
+#metric-active-source { padding: 8px 12px; font-size: 12px; margin: 0 0 8px; }
+.source-summary { padding: 6px 12px; margin: 0 0 8px; font-size: 13px; }
+.source-summary > summary { padding-block: 5px; min-height: 28px; }
+#xy-inspector, #trellis-transition { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 240px; overflow: auto; }
+#trellis-transition:empty { display: none; }
+#view-constellation:fullscreen { overflow: auto; background: white; padding: 16px; }
+.catalog-mobile-details { display: none; }
+#metric-study-form .parameter-group { margin: 0; display: grid; gap: 10px; align-content: start; }
+#metric-study-form label { max-width: 480px; width: 100%; }
+#metric-study-form label small { font-size: 12px; }
+.stage4-runbar { grid-column: 1/-1; display: flex; flex-wrap: wrap; align-items: end; gap: 8px; padding: 10px; background: #eff8f6; border: 1px solid #cfe8e2; border-radius: 10px; }
+.stage4-runbar label { width: auto !important; max-width: 220px !important; flex: 1 1 140px; }
+.stage4-runbar button { flex: none; }
+.stage4-form-summary { grid-column: 1/-1; font-size: 13px; padding: 8px 10px; background: #f4f8f9; border-radius: 8px; }
+.stage4-form-summary[data-changed=true] { border-left: 4px solid #bd7311; background: #fff7e8; }
+.sequence-navigator { position: relative !important; top: auto !important; padding: 10px 12px; margin-bottom: 12px; }
+.sequence-navigator h2 { font-size: 15px; margin: 0 0 6px; }
+.sequence-navigator .live-controls { gap: 6px; align-items: end; }
+.sequence-navigator label { font-size: 12px; max-width: 180px; }
+.sequence-navigator input, .sequence-navigator select { padding: 7px 9px; }
+.sequence-navigator #seq-status { margin: 6px 0; font-size: 12px; }
+.navigator-more { margin-top: 6px; }
+.navigator-more > .live-controls { padding-top: 8px; }
+.sequence-navigator pre { max-height: 240px; overflow: auto; font-size: 12px; }
+canvas { display: block; max-width: 100%; }
+#live-wave { width: 100%; height: auto; touch-action: none; }
+#received-cloud { width: 100%; max-width: none !important; height: auto; aspect-ratio: 7 / 5; object-fit: contain; touch-action: none; }
+#view-constellation > .live-controls { margin-bottom: 10px; }
+#view-viterbi .live-scroll { background: #fff; border: 1px solid #dbe3e6; border-radius: 8px; }
+#view-viterbi .live-scroll svg { min-height: 300px; }
+#view-viterbi .live-controls { gap: 8px; }
+#live-provenance { font-size: 12px; }
+#view-metric { width: 100%; }
+#view-metric .chart-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 1600px) {
+  #metric-study-form { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (min-width: 1200px) {
+  .stage4-runbar { position: sticky; top: 62px; z-index: 12; }
+  .sequence-navigator .live-controls label { flex: 0 1 180px; }
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+  .topbar { flex-wrap: wrap; }
+  .tabs { flex-basis: 100%; order: 3; }
+  #view-viterbi .article-pair { grid-template-columns: minmax(0, 1fr); }
+  #metric-study-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .catalog-mobile-details { display: block; }
+  .catalog-table td[data-label="Сценарій"], .catalog-table td[data-label="Статус"] { display: none; }
+  .topbar { display: grid; grid-template-columns: auto minmax(0, 1fr); padding: 7px 10px; gap: 8px; }
+  .brand { font-size: 14px; }
+  .brand small { display: none; }
+  .brand-mark { width: 30px; height: 30px; }
+  .topbar .tabs { display: none !important; }
+  .mobile-view-menu { display: block; width: 100%; font-size: 13px; min-height: 44px; }
+  .topbar > .legacy-link { display: none; }
+  main { padding: 10px 8px 24px; }
+  .card { border-radius: 10px; padding: 10px; }
+  .page-heading h1, h1 { font-size: 22px; }
+  .page-heading { margin: 4px 0 10px; }
+  .article-pair, .chart-grid, .comparison-grid, #view-metric .chart-grid, #metric-study-form { grid-template-columns: minmax(0, 1fr); }
+  #metric-study-form label { max-width: none; }
+  .stage4-runbar { padding: 8px; gap: 6px; }
+  .stage4-runbar label { flex-basis: 115px; }
+  button, select, input:not([type=range]):not([type=checkbox]) { min-height: 44px; }
+  button { padding: 8px 10px; font-size: 13px; }
+  summary { min-height: 44px; padding-block: 10px; font-size: 13px; }
+  .sequence-navigator .live-controls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+  .sequence-navigator .live-controls label { grid-column: span 2; width: 100%; max-width: none; }
+  .sequence-navigator #seq-go { grid-column: span 2; }
+  .sequence-navigator > .live-controls { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .sequence-navigator > .live-controls > label:first-child { grid-column: span 3; }
+  .sequence-navigator > .live-controls > label:nth-child(2) { grid-column: span 2; }
+  .sequence-navigator > .live-controls > #seq-go { grid-column: auto; }
+  .sequence-navigator button { width: 100%; min-width: 0; min-height: 44px; }
+  .sequence-navigator #seq-status { font-size: 11px; line-height: 1.3; }
+  .sequence-navigator h2 { font-size: 14px; }
+  .navigator-more .live-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #metric-active-source { font-size: 11px; line-height: 1.4; padding: 7px 9px; }
+  #received-cloud { min-height: 230px; }
+  #live-wave { min-height: 280px; }
+  footer { padding: 12px 10px; }
+}

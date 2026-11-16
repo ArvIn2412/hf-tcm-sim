@@ -4,12 +4,66 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import math
+import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any
 
 from hf_tcm.repro.energy_statistics import aggregate_energy_records, analyze_energy_records
 from scripts.analyze_energy_exp01b import paired_bootstrap_gain
+
+LOGGER = logging.getLogger(__name__)
+
+
+def _read_exp01b_trial(trial_root: Path, source: dict[str, Any]) -> tuple[dict, dict]:
+    """Read each trial payload once, while retaining all original hash gates."""
+    label = source.get("path", trial_root.name)
+    try:
+        payloads = {
+            name: (trial_root / name).read_bytes()
+            for name in ("record.json", "manifest.json", "config.json")
+        }
+        record = json.loads(payloads["record.json"].decode("utf-8"))
+        manifest = json.loads(payloads["manifest.json"].decode("utf-8"))
+        config = json.loads(payloads["config.json"].decode("utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ValueError("SCIENTIFIC-EXP-01B static trial is unreadable") from exc
+    if hashlib.sha256(payloads["record.json"]).hexdigest() != source.get("record_sha256"):
+        raise ValueError(f"SCIENTIFIC-EXP-01B record hash mismatch: {label}")
+    if hashlib.sha256(payloads["manifest.json"]).hexdigest() != source.get("trial_manifest_sha256"):
+        raise ValueError(f"SCIENTIFIC-EXP-01B trial manifest hash mismatch: {label}")
+    if manifest.get("config_sha256") != hashlib.sha256(payloads["config.json"]).hexdigest():
+        raise ValueError("SCIENTIFIC-EXP-01B trial configuration hash mismatch")
+    for name, expected in manifest.get("files", {}).items():
+        candidate = (trial_root / name).resolve()
+        if trial_root not in candidate.parents:
+            raise ValueError("SCIENTIFIC-EXP-01B trial manifest path escapes its frame")
+        try:
+            data = payloads[name] if name in payloads else candidate.read_bytes()
+        except OSError as exc:
+            raise ValueError(f"SCIENTIFIC-EXP-01B trial file is missing: {name}") from exc
+        if hashlib.sha256(data).hexdigest() != expected:
+            raise ValueError(f"SCIENTIFIC-EXP-01B trial file hash mismatch: {name}")
+    return record, config
+
+
+def _read_exp01b_trials(root: Path, sources: list[dict]) -> list[tuple[str, dict, dict]]:
+    """Overlap independent file I/O in four workers; retain source ordering."""
+
+    def read(source: dict) -> tuple[str, dict, dict]:
+        relative = Path(str(source.get("path", "")))
+        if relative.is_absolute() or ".." in relative.parts or relative.suffix != ".json":
+            raise ValueError("SCIENTIFIC-EXP-01B contains an unsafe trial path")
+        folder = (root / relative).resolve().parent
+        if root not in folder.parents:
+            raise ValueError("SCIENTIFIC-EXP-01B trial path escapes the result directory")
+        record, config = _read_exp01b_trial(folder, source)
+        return relative.as_posix(), record, config
+
+    with ThreadPoolExecutor(max_workers=4, thread_name_prefix="exp01b-verify") as pool:
+        return list(pool.map(read, sources))
 
 
 def load_historical_energy_study(
@@ -229,6 +283,8 @@ def load_historical_exp01b_energy_study(
     Every selected record, trial manifest, configuration, and NPZ is checked
     against the completed study manifest before aggregation.
     """
+    began = time.perf_counter()
+    LOGGER.info("exp01b_loader phase=start")
     root = Path(output_root).resolve()
     try:
         protocol_snapshot = json.loads(
@@ -261,43 +317,7 @@ def load_historical_exp01b_energy_study(
     source_rows = [row for row in study_manifest["records"] if row.get("scenario") == "static"]
     if len(source_rows) != 1160:
         raise ValueError("SCIENTIFIC-EXP-01B static source must contain exactly 1160 frames")
-    for source in source_rows:
-        relative = Path(str(source.get("path", "")))
-        if relative.is_absolute() or ".." in relative.parts or relative.suffix != ".json":
-            raise ValueError("SCIENTIFIC-EXP-01B contains an unsafe trial path")
-        trial_root = (root / relative).resolve().parent
-        if root not in trial_root.parents:
-            raise ValueError("SCIENTIFIC-EXP-01B trial path escapes the result directory")
-        record_path = trial_root / "record.json"
-        trial_manifest_path = trial_root / "manifest.json"
-        try:
-            record_bytes = record_path.read_bytes()
-            trial_manifest_bytes = trial_manifest_path.read_bytes()
-            config_bytes = (trial_root / "config.json").read_bytes()
-            record = json.loads(record_bytes.decode("utf-8"))
-            trial_manifest = json.loads(trial_manifest_bytes.decode("utf-8"))
-            config = json.loads(config_bytes.decode("utf-8"))
-        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-            raise ValueError("SCIENTIFIC-EXP-01B static trial is unreadable") from exc
-        if hashlib.sha256(record_bytes).hexdigest() != source.get("record_sha256"):
-            raise ValueError(f"SCIENTIFIC-EXP-01B record hash mismatch: {relative.as_posix()}")
-        if hashlib.sha256(trial_manifest_bytes).hexdigest() != source.get("trial_manifest_sha256"):
-            raise ValueError(
-                f"SCIENTIFIC-EXP-01B trial manifest hash mismatch: {relative.as_posix()}"
-            )
-        expected_files = trial_manifest.get("files", {})
-        if trial_manifest.get("config_sha256") != hashlib.sha256(config_bytes).hexdigest():
-            raise ValueError("SCIENTIFIC-EXP-01B trial configuration hash mismatch")
-        for name, expected_hash in expected_files.items():
-            candidate = (trial_root / name).resolve()
-            if trial_root not in candidate.parents:
-                raise ValueError("SCIENTIFIC-EXP-01B trial manifest path escapes its frame")
-            try:
-                actual_hash = hashlib.sha256(candidate.read_bytes()).hexdigest()
-            except OSError as exc:
-                raise ValueError(f"SCIENTIFIC-EXP-01B trial file is missing: {name}") from exc
-            if actual_hash != expected_hash:
-                raise ValueError(f"SCIENTIFIC-EXP-01B trial file hash mismatch: {name}")
+    for _, record, config in _read_exp01b_trials(root, source_rows):
         if (
             config.get("phase") != "confirmatory"
             or config.get("scenario") != "static"
@@ -323,8 +343,14 @@ def load_historical_exp01b_energy_study(
         raise ValueError("SCIENTIFIC-EXP-01B static data do not match the frozen 29 x 40 design")
 
     target_source = stored_analysis["scenarios"]["static"]["target_gain_analysis"]["0.05"]
+    LOGGER.info(
+        "exp01b_loader phase=verified trials=%d seconds=%.6f",
+        len(records),
+        time.perf_counter() - began,
+    )
     analyses: dict[str, Any] = {}
     for arm in ("b0", "b1"):
+        bootstrap_began = time.perf_counter()
         stored = target_source[arm]
         bootstrap = stored["bootstrap"]
         computed = paired_bootstrap_gain(
@@ -378,6 +404,13 @@ def load_historical_exp01b_energy_study(
             for name, crossing in computed["crossings"].items()
         }
         analyses[arm] = computed
+        LOGGER.info(
+            "exp01b_loader phase=bootstrap_replay arm=%s seconds=%.6f",
+            arm,
+            time.perf_counter() - bootstrap_began,
+        )
+
+    LOGGER.info("exp01b_loader phase=complete seconds=%.6f", time.perf_counter() - began)
 
     return {
         "schema_version": "gui-energy-study-result-v1",

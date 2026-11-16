@@ -18,8 +18,8 @@ from hf_tcm.repro.adaptive_multipath_config import (
     AdaptiveMultipathReceiverConfig,
     AdaptivePathConfig,
 )
-from hf_tcm.repro.atomic_io import atomic_replace_bytes
 from hf_tcm.repro.adaptive_multipath_receiver import run_adaptive_multipath_receiver
+from hf_tcm.repro.atomic_io import atomic_replace_bytes
 from hf_tcm.repro.channel_config import ChannelConfig, ChannelPathConfig
 from hf_tcm.repro.channel_runner import run_channel
 from hf_tcm.repro.config import TransmitterConfig

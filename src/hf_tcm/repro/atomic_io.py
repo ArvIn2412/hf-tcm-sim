@@ -53,4 +53,3 @@ def atomic_replace_bytes(
         except PermissionError:
             # A leftover uniquely named pending file is ignored by manifests.
             pass
-

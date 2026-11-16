@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import logging
 import mimetypes
+import time
 from collections.abc import Callable
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -35,10 +37,12 @@ from hf_tcm.studio.energy import (
     list_energy_studies,
     load_energy_study,
 )
+from hf_tcm.studio.energy_view import load_energy_view
 from hf_tcm.studio.historical_energy import (
     load_historical_energy_study,
     load_historical_exp01b_energy_study,
 )
+from hf_tcm.studio.lab_window import load_lab_window
 from hf_tcm.studio.metric_trace import load_metric_trace
 from hf_tcm.studio.scientific import (
     JOBS,
@@ -51,6 +55,7 @@ from hf_tcm.studio.scientific import (
     viterbi_window,
 )
 from hf_tcm.studio.scientific_exp03b_results import load_exp03b_analysis
+from hf_tcm.studio.study_catalog import list_study_catalog
 
 STATIC_ROOT = Path(__file__).with_name("static")
 
@@ -75,13 +80,17 @@ def make_server(
             print("[M11b] " + fmt % args)
 
         def _send(self, status: int, payload: bytes, content_type: str) -> None:
-            self.send_response(status)
-            self.send_header("Content-Type", content_type)
-            self.send_header("Content-Length", str(len(payload)))
-            self.send_header("Cache-Control", "no-store")
-            self.send_header("X-Content-Type-Options", "nosniff")
-            self.end_headers()
-            self.wfile.write(payload)
+            try:
+                self.send_response(status)
+                self.send_header("Content-Type", content_type)
+                self.send_header("Content-Length", str(len(payload)))
+                self.send_header("Cache-Control", "no-store")
+                self.send_header("X-Content-Type-Options", "nosniff")
+                self.end_headers()
+                self.wfile.write(payload)
+            except ConnectionError:
+                # AbortController may close a superseded read-only window request.
+                return
 
         def _json(self, status: int, payload: object) -> None:
             encoded = json.dumps(
@@ -158,6 +167,50 @@ def make_server(
                 except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
                     self._json(409, {"error": str(exc)})
                 return
+            if path == "/api/scientific/lab-window":
+                query = parse_qs(parsed.query)
+                try:
+                    arguments = {
+                        key: int(query.get(key, [str(default)])[0])
+                        for key, default in (
+                            ("start", 0),
+                            ("count", 160),
+                            ("selected", 0),
+                            ("bins", 800),
+                            ("point", 0),
+                            ("trial", 0),
+                            ("index", 0),
+                            ("direction", 0),
+                        )
+                    }
+                    result = load_lab_window(
+                        Path("outputs/scientific-exp03a/metric-studies"),
+                        query.get("study_id", [""])[0],
+                        domain=query.get("domain", ["sample"])[0],
+                        **arguments,
+                    )
+                    self._json(200, result)
+                except (OSError, ValueError, KeyError) as exc:
+                    self._json(400, {"error": str(exc)})
+                return
+            if path in {"/api/scientific/study-catalog", "/api/scientific/energy-view"}:
+                query = parse_qs(parsed.query)
+                try:
+                    if path.endswith("energy-view"):
+                        result = load_energy_view(
+                            Path("outputs/scientific-exp03a/metric-studies"),
+                            query.get("study_id", [""])[0],
+                        )
+                    else:
+                        options = {key: values[0] for key, values in query.items()}
+                        for key in ("page", "size"):
+                            if key in options:
+                                options[key] = int(options[key])
+                        result = list_study_catalog(Path("outputs"), **options)
+                    self._json(200, result)
+                except (OSError, ValueError, KeyError, TypeError) as exc:
+                    self._json(400, {"error": str(exc)})
+                return
             if path == "/api/scientific/metric-trace":
                 query = parse_qs(parsed.query)
                 try:
@@ -166,6 +219,7 @@ def make_server(
                         load_metric_trace(
                             Path("outputs/scientific-exp03a/metric-studies"),
                             query.get("study_id", [""])[0],
+                            compact=query.get("compact", ["0"])[0] == "1",
                             **{
                                 key: int(query.get(key, [str(default)])[0])
                                 for key, default in (
@@ -201,10 +255,17 @@ def make_server(
                     self._json(409, {"error": str(exc)})
                 return
             if path == "/api/scientific/energy-studies/historical/exp01b-static-amplitude-005":
+                began = time.perf_counter()
+                status = 200
                 try:
                     self._json(200, load_historical_exp01b_energy_study())
                 except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+                    status = 409
                     self._json(409, {"error": str(exc)})
+                finally:
+                    logging.getLogger(__name__).info(
+                        "exp01b_http status=%d seconds=%.6f", status, time.perf_counter() - began
+                    )
                 return
             if path.startswith("/api/scientific/energy-studies/"):
                 self._get_scientific_energy_study(path.rsplit("/", 1)[-1])

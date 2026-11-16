@@ -6,6 +6,9 @@ import pytest
 # immutable source data is not part of the Git checkout. Keep them executable
 # in the historical job; never skip or xfail them.
 _HISTORICAL_TEST_NAMES = {
+    # Documentary source fingerprints require the licensed source DOCX/pages.
+    # Keep the original hash assertions executable in historical CI, not skipped.
+    "test_primary_source_and_available_page_fingerprints_match_ledger",
     "test_saved_repro02_reference_frame_loads_with_verified_arrays",
     "test_channel_serialization_separates_receiver_and_truth",
     "test_reference_frame_channel_output_length_and_identity",

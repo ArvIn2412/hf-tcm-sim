@@ -1,4 +1,7 @@
 (() => {
+  let catalogContext=0;
+  window.addEventListener('metric-summary',()=>{catalogContext++;});
+  window.addEventListener('metric-context-cleared',()=>{catalogContext++;});
   const state = {runId: null, summary: null, trace: null, viterbi: null, longFrameArchive: null, selectedSymbol: 0, selectedSample: 0, selectedTransition: null, jobId: null, timer: null, energyJobId: null, energyTimer: null, energySummary: null, exp03bResults: null, activeView: "parameters"};
   const $ = (selector) => document.querySelector(selector);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
@@ -139,7 +142,9 @@
   }
 
   async function loadRun(runId) {
+    const context=catalogContext;
     const summary = await api(`/api/scientific/runs/${encodeURIComponent(runId)}`);
+    if(context!==catalogContext)return;
     $$('canvas[id]').forEach(canvas => { canvas.dataset.exportRendered = "false"; });
     state.runId = runId; state.summary = summary; state.longFrameArchive = null; $("#survivor-endpoint").value="";
     clearEnergyStudyDisplay();
@@ -179,6 +184,7 @@
 
   async function loadWindow() {
     if (!state.runId) return;
+    const context=catalogContext,run=state.runId;
     const global = $("#global-symbol");
     if (global) global.value = String(state.selectedSymbol);
     for (const selector of ["#window-start-tx", "#window-start-channel", "#selected-symbol-joint", "#selected-symbol-separate", "#viterbi-symbol"]) {
@@ -191,7 +197,9 @@
       return;
     }
     try {
-      state.trace = await api(`/api/scientific/traces?run_id=${encodeURIComponent(state.runId)}&start=${start}&count=20`);
+      const trace = await api(`/api/scientific/traces?run_id=${encodeURIComponent(run)}&start=${start}&count=20`);
+      if(context!==catalogContext||run!==state.runId||start!==state.selectedSymbol)return;
+      state.trace=trace;
       drawAll();
       if (state.activeView === "viterbi") await loadViterbi();
     } catch (error) { console.error(error); }
@@ -908,8 +916,10 @@
   }
 
   async function refreshRuns() {
+    if (window.studyCatalogEnabled) return;
     try {
       const [data, experiments] = await Promise.all([api("/api/scientific/runs"),api("/api/scientific/experiments")]);
+      if (window.studyCatalogEnabled) return;
       const list = $("#saved-runs");
       if (!data.runs.length && !experiments.experiments.length) { list.innerHTML = '<div class="card empty">Збережених запусків ще не знайдено.</div>'; return; }
       list.innerHTML = data.runs.map((run,index) => `<article class="card saved-row"><div><h2>Моделювання ${index+1}</h2><p>${run.frame_symbols} символів · BER ${fmt(run.joint.ber,7)} / ${fmt(run.separate.ber,7)}</p></div><button class="secondary-button" data-open-run="${esc(run.run_id)}">Відкрити</button></article>`).join("")+experiments.experiments.map((run,index)=>`<article class="card saved-row"><div><h2>Статистична серія ${index+1}</h2><p>${run.completed_trials}/${run.planned_trials} пар · ${run.points.length} рівнів шуму · ${esc(run.status)}</p></div><button class="secondary-button" data-open-experiment="${esc(run.experiment_id)}">Відкрити</button></article>`).join("");
@@ -1060,7 +1070,9 @@
   }
 
   async function loadMonteCarlo(experimentId) {
+    const context=catalogContext;
     const summary = await api(`/api/scientific/experiments/${encodeURIComponent(experimentId)}`);
+    if(context!==catalogContext)return;
     state.mcSummary = summary; plotMonteCarlo(summary); plotDeltaConfidence(summary);
     $("#mc-results").innerHTML = `<h2>Статистика серії · ${esc(summary.status)}</h2>${summary.points.map(point=>{const ci=point.confidence_intervals||{};const delta=ci.delta_ber_ci?ci.delta_ber_ci.map(v=>fmt(v,6)).join(" – "):ci.status||"недостатньо незалежних trials";return `<div class="metric"><span>σ²=${fmt(point.noise_variance_complex_per_sample,5)} · trials ${point.completed_trials}</span><strong>BER J ${fmt(point.joint_ber,7)} · B0 ${fmt(point.separate_ber,7)} · Δ ${fmt(point.delta_ber_joint_minus_separate,7)}<br>SER інформаційних пар J ${fmt(point.joint_pair_ser,7)} · B0 ${fmt(point.separate_pair_ser,7)}<br>95% парний довірчий інтервал ΔBER: ${esc(delta)}</strong></div>`;}).join("")}<p>${summary.completed_trials}/${summary.planned_trials} завершених парних випробувань · відношення сум · інтервали парного bootstrap групуються за trial.</p>`;
     refreshPlotExportButtons();
@@ -1151,6 +1163,7 @@
   }
 
   async function refreshEnergyStudies() {
+    if (window.studyCatalogEnabled) return;
     try {
       const response = await api("/api/scientific/energy-studies");
       const select = $("#es-saved"), selected = select.value;
@@ -1200,7 +1213,9 @@
   }
 
   async function loadEnergyStudy(studyId) {
+    const context=catalogContext;
     const summary = await api(`/api/scientific/energy-studies/${encodeURIComponent(studyId)}`);
+    if(context!==catalogContext)return;
     renderEnergyStudy(summary); await refreshEnergyStudies();
     $("#es-status").textContent = `${summary.completed_trials}/${summary.planned_trials} парних випробувань збережено; ${summary.exploratory ? "розвідувальний обсяг" : "обсяг не позначений як розвідувальний"}.`;
     return summary;
@@ -1278,6 +1293,15 @@
   $("#symbol-next").addEventListener("click",()=>setSelectedSymbol(state.selectedSymbol+1));
   $("#zoom-20-samples").addEventListener("click",async()=>{selectView("viterbi");await loadSampleZoom();});
   $("#refresh-runs").addEventListener("click", refreshRuns);
+  window.addEventListener('catalog-open',async event=>{
+    const {kind,id}=event.detail;
+    const context=catalogContext;
+    try{
+      if(kind==='run'){await loadRun(id);if(context===catalogContext)selectView('comparison');}
+      else if(kind==='energy'){await loadEnergyStudy(id);if(context===catalogContext)selectView('energy');}
+      else if(kind==='experiment'){await loadMonteCarlo(id);if(context===catalogContext)selectView('monte-carlo');}
+    }catch(error){document.getElementById('catalog-status-text').textContent=error.message;}
+  });
   $("#open-long-frame").addEventListener("click",async()=>{try{await openLongFrameArchive();}catch(error){$("#sync-status").textContent=`Архів не відкрито: ${error.message}`;}});
   $("#energy-study-form").addEventListener("submit", startEnergyStudy);
   $("#es-stop").addEventListener("click", stopEnergyStudy);
