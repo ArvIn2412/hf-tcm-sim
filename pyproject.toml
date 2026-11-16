@@ -28,7 +28,10 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
-markers = ["statistical: slower randomized checks"]
+markers = [
+    "statistical: slower randomized checks",
+    "historical: requires immutable historical outputs or their verified audit bundle",
+]
 
 [tool.ruff]
 line-length = 100
