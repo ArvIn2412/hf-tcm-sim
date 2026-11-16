@@ -48,6 +48,7 @@
 ## Фактичні локальні перевірки
 
 - `python -m pytest -q -m "not historical" --basetemp tmp/ci-portable-py313`: **1242 passed, 53 deselected**, Python 3.13. Перше sandbox-запускання мало Windows ACL errors; повтор із дозволеним доступом пройшов. Цей локальний Python не є матрицею 3.11/3.12.
+- GitHub Actions run [43858754542](https://github.com/ArvIn2412/hf-tcm-sim/actions/runs/43858754542): Python **3.11 PASS** — 1242 passed, 53 deselected; Python **3.12 PASS** — 1242 passed, 53 deselected. Обидва jobs також пройшли scoped Ruff lint, format check і CLI smoke. Historical Audit — `skipped` за умовою, не PASS.
 - `ruff check src tests scripts`: **53 findings** (див. Ruff вище).
 - `ruff check tests/conftest.py scripts/ci/verify_historical_bundle.py`: **All checks passed**; `ruff format --check tests/conftest.py scripts/ci/verify_historical_bundle.py`: **2 files already formatted**; `python -m py_compile tests/conftest.py scripts/ci/verify_historical_bundle.py`: PASS; `git diff --check`: PASS.
 - Historical Audit не запускався: trusted `outputs/ci/historical-artifacts.sha256` та відповідний bundle відсутні.
