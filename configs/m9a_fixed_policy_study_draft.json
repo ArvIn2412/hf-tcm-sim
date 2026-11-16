@@ -1,0 +1,3817 @@
+{
+  "schema_version": "m9a.fixed-policy-study.v1",
+  "experiment_id": "m9_fixed_anchored_vs_frozen_v1",
+  "classification": "M8 exploratory closeout and M9 independent fixed-policy study design; NOT M8 validation; NOT new performance evidence; NOT paper-exact receiver",
+  "design_status": "proposed",
+  "execution_authorized": false,
+  "execution_scope": "none",
+  "scientific_status": {
+    "paper_exact": false,
+    "receiver_enabled": false,
+    "accepted_adrs": [
+      "001",
+      "002",
+      "003",
+      "004",
+      "005",
+      "006",
+      "007",
+      "008",
+      "010",
+      "012",
+      "013",
+      "014",
+      "015"
+    ],
+    "proposed_adrs": [
+      "009",
+      "011"
+    ],
+    "open_science_questions": [
+      "SCI-02",
+      "SCI-03",
+      "SCI-METRIC-02"
+    ],
+    "author_mapping_status": "SOURCE_UNRESOLVED"
+  },
+  "profile": {
+    "model": "reconstructed_offline",
+    "channel_memory_L": 1,
+    "real_channel_gain": 0.75,
+    "delay_samples": 0,
+    "modulation": "normalized_8PSK",
+    "pulse_shape": "rectangular_ZOH",
+    "samples_per_symbol": 8,
+    "mapping": "ADR-002 reconstructed mapping",
+    "likelihood": "ADR-005 reconstructed pseudo-likelihood",
+    "observation": "ADR-012 observed IQ",
+    "decoder": "ADR-013 conditional full Viterbi",
+    "noise": "ADR-015 independent circular complex AWGN",
+    "gamma_b_eff_db": 5.0,
+    "sigma_squared": 0.7115124735378853,
+    "physical_hf_ebn0": false,
+    "channel_truth_passed_to_receiver": false
+  },
+  "policies": [
+    {
+      "candidate_id": "historical_frozen_B",
+      "alpha_prime": 1.0,
+      "k_tilde": [
+        0.0,
+        0.0
+      ],
+      "mu0": [
+        0.0,
+        0.0
+      ],
+      "initial_fluctuating_iq": [
+        0.42,
+        0.91
+      ],
+      "initial_full_iq": [
+        0.42,
+        0.91
+      ],
+      "beta": 0.7
+    },
+    {
+      "candidate_id": "anch_a085_k025",
+      "alpha_prime": 0.85,
+      "k_tilde": [
+        0.0875,
+        -0.05
+      ],
+      "mu0": [
+        0.42,
+        0.91
+      ],
+      "initial_fluctuating_iq": [
+        0.0,
+        0.0
+      ],
+      "initial_full_iq": [
+        0.42,
+        0.91
+      ],
+      "beta": 0.7
+    }
+  ],
+  "sequence_design": {
+    "run_count": 100,
+    "symbols_per_sequence_F": 256,
+    "information_bits_per_sequence": 512,
+    "same_received_buffer_for_both_policies": true,
+    "decoder_calls_per_policy_sequence": 1,
+    "reference_bits_passed_to_receiver": false,
+    "channel_truth_passed_to_receiver": false,
+    "absolute_sample_origin": 0,
+    "absolute_symbol_origin": 0,
+    "estimator_tick_origin": 0
+  },
+  "partition": {
+    "name": "evaluation",
+    "seed_namespaces": {
+      "data": 2027020101,
+      "noise": 2027020102,
+      "bootstrap": 2027020103,
+      "metadata": 2027020104
+    },
+    "planned_runs": [
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-001",
+        "run_index": 0,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              0,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              0,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              0,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-002",
+        "run_index": 1,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              1,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              1,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              1,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-003",
+        "run_index": 2,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              2,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              2,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              2,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-004",
+        "run_index": 3,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              3,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              3,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              3,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-005",
+        "run_index": 4,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              4,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              4,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              4,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-006",
+        "run_index": 5,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              5,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              5,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              5,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-007",
+        "run_index": 6,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              6,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              6,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              6,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-008",
+        "run_index": 7,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              7,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              7,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              7,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-009",
+        "run_index": 8,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              8,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              8,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              8,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-010",
+        "run_index": 9,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              9,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              9,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              9,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-011",
+        "run_index": 10,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              10,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              10,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              10,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-012",
+        "run_index": 11,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              11,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              11,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              11,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-013",
+        "run_index": 12,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              12,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              12,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              12,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-014",
+        "run_index": 13,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              13,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              13,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              13,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-015",
+        "run_index": 14,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              14,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              14,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              14,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-016",
+        "run_index": 15,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              15,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              15,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              15,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-017",
+        "run_index": 16,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              16,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              16,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              16,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-018",
+        "run_index": 17,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              17,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              17,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              17,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-019",
+        "run_index": 18,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              18,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              18,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              18,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-020",
+        "run_index": 19,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              19,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              19,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              19,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-021",
+        "run_index": 20,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              20,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              20,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              20,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-022",
+        "run_index": 21,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              21,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              21,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              21,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-023",
+        "run_index": 22,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              22,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              22,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              22,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-024",
+        "run_index": 23,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              23,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              23,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              23,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-025",
+        "run_index": 24,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              24,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              24,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              24,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-026",
+        "run_index": 25,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              25,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              25,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              25,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-027",
+        "run_index": 26,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              26,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              26,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              26,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-028",
+        "run_index": 27,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              27,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              27,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              27,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-029",
+        "run_index": 28,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              28,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              28,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              28,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-030",
+        "run_index": 29,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              29,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              29,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              29,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-031",
+        "run_index": 30,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              30,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              30,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              30,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-032",
+        "run_index": 31,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              31,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              31,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              31,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-033",
+        "run_index": 32,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              32,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              32,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              32,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-034",
+        "run_index": 33,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              33,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              33,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              33,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-035",
+        "run_index": 34,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              34,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              34,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              34,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-036",
+        "run_index": 35,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              35,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              35,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              35,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-037",
+        "run_index": 36,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              36,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              36,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              36,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-038",
+        "run_index": 37,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              37,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              37,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              37,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-039",
+        "run_index": 38,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              38,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              38,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              38,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-040",
+        "run_index": 39,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              39,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              39,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              39,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-041",
+        "run_index": 40,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              40,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              40,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              40,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-042",
+        "run_index": 41,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              41,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              41,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              41,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-043",
+        "run_index": 42,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              42,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              42,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              42,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-044",
+        "run_index": 43,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              43,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              43,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              43,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-045",
+        "run_index": 44,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              44,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              44,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              44,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-046",
+        "run_index": 45,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              45,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              45,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              45,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-047",
+        "run_index": 46,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              46,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              46,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              46,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-048",
+        "run_index": 47,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              47,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              47,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              47,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-049",
+        "run_index": 48,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              48,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              48,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              48,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-050",
+        "run_index": 49,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              49,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              49,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              49,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-051",
+        "run_index": 50,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              50,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              50,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              50,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-052",
+        "run_index": 51,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              51,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              51,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              51,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-053",
+        "run_index": 52,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              52,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              52,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              52,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-054",
+        "run_index": 53,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              53,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              53,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              53,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-055",
+        "run_index": 54,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              54,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              54,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              54,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-056",
+        "run_index": 55,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              55,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              55,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              55,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-057",
+        "run_index": 56,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              56,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              56,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              56,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-058",
+        "run_index": 57,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              57,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              57,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              57,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-059",
+        "run_index": 58,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              58,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              58,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              58,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-060",
+        "run_index": 59,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              59,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              59,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              59,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-061",
+        "run_index": 60,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              60,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              60,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              60,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-062",
+        "run_index": 61,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              61,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              61,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              61,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-063",
+        "run_index": 62,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              62,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              62,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              62,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-064",
+        "run_index": 63,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              63,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              63,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              63,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-065",
+        "run_index": 64,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              64,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              64,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              64,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-066",
+        "run_index": 65,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              65,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              65,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              65,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-067",
+        "run_index": 66,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              66,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              66,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              66,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-068",
+        "run_index": 67,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              67,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              67,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              67,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-069",
+        "run_index": 68,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              68,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              68,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              68,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-070",
+        "run_index": 69,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              69,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              69,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              69,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-071",
+        "run_index": 70,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              70,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              70,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              70,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-072",
+        "run_index": 71,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              71,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              71,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              71,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-073",
+        "run_index": 72,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              72,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              72,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              72,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-074",
+        "run_index": 73,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              73,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              73,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              73,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-075",
+        "run_index": 74,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              74,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              74,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              74,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-076",
+        "run_index": 75,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              75,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              75,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              75,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-077",
+        "run_index": 76,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              76,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              76,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              76,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-078",
+        "run_index": 77,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              77,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              77,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              77,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-079",
+        "run_index": 78,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              78,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              78,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              78,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-080",
+        "run_index": 79,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              79,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              79,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              79,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-081",
+        "run_index": 80,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              80,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              80,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              80,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-082",
+        "run_index": 81,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              81,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              81,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              81,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-083",
+        "run_index": 82,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              82,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              82,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              82,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-084",
+        "run_index": 83,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              83,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              83,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              83,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-085",
+        "run_index": 84,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              84,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              84,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              84,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-086",
+        "run_index": 85,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              85,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              85,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              85,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-087",
+        "run_index": 86,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              86,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              86,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              86,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-088",
+        "run_index": 87,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              87,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              87,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              87,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-089",
+        "run_index": 88,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              88,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              88,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              88,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-090",
+        "run_index": 89,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              89,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              89,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              89,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-091",
+        "run_index": 90,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              90,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              90,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              90,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-092",
+        "run_index": 91,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              91,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              91,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              91,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-093",
+        "run_index": 92,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              92,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              92,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              92,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-094",
+        "run_index": 93,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              93,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              93,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              93,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-095",
+        "run_index": 94,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              94,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              94,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              94,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-096",
+        "run_index": 95,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              95,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              95,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              95,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-097",
+        "run_index": 96,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              96,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              96,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              96,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-098",
+        "run_index": 97,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              97,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              97,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              97,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-099",
+        "run_index": 98,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              98,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              98,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              98,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      },
+      {
+        "run_id": "m9_fixed_anchored_vs_frozen_v1:evaluation:run-100",
+        "run_index": 99,
+        "streams": {
+          "data": {
+            "master_seed": 2027020101,
+            "spawn_key": [
+              1295337521,
+              901,
+              99,
+              11
+            ],
+            "child_stream_materialized": false
+          },
+          "noise": {
+            "master_seed": 2027020102,
+            "spawn_key": [
+              1295337521,
+              901,
+              99,
+              23
+            ],
+            "child_stream_materialized": false
+          },
+          "metadata": {
+            "master_seed": 2027020104,
+            "spawn_key": [
+              1295337521,
+              901,
+              99,
+              41
+            ],
+            "child_stream_materialized": false
+          }
+        }
+      }
+    ],
+    "bootstrap_stream": {
+      "master_seed": 2027020103,
+      "spawn_key": [
+        1295337521,
+        901,
+        0,
+        37
+      ],
+      "child_stream_materialized": false
+    },
+    "no_M8_validation_roots_used": true,
+    "run_count": 100
+  },
+  "seed_derivation": {
+    "algorithm": "numpy.random.SeedSequence(master_seed, spawn_key=(1295337521, 901, zero_based_run_index, stream_code)); Generator(PCG64) initialized from generated uint64 child seed in a future separately approved run",
+    "generator": "PCG64",
+    "protocol_version_word": 1295337521,
+    "partition_code": 901,
+    "stream_codes": {
+      "data": 11,
+      "noise": 23,
+      "bootstrap": 37,
+      "metadata": 41
+    },
+    "run_index_origin": 0,
+    "run_order": "ascending run_index 0..99",
+    "child_streams_materialized_in_M9a": false
+  },
+  "statistics": {
+    "primary_estimand": "pooled raw-count BER(anchor) - BER(frozen_B)",
+    "secondary_estimand": "pooled raw-count SER(anchor) - SER(frozen_B)",
+    "cluster_unit": "one complete independent coded sequence",
+    "bootstrap_method": "ADR-014 paired cluster bootstrap",
+    "bootstrap_replicates": 2000,
+    "confidence_level": 0.95,
+    "interval": "percentile",
+    "quantile_method": "numpy.quantile(method='linear')",
+    "individual_bits_are_not_independent_clusters": true,
+    "equivalence_or_noninferiority_claim": false,
+    "bootstrap_seed_policy": "independent analysis RNG from M9 bootstrap master root; not data/noise and not materialized here"
+  },
+  "failure_policy": {
+    "complete_valid_pairs_required": 100,
+    "incomplete_or_invalid_sequence": "report explicitly; blocks full-design inference",
+    "replace_seed_or_sequence": false,
+    "data_dependent_stopping": false,
+    "zero_error_handling": "retain valid zero counts without correction",
+    "finite_high_error_trajectory": "retain",
+    "policy_replacement_or_fallback": false,
+    "missing_output_imputation": false,
+    "numerical_failure": "separate integrity outcome; no full-design inferential claim"
+  },
+  "workload": {
+    "unique_received_buffers": 100,
+    "decoder_passes": 200,
+    "policy_records": 200,
+    "information_bits_per_policy": 51200,
+    "coded_symbols_per_policy": 25600,
+    "unique_received_samples": 204800,
+    "single_process": true,
+    "multiprocessing": false,
+    "atomic_checkpoint_per_sequence": true,
+    "proposed_runtime_budget_seconds": 900,
+    "proposed_periodic_rss_monitoring_bytes": 1610612736,
+    "runtime_or_rss_is_measured_in_M9a": false
+  },
+  "resource_policy": {
+    "execution_requires_new_frozen_limits": true,
+    "proposed_only": true
+  },
+  "runtime_provenance_policy": {
+    "future_approved_snapshot_records_config_hash": true,
+    "future_approved_snapshot_records_code_manifest_and_hashes": true,
+    "git_revision_recorded_if_available_else_unavailable": true
+  },
+  "output_namespace": "outputs/m9_fixed_policy_comparison/m9_fixed_anchored_vs_frozen_v1",
+  "scientific_limitations": {
+    "policy_selected_posthoc_from_M8": true,
+    "M9_preregistered_before_M8": false,
+    "M8_runner_up_interval_is_confirmatory": false,
+    "M5j_is_independent_validation_for_M9": false,
+    "constant_gain_generalizes_to_variable_or_physical_HF": false,
+    "source_faithful_claim": false,
+    "M9_does_not_establish_equivalence": true
+  },
+  "future_variable_channel_note": {
+    "separate_design_document": "docs/M9_VARIABLE_CHANNEL_RESEARCH_NOTE.md",
+    "included_in_M9_fixed_evaluation": false,
+    "new_profile_decision_and_dataset_required": true
+  },
+  "authorization": {
+    "run_specific_approval_required": true,
+    "approved_run_config_created": false,
+    "M9_evaluation_executed": false,
+    "automatic_execution": false
+  }
+}

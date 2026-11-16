@@ -1,0 +1,565 @@
+{
+  "experiment_id": "M5f-paired-20261028",
+  "number_of_independent_runs": 12,
+  "symbols_per_run": 32,
+  "real_channel_gain": 0.75,
+  "sigma_squared": 0.08,
+  "data_rng_master_seed": 2026102801,
+  "noise_rng_master_seed": 2026102802,
+  "bootstrap_seed": 2026102803,
+  "bootstrap_replicates": 2000,
+  "confidence_level": 0.95,
+  "beta": 0.7,
+  "initial_fluctuating_iq": [
+    0.42,
+    0.91
+  ],
+  "initial_full_iq": [
+    0.42,
+    0.91
+  ],
+  "alpha_prime_c": 0.85,
+  "k_tilde_c": [
+    0.35,
+    -0.2
+  ],
+  "mu0_c": [
+    0.0,
+    0.0
+  ],
+  "absolute_sample_origin": 23,
+  "absolute_symbol_origin": 5,
+  "initial_estimator_time_index": 41,
+  "reconstruction_profile": "reconstructed_offline",
+  "receiver_profile_version": "B5c/B5d and M5e paired diagnostic API at 2026-10-28",
+  "profile_provenance": "ADR-012/015 and accepted reconstructed_offline profile; fixed exploratory settings not tuned against evaluation outcomes",
+  "reconstruction_configuration": {
+    "schema_version": 1,
+    "profile": "reconstructed_offline",
+    "paper_exact": false,
+    "receiver_enabled": false,
+    "candidate_index_space": "m4_1_hypothesis_id",
+    "candidate_count": 16,
+    "labeling": {
+      "name": "assumed_natural_binary",
+      "origin": "ADR-002 paired-control setting",
+      "bit_order": [
+        "c2",
+        "c1",
+        "c0"
+      ],
+      "output_to_b": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "phase_offset_rad": 0.0
+    },
+    "transition_model": {
+      "name": "adr003_uniform_allowed_edges",
+      "probabilities": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ]
+    },
+    "initial": {
+      "state": [
+        0,
+        0
+      ],
+      "prior": [
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "likelihood": {
+      "kind": "exp_negative_beta_project_reconstruction_metric",
+      "beta": 0.7
+    },
+    "estimator": {
+      "alpha_prime": 0.85,
+      "k_tilde": [
+        [
+          0.35,
+          -0.2
+        ]
+      ],
+      "mu0": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "initial_time_index": 41,
+      "time_rule": "one_recursion_step_i_to_i_plus_1",
+      "initial_estimates": {
+        "fluctuating_iq": [
+          [
+            0.42,
+            0.91
+          ]
+        ],
+        "full_iq": [
+          [
+            0.42,
+            0.91
+          ]
+        ]
+      }
+    },
+    "timebase": {
+      "name": "approximate_rectangular_8sps",
+      "samples_per_symbol": 8,
+      "sample_rate_hz": 8000.0,
+      "symbol_rate_hz": 1000.0,
+      "symbol_origin_sample": 23,
+      "path_count": 1,
+      "path_delays_samples": [
+        0
+      ]
+    },
+    "observation_model": {
+      "kind": "adr012_l1_real_mean8",
+      "prediction_combination": "explicit_project_prediction",
+      "iq_rule": "(-Im(received), Re(received))",
+      "sample_reduction": "arithmetic_mean_exactly_8",
+      "waveform_rule": "rectangular_zoh"
+    },
+    "search": {
+      "beam_width": 1,
+      "decision_lag_symbols": 0
+    },
+    "assumption_provenance": {
+      "candidate_index_space": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "candidate_count": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "labeling": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "transition_model": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "initial_state": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "initial_prior": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "likelihood_type": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "beta": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "alpha_prime": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "k_tilde": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "mu0": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "initial_estimates": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "estimator_time_index": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "estimator_time_rule": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "timebase": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "samples_per_symbol": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "sample_rate_hz": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "symbol_rate_hz": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "symbol_origin_sample": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "path_delays_samples": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "path_count": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "aggregate_observation_model": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "prediction_combination": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "beam_width": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "decision_lag_symbols": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      }
+    }
+  }
+}

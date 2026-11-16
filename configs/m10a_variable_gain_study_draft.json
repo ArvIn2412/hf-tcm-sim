@@ -1,0 +1,726 @@
+{
+  "schema_version": "m10a.variable-gain-study.v1",
+  "experiment_id": "m10_controlled_piecewise_gain_v1",
+  "classification": "controlled real-gain variation design; NOT physical HF channel simulation; NOT paper-exact reconstruction",
+  "design_status": "proposed",
+  "execution_authorized": false,
+  "execution_scope": "none",
+  "scientific_status": {
+    "paper_exact": false,
+    "receiver_enabled": false,
+    "accepted_adrs": [
+      "001",
+      "002",
+      "003",
+      "004",
+      "005",
+      "006",
+      "007",
+      "008",
+      "010",
+      "012",
+      "013",
+      "014",
+      "015"
+    ],
+    "proposed_adrs": [
+      "009",
+      "011"
+    ],
+    "open_science_questions": [
+      "SCI-02",
+      "SCI-03",
+      "SCI-METRIC-02"
+    ],
+    "author_mapping_status": "SOURCE_UNRESOLVED",
+    "channel_profile_status": "proposed experimental extension; no new ADR accepted"
+  },
+  "channel_profile": {
+    "profile_id": "controlled_piecewise_real_gain_v1",
+    "model_scope": "evaluation-side real positive gain schedule; separate from reconstructed_offline constant-gain profile",
+    "equation": "y[n] = a[floor(n/8)] * x[n] + w[n], n=0..2047",
+    "channel_memory_L": 1,
+    "zero_delay": true,
+    "memory": false,
+    "multipath": false,
+    "complex_fading": false,
+    "normalized_8psk": true,
+    "rectangular_zoh": true,
+    "samples_per_symbol": 8,
+    "frame_symbols": 256,
+    "frame_samples": 2048,
+    "nominal_gain": 0.75,
+    "low_gain": 0.6,
+    "high_gain_formula": "sqrt(2*(0.75**2)-(0.60**2)) = sqrt(0.765)",
+    "high_gain": 0.8746427842267951,
+    "switch_after_symbol_index": 127,
+    "switch_symbol_index": 128,
+    "switch_sample_index": 1024,
+    "mean_squared_gain_target": 0.5625,
+    "gain_noise_coupling": "none; noise power is held fixed for all profiles",
+    "no_oracle_reset_at_switch": true,
+    "switch_index_not_passed_to_receiver": true,
+    "channel_truth_not_passed_to_receiver": true,
+    "profiles": {
+      "P0_CONSTANT": {
+        "description": "constant nominal control",
+        "segments": [
+          {
+            "symbol_start": 0,
+            "symbol_stop_exclusive": 256,
+            "gain": 0.75
+          }
+        ]
+      },
+      "P1_HIGH_TO_LOW": {
+        "description": "high gain through symbol 127; low gain starts at symbol 128",
+        "segments": [
+          {
+            "symbol_start": 0,
+            "symbol_stop_exclusive": 128,
+            "gain": 0.8746427842267951
+          },
+          {
+            "symbol_start": 128,
+            "symbol_stop_exclusive": 256,
+            "gain": 0.6
+          }
+        ]
+      },
+      "P2_LOW_TO_HIGH": {
+        "description": "low gain through symbol 127; high gain starts at symbol 128",
+        "segments": [
+          {
+            "symbol_start": 0,
+            "symbol_stop_exclusive": 128,
+            "gain": 0.6
+          },
+          {
+            "symbol_start": 128,
+            "symbol_stop_exclusive": 256,
+            "gain": 0.8746427842267951
+          }
+        ]
+      }
+    },
+    "interpretation_limits": [
+      "equal frame-average a^2 does not imply equal per-symbol SNR",
+      "P1/P2 share a gain-value histogram but differ in temporal order",
+      "P0 comparison also changes gain distribution, not only transition count",
+      "the design does not isolate every causal aspect of nonstationarity"
+    ]
+  },
+  "noise": {
+    "convention": "ADR-015 independent circular complex AWGN; proposed time-varying profile keeps noise power fixed",
+    "sigma_squared": 0.7115124735378853,
+    "real_component_variance": 0.35575623676894264,
+    "imaginary_component_variance": 0.35575623676894264,
+    "nominal_reference_gamma_b_eff_db": 5,
+    "local_gamma_b_formula": "4*a[f]**2/sigma_squared",
+    "physical_hf_ebn0_claim": false,
+    "automatic_received_normalization": false
+  },
+  "receiver_profile": {
+    "profile": "reconstructed_offline",
+    "channel_memory_L": 1,
+    "nominal_real_gain": 0.75,
+    "zero_delay": true,
+    "normalized_8psk": true,
+    "rectangular_zoh": true,
+    "samples_per_symbol": 8,
+    "mapping": "ADR-002 reconstructed mapping",
+    "likelihood": "ADR-005 pseudo-likelihood",
+    "observation": "ADR-012 observed-IQ",
+    "decoder": "ADR-013 conditional full Viterbi",
+    "noise": "ADR-015 independent circular complex AWGN",
+    "beta": 0.7,
+    "initial_full_iq": [0.42, 0.91],
+    "physical_hf_ebn0_interpretation": false
+  },
+  "receiver_policies": [
+    {
+      "candidate_id": "historical_frozen_B",
+      "alpha_prime": 1,
+      "k_tilde": [
+        0,
+        0
+      ],
+      "mu0": [
+        0,
+        0
+      ],
+      "initial_fluctuating_iq": [
+        0.42,
+        0.91
+      ],
+      "initial_full_iq": [
+        0.42,
+        0.91
+      ],
+      "beta": 0.7
+    },
+    {
+      "candidate_id": "anch_a085_k025",
+      "alpha_prime": 0.85,
+      "k_tilde": [
+        0.0875,
+        -0.05
+      ],
+      "mu0": [
+        0.42,
+        0.91
+      ],
+      "initial_fluctuating_iq": [
+        0,
+        0
+      ],
+      "initial_full_iq": [
+        0.42,
+        0.91
+      ],
+      "beta": 0.7
+    }
+  ],
+  "receiver_contract": {
+    "profile": "existing reconstructed_offline receiver invocation; gain variation exists only upstream on channel/evaluation side",
+    "same_policies_on_each_profile": true,
+    "oracle_gain_reset": false,
+    "switch_index_provided_to_receiver": false,
+    "channel_truth_or_gain_schedule_provided_to_receiver": false,
+    "reference_bits_or_true_path_provided_to_receiver": false,
+    "clocks": {
+      "absolute_sample_origin": 0,
+      "absolute_symbol_origin": 0,
+      "estimator_tick_origin": 0
+    },
+    "full_frame_viterbi": true,
+    "segment_error_interpretation": "descriptive full-frame traceback segments; not online prefix-decoder or latency performance"
+  },
+  "study_design": {
+    "run_count": 100,
+    "symbols_per_sequence": 256,
+    "information_bits_per_sequence": 512,
+    "profiles_per_run": 3,
+    "policies_per_profile": 2,
+    "paired_bits_within_run": true,
+    "one_waveform_per_run": true,
+    "one_noise_vector_per_run_shared_across_profiles": true,
+    "same_profile_specific_received_buffer_shared_by_B_and_anchored": true,
+    "independent_cluster": "one complete run containing all three profiles and both policies",
+    "planned_received_buffers": 300,
+    "planned_policy_records": 600,
+    "planned_decoder_calls": 600,
+    "unique_received_samples": 614400,
+    "policy_symbol_passes": 153600,
+    "no_data_dependent_stopping": true
+  },
+  "statistics": {
+    "primary_estimand": "pooled raw-count DeltaBER_P1 = BER(anch_a085_k025, P1_HIGH_TO_LOW) - BER(historical_frozen_B, P1_HIGH_TO_LOW)",
+    "primary_profile": "P1_HIGH_TO_LOW",
+    "secondary_estimands": [
+      "DeltaBER_P0 = BER(anchor,P0)-BER(B,P0), descriptive",
+      "DeltaBER_P2 = BER(anchor,P2)-BER(B,P2), descriptive",
+      "DeltaSER_P0/P1/P2, descriptive",
+      "DeltaBER_P1-DeltaBER_P0, descriptive",
+      "DeltaBER_P2-DeltaBER_P1, descriptive"
+    ],
+    "bootstrap_method": "ADR-014 paired cluster bootstrap over full run clusters",
+    "bootstrap_replicates": 2000,
+    "confidence_level": 0.95,
+    "interval": "percentile",
+    "quantile_method": "numpy.quantile(method='linear')",
+    "same_run_indices_across_profiles_and_policies": true,
+    "individual_bits_or_symbols_are_clusters": false,
+    "multiplicity_policy": "primary inference only for DeltaBER_P1; all other profile contrasts descriptive"
+  },
+  "failure_policy": {
+    "all_100_complete_joint_profile_runs_required": true,
+    "missing_output": "record and block complete-design joint-profile inference",
+    "replace_seed_or_run": false,
+    "impute_missing_as_zero": false,
+    "finite_high_error_trajectories": "retain",
+    "numerical_failures": "separate integrity outcome; report all",
+    "invalid_or_incomplete_policy_record": "preserve failure provenance; no complete-pair inference",
+    "data_dependent_stopping": false
+  },
+  "partition": {
+    "name": "evaluation",
+    "partition_code": 1001,
+    "run_index_origin": 0,
+    "run_order": "ascending run_index 0..99",
+    "planned_run_id_format": "m10_controlled_piecewise_gain_v1:evaluation:run-{run_number:03d}, run_number 001..100",
+    "planned_runs": [
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-001",
+        "run_index": 0
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-002",
+        "run_index": 1
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-003",
+        "run_index": 2
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-004",
+        "run_index": 3
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-005",
+        "run_index": 4
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-006",
+        "run_index": 5
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-007",
+        "run_index": 6
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-008",
+        "run_index": 7
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-009",
+        "run_index": 8
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-010",
+        "run_index": 9
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-011",
+        "run_index": 10
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-012",
+        "run_index": 11
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-013",
+        "run_index": 12
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-014",
+        "run_index": 13
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-015",
+        "run_index": 14
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-016",
+        "run_index": 15
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-017",
+        "run_index": 16
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-018",
+        "run_index": 17
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-019",
+        "run_index": 18
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-020",
+        "run_index": 19
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-021",
+        "run_index": 20
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-022",
+        "run_index": 21
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-023",
+        "run_index": 22
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-024",
+        "run_index": 23
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-025",
+        "run_index": 24
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-026",
+        "run_index": 25
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-027",
+        "run_index": 26
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-028",
+        "run_index": 27
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-029",
+        "run_index": 28
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-030",
+        "run_index": 29
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-031",
+        "run_index": 30
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-032",
+        "run_index": 31
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-033",
+        "run_index": 32
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-034",
+        "run_index": 33
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-035",
+        "run_index": 34
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-036",
+        "run_index": 35
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-037",
+        "run_index": 36
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-038",
+        "run_index": 37
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-039",
+        "run_index": 38
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-040",
+        "run_index": 39
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-041",
+        "run_index": 40
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-042",
+        "run_index": 41
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-043",
+        "run_index": 42
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-044",
+        "run_index": 43
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-045",
+        "run_index": 44
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-046",
+        "run_index": 45
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-047",
+        "run_index": 46
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-048",
+        "run_index": 47
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-049",
+        "run_index": 48
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-050",
+        "run_index": 49
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-051",
+        "run_index": 50
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-052",
+        "run_index": 51
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-053",
+        "run_index": 52
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-054",
+        "run_index": 53
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-055",
+        "run_index": 54
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-056",
+        "run_index": 55
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-057",
+        "run_index": 56
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-058",
+        "run_index": 57
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-059",
+        "run_index": 58
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-060",
+        "run_index": 59
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-061",
+        "run_index": 60
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-062",
+        "run_index": 61
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-063",
+        "run_index": 62
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-064",
+        "run_index": 63
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-065",
+        "run_index": 64
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-066",
+        "run_index": 65
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-067",
+        "run_index": 66
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-068",
+        "run_index": 67
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-069",
+        "run_index": 68
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-070",
+        "run_index": 69
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-071",
+        "run_index": 70
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-072",
+        "run_index": 71
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-073",
+        "run_index": 72
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-074",
+        "run_index": 73
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-075",
+        "run_index": 74
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-076",
+        "run_index": 75
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-077",
+        "run_index": 76
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-078",
+        "run_index": 77
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-079",
+        "run_index": 78
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-080",
+        "run_index": 79
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-081",
+        "run_index": 80
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-082",
+        "run_index": 81
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-083",
+        "run_index": 82
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-084",
+        "run_index": 83
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-085",
+        "run_index": 84
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-086",
+        "run_index": 85
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-087",
+        "run_index": 86
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-088",
+        "run_index": 87
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-089",
+        "run_index": 88
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-090",
+        "run_index": 89
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-091",
+        "run_index": 90
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-092",
+        "run_index": 91
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-093",
+        "run_index": 92
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-094",
+        "run_index": 93
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-095",
+        "run_index": 94
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-096",
+        "run_index": 95
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-097",
+        "run_index": 96
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-098",
+        "run_index": 97
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-099",
+        "run_index": 98
+      },
+      {
+        "run_id": "m10_controlled_piecewise_gain_v1:evaluation:run-100",
+        "run_index": 99
+      }
+    ],
+    "seed_namespaces": {
+      "data": 2027030101,
+      "noise": 2027030102,
+      "bootstrap": 2027030103,
+      "metadata": 2027030104
+    },
+    "seed_derivation": {
+      "algorithm": "SeedSequence(master_seed, spawn_key=(1295337521,1001,zero_based_run_index,stream_code)); derive uint64 child seed, then initialize PCG64",
+      "generator": "PCG64",
+      "protocol_version_word": 1295337521,
+      "partition_code": 1001,
+      "stream_codes": {
+        "data": 11,
+        "noise": 23,
+        "bootstrap": 37,
+        "metadata": 41
+      },
+      "run_index_semantics": "zero-based 0..99",
+      "run_order": "ascending run_index",
+      "child_seeds_materialized": false,
+      "rng_initialized": false
+    },
+    "no_M5_M9_root_overlap": true,
+    "no_M9_observation_reuse": true
+  },
+  "workload": {
+    "receiver_policy_decodes": 600,
+    "run_clusters": 100,
+    "profiles": 3,
+    "policies": 2,
+    "received_buffers": 300,
+    "received_samples": 614400,
+    "policy_symbol_passes": 153600,
+    "single_process": true,
+    "multiprocessing": false,
+    "atomic_checkpoint_per_run": true,
+    "proposed_wall_clock_budget_seconds": 900,
+    "proposed_periodic_rss_monitoring_bytes": 1610612736,
+    "m9b_200_decode_runtime_reference_seconds": 102.5633079999825,
+    "runtime_extrapolation_is_guaranteed": false
+  },
+  "runtime_provenance_policy": {
+    "future_run_specific_approval_required": true,
+    "approved_snapshot_records_source_manifest_and_hash": true,
+    "config_hash_in_sidecar": true,
+    "git_revision_recorded_if_available_else_unavailable": true,
+    "environment_versions_recorded": true,
+    "output_integrity_manifest_excludes_itself": true
+  },
+  "output_namespace": "outputs/m10b_controlled_piecewise_gain/m10_controlled_piecewise_gain_v1",
+  "scientific_limitations": {
+    "physical_hf_channel_claim": false,
+    "paper_exact_claim": false,
+    "adaptive_must_improve_assumption": false,
+    "equal_average_energy_implies_equal_local_snr": false,
+    "p0_vs_p1_or_p2_is_pure_transition_count_contrast": false,
+    "segment_errors_are_online_prefix_performance": false,
+    "m9_fixed_policy_observations_reused": false
+  },
+  "proposed_scientific_decision": {
+    "record_id": "M10-DEC-001",
+    "status": "PROPOSED_NOT_ACCEPTED",
+    "requires_separate_scientific_acceptance_before_M10b": true,
+    "existing_ADR_015_modified": false,
+    "production_channel_integration": false
+  },
+  "authorization_gates": {
+    "m10b_requires_separate_explicit_authorization": true,
+    "approved_run_config_required": true,
+    "M10a_generates_no_RNG_or_observations": true,
+    "deterministic_tests_are_not_experimental_runs": true
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "design_id": "M5g-reconstructed-offline-paired-ber-ser",
+  "design_status": "proposed",
+  "execution_authorized": false,
+  "purpose": "preregistered reconstructed_offline statistical experiment design, NOT new performance evidence, NOT reproduction of paper results",
+  "scope": {
+    "profile": "reconstructed_offline",
+    "path_count": 1,
+    "channel": "positive real constant gain, zero delay",
+    "modulation": "normalized 8PSK",
+    "waveform": "rectangular ZOH",
+    "samples_per_symbol": 8,
+    "observation_model": "ADR-012",
+    "decoder": "ADR-013 conditional full Viterbi",
+    "noise_model": "ADR-015 independent circular complex sample AWGN",
+    "snr_label": "effective discrete gamma_b only",
+    "paper_exact": false,
+    "receiver_enabled": false,
+    "open_scientific_questions": ["SCI-02", "SCI-03", "SCI-METRIC-02"]
+  },
+  "adr_status": {
+    "accepted": ["ADR-001", "ADR-002", "ADR-003", "ADR-004", "ADR-005", "ADR-006", "ADR-007", "ADR-008", "ADR-010", "ADR-012", "ADR-013", "ADR-014", "ADR-015"],
+    "proposed": ["ADR-009", "ADR-011"],
+    "new_adr_proposed": false
+  },
+  "research_questions": {
+    "primary": "At the prespecified 5 dB stratum, compare adaptive C with frozen B using paired pooled information-bit BER.",
+    "secondary_descriptive": [
+      "How do BER/SER contrasts vary over the proposed effective discrete gamma_b grid?",
+      "How do contrasts vary over prespecified initial mismatch scenarios?",
+      "How do estimator trajectories vary in one-factor alpha_prime, K_tilde, and shared beta sensitivity diagnostics?",
+      "How often do finite coefficient-error trajectories grow, and how often do numerical failures occur?"
+    ]
+  },
+  "primary_estimand": {
+    "name": "DeltaBER",
+    "definition": "pooled BER_C - pooled BER_B from raw integer error counts",
+    "primary_gamma_b_eff_db": 5.0,
+    "sign": "negative favors lower observed BER for C; positive means higher observed BER for C",
+    "secondary_estimand": "DeltaSER = pooled SER_C - pooled SER_B",
+    "prohibit_relative_ratio_when_B_zero": true,
+    "prohibit_ber_to_db_gain_conversion": true
+  },
+  "gamma_grid": {
+    "status": "proposed_not_approved",
+    "real_channel_gain_a": 0.75,
+    "calibration": "sigma_squared = 4*a*a/gamma_b_eff",
+    "points": [
+      {"gamma_b_eff_db": 0.0, "gamma_b_eff_linear": 1.0, "sigma_squared": 2.25, "role": "secondary descriptive"},
+      {"gamma_b_eff_db": 5.0, "gamma_b_eff_linear": 3.1622776601683795, "sigma_squared": 0.7115124735378853, "role": "proposed primary"},
+      {"gamma_b_eff_db": 10.0, "gamma_b_eff_linear": 10.0, "sigma_squared": 0.225, "role": "secondary descriptive"},
+      {"gamma_b_eff_db": 15.0, "gamma_b_eff_linear": 31.622776601683793, "sigma_squared": 0.07115124735378854, "role": "secondary descriptive"}
+    ],
+    "interpretation_limit": "Grid points are proposed strata, not evidence of useful error counts; no physical HF Eb/N0 claim."
+  },
+  "sequence_design": {
+    "symbols_per_independent_sequence_F": 256,
+    "information_bits_per_sequence": 512,
+    "pilot_clusters_per_gamma_candidate": 30,
+    "pilot_cluster_count_is_statistically_sufficient": false,
+    "confirmatory_clusters_per_gamma": null,
+    "sample_size_status": "blocked_pending_independent_pilot_variability_and_user-approved_precision_target",
+    "pilot_and_confirmatory_records_disjoint": true,
+    "one_complete_independent_TCM_sequence_per_cluster": true
+  },
+  "receiver_policies": {
+    "B_frozen": {
+      "alpha_prime": 1.0,
+      "K_tilde": [0.0, 0.0],
+      "mu0": [0.0, 0.0]
+    },
+    "C_adaptive_primary_candidate": {
+      "alpha_prime": 0.85,
+      "K_tilde": [0.35, -0.2],
+      "mu0": [0.0, 0.0],
+      "beta_shared": 0.7,
+      "provenance": "M5f historical fixed diagnostic profile; candidate for confirmatory preregistration, not validated improvement"
+    },
+    "shared_initial_estimate": {
+      "fluctuating_iq": [0.42, 0.91],
+      "full_iq": [0.42, 0.91],
+      "mu0": [0.0, 0.0],
+      "provenance": "M5f historical mismatched initial state; true a is evaluation-only"
+    },
+    "difference_between_B_and_C": "Only the explicitly registered coefficient-update policy; same received samples, reference bits, initial state, beta, timing, and termination."
+  },
+  "secondary_sensitivity_candidates": {
+    "status": "exploratory_only_requires_separate_approval",
+    "initial_mismatch_pairs_at_a_0_75": [[0.42, 0.91], [0.6, 0.9], [0.3, 1.2]],
+    "alpha_prime_values": [0.5, 0.85, 1.0],
+    "k_tilde_scale_factors_applied_to_0_35_minus_0_2": [0.5, 1.0, 1.5],
+    "beta_values": [0.35, 0.7, 1.4],
+    "design": "one factor at a time; no automatic tuning; do not use these contrasts as confirmatory without a separate multiplicity policy"
+  },
+  "rng_streams": {
+    "generator": "SeedSequence with recorded child spawn keys and PCG64 derived generators",
+    "pilot_data_master_seed": 2026102901,
+    "pilot_noise_master_seed": 2026102902,
+    "pilot_bootstrap_seed": 2026102903,
+    "evaluation_data_master_seed_candidate": 2026110101,
+    "evaluation_noise_master_seed_candidate": 2026110102,
+    "evaluation_bootstrap_seed_candidate": 2026110103,
+    "seeds_status": "proposed namespaces only; freeze and archive before execution",
+    "streams_distinct": true,
+    "same_received_buffer_for_B_and_C": true,
+    "reference_data_visible_to_receiver": false,
+    "ChannelTruth_visible_to_receiver": false
+  },
+  "sample_size_and_stopping": {
+    "proposed_precision_target_absolute_delta_ber_ci_half_width": 0.02,
+    "precision_target_status": "candidate_requires_user_approval",
+    "planning_rule": "R0 = ceil((t_0.975,Rpilot_minus_1 * s_d / h)^2), where s_d is the pilot SD of paired per-sequence BER differences and h is the approved absolute half-width target",
+    "minimum_cluster_floor": 20,
+    "minimum_floor_meaning": "only avoids ADR-014 too_few_independent_runs heuristic; not a sufficient sample-size claim",
+    "bootstrap_precision_check": "Use cluster resampling of independent pilot records to assess planned interval width; pilot records are never pooled into confirmatory results.",
+    "fixed_stopping_rule": "After R and seeds are registered, run exactly R complete independent sequences per stratum. No interim effect-based stopping. Stop only at registered N or a predeclared hard resource/data-quality limit; report incomplete/failing runs.",
+    "resource_budget": null,
+    "status": "blocked_pending_pilot_and_approved_precision_and_compute_budget"
+  },
+  "bootstrap": {
+    "policy": "accepted ADR-014 paired cluster bootstrap",
+    "cluster": "one complete independent coded sequence",
+    "paired_resampling": true,
+    "resample_indices_shared_B_C": true,
+    "pool_raw_integer_counts_each_replicate": true,
+    "replicates": 2000,
+    "confidence_level": 0.95,
+    "interval": "two-sided percentile",
+    "quantile_method": "numpy.quantile(method='linear')",
+    "explicit_bootstrap_seed_required": true,
+    "small_sample_ci_is_not_validated_evidence": true
+  },
+  "multiplicity": {
+    "primary_confirmatory_contrast_count": 1,
+    "secondary_gamma_mismatch_parameter_results": "descriptive pointwise estimates and CIs only",
+    "simultaneous_inference_policy": "not specified; blocked until separately approved",
+    "pointwise_ci_does_not_establish_curve_wide_effect": true
+  },
+  "trajectory_and_failure_policy": {
+    "retain_per_symbol_coefficients_pre_post_norms_increment_norms_posterior_entropy": true,
+    "retain_initial_final_evaluation_only_coefficient_error": true,
+    "finite_error_growth_flag": "maximum or final coefficient error exceeds initial mismatch; diagnostic only, no exclusion",
+    "numerical_failure": "retain run ID, last valid state/time, exception class and failure count; never impute zero errors or silently delete",
+    "valid_decoding_errors": "include normally in BER/SER regardless of magnitude",
+    "missing_receiver_output": "report failure endpoint; estimand with missing output is blocked, not imputed",
+    "analysis_or_pairing_failure": "retain audit record and report exclusion reason under a rule fixed before outcomes"
+  },
+  "validation_gates": {
+    "design_document_and_json": "proposed_ready_for_review",
+    "pilot_execution": "blocked_pending_user_approval",
+    "confirmatory_sample_size": "blocked_pending_pilot_and_precision_decision",
+    "secondary_multiplicity_inference": "blocked_pending_policy",
+    "physical_hf_eb_n0": "blocked",
+    "adaptive_m2_csi_parity": "blocked",
+    "paper_performance_reproduction": "blocked"
+  },
+  "scientific_claim_limitations": [
+    "M5f observed C worse than B in its 12 exploratory pairs; retain this result and do not tune against it.",
+    "No claim of population-level adaptive advantage, equivalence, physical HF Eb/N0 improvement, or 1.5 dB gain.",
+    "B4d costs are causally generated and B5 is conditional Viterbi, not joint channel-trajectory optimization.",
+    "Cluster bootstrap assumes independent complete sequences; bits within each coded sequence are not independent resampling units."
+  ]
+}

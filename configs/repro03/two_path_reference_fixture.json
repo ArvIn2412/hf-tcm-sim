@@ -1,0 +1,9 @@
+{
+  "description": "Hand-recountable deterministic complex-baseband convolution control; not a stochastic channel observation.",
+  "source_samples": [[1.0, 2.0], [-1.0, 0.5], [2.0, -1.0]],
+  "path_delays_samples": [0, 2],
+  "path_coefficients": [[0.5, 0.25], [-0.125, 0.75]],
+  "boundary_policy": "zero_extension",
+  "output_length": 5,
+  "expected_received_samples": [[0.0, 1.25], [-0.625, 0.0], [-0.375, 0.5], [-0.25, -0.8125], [0.5, 1.625]]
+}

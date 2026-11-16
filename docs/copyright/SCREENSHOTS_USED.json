@@ -1,0 +1,54 @@
+{
+  "screenshots": [
+    {
+      "path": "docs/screenshots/gui-ux-02/parameters-1920x1080.png",
+      "caption": "Рисунок 1 – головна панель комп'ютерної програми HF-TCM-SIM",
+      "width_px": 1920,
+      "height_px": 1080,
+      "size_bytes": 65770,
+      "sha256": "36dd7b1002296d35de2363a59622be1d864af0dc8352c360fc517195af3857e9",
+      "embedded_relationship": "rId6",
+      "embedded_package_part": "word/media/image1.png"
+    },
+    {
+      "path": "docs/screenshots/gui-ux-02/transmitter-1920x1080.png",
+      "caption": "Рисунок 2 – формування сигналу TCM/8PSK",
+      "width_px": 1920,
+      "height_px": 1080,
+      "size_bytes": 79024,
+      "sha256": "57205bf8cfebbebdab0e538b5d2e0242d929385faa3f9df47e5653c0d3cfc8f9",
+      "embedded_relationship": "rId7",
+      "embedded_package_part": "word/media/image2.png"
+    },
+    {
+      "path": "docs/screenshots/gui-ux-02/channel-1920x1080.png",
+      "caption": "Рисунок 3 – переданий і прийнятий сигнали в моделі радіоканалу",
+      "width_px": 1920,
+      "height_px": 1080,
+      "size_bytes": 152843,
+      "sha256": "4763630fdab629c1c04624b8c7eb23dfe0b725250b289ac34531e208d08bafd8",
+      "embedded_relationship": "rId8",
+      "embedded_package_part": "word/media/image3.png"
+    },
+    {
+      "path": "docs/screenshots/gui-ux-02/viterbi-1920x1080.png",
+      "caption": "Рисунок 4 – решітка Вітербі та локальна траєкторія декодування",
+      "width_px": 1920,
+      "height_px": 1080,
+      "size_bytes": 375355,
+      "sha256": "1a31b7a2bb3cc62977d21cd12407d352b5278f9557a48683b5c7a38a0d8196c2",
+      "embedded_relationship": "rId9",
+      "embedded_package_part": "word/media/image4.png"
+    },
+    {
+      "path": "docs/screenshots/gui-energy-01b-energy-1920x1080.png",
+      "caption": "Рисунок 5 – енергетичні характеристики та результати порівняння приймачів",
+      "width_px": 1905,
+      "height_px": 1955,
+      "size_bytes": 190379,
+      "sha256": "6008141b84874b01f9269d98a5fb582c53f5653b66ff6582d8989c4798d8974b",
+      "embedded_relationship": "rId10",
+      "embedded_package_part": "word/media/image5.png"
+    }
+  ]
+}

@@ -1,0 +1,311 @@
+{
+  "schema_version": 1,
+  "experiment_id": "m6b_causal_trace_20261030_v1",
+  "design_version": "m6b-prep-1",
+  "design_status": "approved_diagnostic",
+  "execution_authorized": true,
+  "execution_scope": "m6b_trace_only",
+  "purpose": "validated fresh-seed causal trace protocol, NOT executed diagnostic experiment, NOT new BER evidence, NOT established root cause",
+  "scientific_scope": {
+    "profile": "reconstructed_offline",
+    "paper_exact": false,
+    "receiver_enabled": false,
+    "channel": {
+      "path_count": 1,
+      "real_gain_a": 0.75,
+      "path_delays_samples": [
+        0
+      ]
+    },
+    "waveform": {
+      "modulation": "normalized_8PSK",
+      "pulse": "rectangular_zoh",
+      "samples_per_symbol": 8
+    },
+    "observation": {
+      "adr": "ADR-012",
+      "profile_id": "adr012_l1_real_mean8",
+      "iq_rule": "(-Im(received), Re(received))",
+      "sample_reduction": "arithmetic_mean_exactly_8"
+    },
+    "likelihood": {
+      "adr": "ADR-005",
+      "kind": "exp_negative_beta_project_reconstruction_metric",
+      "beta": 0.7
+    },
+    "decoder": {
+      "adr": "ADR-013",
+      "kind": "conditional_full_viterbi_on_frozen_metric_history"
+    },
+    "noise": {
+      "adr": "ADR-015",
+      "distribution": "independent_circular_complex_sample_awgn",
+      "gamma_b_eff_db": 5.0,
+      "sigma_squared": 0.7115124735378853,
+      "physical_hf_eb_n0": false
+    },
+    "accepted_adrs": [
+      "ADR-001",
+      "ADR-002",
+      "ADR-003",
+      "ADR-004",
+      "ADR-005",
+      "ADR-006",
+      "ADR-007",
+      "ADR-008",
+      "ADR-010",
+      "ADR-012",
+      "ADR-013",
+      "ADR-014",
+      "ADR-015"
+    ],
+    "proposed_adrs": [
+      "ADR-009",
+      "ADR-011"
+    ],
+    "open_questions": [
+      "SCI-02",
+      "SCI-03",
+      "SCI-METRIC-02"
+    ]
+  },
+  "run_design": {
+    "independent_sequences": 3,
+    "symbols_per_sequence_F": 32,
+    "information_bits_per_sequence": 64,
+    "planned_run_ids": [
+      "m6b_causal_trace_20261030_v1:run-001",
+      "m6b_causal_trace_20261030_v1:run-002",
+      "m6b_causal_trace_20261030_v1:run-003"
+    ],
+    "run_order": "ascending run index; one process; fixed manifest order",
+    "same_received_buffer_for_B_and_C": true,
+    "performance_estimand": null,
+    "parameter_search": false
+  },
+  "receiver_policies": {
+    "shared": {
+      "initial_fluctuating_iq": [
+        0.42,
+        0.91
+      ],
+      "initial_full_iq": [
+        0.42,
+        0.91
+      ],
+      "beta": 0.7,
+      "mu0": [
+        0.0,
+        0.0
+      ]
+    },
+    "B": {
+      "policy": "mismatched_frozen",
+      "alpha_prime": 1.0,
+      "K_tilde": [
+        0.0,
+        0.0
+      ],
+      "mu0": [
+        0.0,
+        0.0
+      ]
+    },
+    "C": {
+      "policy": "mismatched_adaptive",
+      "alpha_prime": 0.85,
+      "K_tilde": [
+        0.35,
+        -0.2
+      ],
+      "mu0": [
+        0.0,
+        0.0
+      ]
+    },
+    "parity_required": true,
+    "only_difference": "registered coefficient update policy",
+    "historical_policy_source": "M5j approved fixed B/C comparison; not selected or tuned from outcomes"
+  },
+  "clock_contract": {
+    "absolute_sample_origin": 0,
+    "absolute_symbol_origin": 0,
+    "initial_estimator_time_index": 0,
+    "sequence_local_symbol_position_origin": 0,
+    "processing_segment_policy": "one monolithic sequence; segment_index=0; no reset",
+    "window_rule": "[O+8f, O+8f+7]",
+    "prediction_cutoff_rule": "O+8f-1",
+    "observation_cutoff_rule": "O+8f+7",
+    "clocks_are_independent_labels": true
+  },
+  "seed_derivation": {
+    "algorithm": "NumPy SeedSequence(master_seed, spawn_key=(protocol_version_word, diagnostic_namespace_code, zero_based_run_index, stream_code)).generate_state(1,dtype=uint64)[0]; initialize PCG64 with derived seed",
+    "protocol_version_word": 1295337521,
+    "diagnostic_namespace_code": 306,
+    "spawn_key_fields": [
+      "protocol_version_word",
+      "diagnostic_namespace_code",
+      "zero_based_run_index",
+      "stream_code"
+    ],
+    "stream_codes": {
+      "data": 11,
+      "noise": 23,
+      "metadata": 41
+    },
+    "master_seed_roots": {
+      "data": 2026103001,
+      "noise": 2026103002,
+      "metadata": 2026103003
+    },
+    "forbidden_historical_master_seeds": [
+      2026102801,
+      2026102802,
+      2026102803,
+      2026102901,
+      2026102902,
+      2026102903,
+      2026110101,
+      2026110102,
+      2026110103,
+      3940591365597190145
+    ],
+    "run_index_origin": 0,
+    "generated_seed_bits": 64,
+    "bit_generator": "PCG64",
+    "paired_received_hash_rule": "SHA-256 of the exact contiguous complex128 received bytes consumed by M6a; B and C must record the same digest",
+    "planned_seed_manifest_contains_samples": false
+  },
+  "trace_schema": {
+    "schema_version": 1,
+    "serialization": "canonical UTF-8 JSON, sorted keys, compact separators, allow_nan=false",
+    "array_encoding": "object with dtype, exact shape, and nested values",
+    "nonfinite_policy": "reject the trace and write a failure record; never serialize NaN or Infinity",
+    "transition_predicted_posterior_q": {
+      "status": "unavailable",
+      "value": null
+    },
+    "innovation": {
+      "source": "derived from actual B4c posterior, observed-IQ mean, and predicted-IQ operands; not a raw B4c result field",
+      "formula": "sum_h posterior[h] * (observed_iq - predicted_iq[h])"
+    },
+    "received_samples_persisted": false,
+    "reference_bits_in_receiver_trace": false,
+    "required_run_fields": [
+      "run_id",
+      "config_sha256",
+      "software_provenance",
+      "received_sha256",
+      "mode_B",
+      "mode_C",
+      "paired_comparison",
+      "trace_integrity_status"
+    ],
+    "required_symbol_fields": [
+      "absolute_symbol_index",
+      "alpha_prime",
+      "candidate_metrics",
+      "decoded_hypothesis_id",
+      "edge_mode",
+      "estimator_time_index",
+      "fluctuating_increment",
+      "full_increment",
+      "hypothesis_ids",
+      "innovation_operand",
+      "innovation_provenance",
+      "k_tilde",
+      "mu0",
+      "observation_cutoff_sample_index",
+      "observed_iq_mean",
+      "phase_indices",
+      "post_fluctuating_iq",
+      "post_full_iq",
+      "posterior",
+      "posterior_input",
+      "posterior_input_kind",
+      "posterior_normalized",
+      "posterior_sum",
+      "posterior_transition_provenance",
+      "pre_fluctuating_iq",
+      "pre_full_iq",
+      "predicted_iq",
+      "prediction_cutoff_sample_index",
+      "processing_segment_index",
+      "processing_segment_local_position",
+      "sample_window",
+      "sequence_local_position",
+      "transition_predicted_posterior_q"
+    ]
+  },
+  "comparison": {
+    "floating_rtol": 1e-12,
+    "floating_atol": 1e-14,
+    "required_divergence_labels": [
+      "first_post_state_divergence_symbol",
+      "first_candidate_metric_divergence_symbol",
+      "first_posterior_divergence_symbol",
+      "decoded_path_divergence_positions"
+    ],
+    "interpretation_levels": [
+      "runtime_ordering",
+      "mathematical_dependency",
+      "observed_output_difference",
+      "established_causal_root_cause"
+    ],
+    "trace_difference_establishes_root_cause": false
+  },
+  "storage": {
+    "root": "outputs/m6b_trace_diagnostics/m6b_causal_trace_20261030_v1",
+    "per_run_files": [
+      "manifest.json",
+      "config_fingerprint.json",
+      "B_trace.json",
+      "C_trace.json",
+      "paired_comparison.json",
+      "status.json"
+    ],
+    "integrity": "SHA-256 for canonical payload and each written file; record digests in manifest",
+    "write_policy": "write temp file in run directory, flush and fsync, then atomic replace; never overwrite another experiment namespace",
+    "raw_received_samples": "not persisted by the trace adapter; received_sha256 only",
+    "evaluation_reference_data": "if needed, separate evaluation-side artifact; never included in receiver trace"
+  },
+  "resource_policy": {
+    "candidate_processes": 1,
+    "multiprocessing": false,
+    "sequences": 3,
+    "symbols_per_sequence": 32,
+    "full_per_symbol_B_C_trace": true,
+    "decoder_passes_per_sequence": 2,
+    "atomic_checkpoint_per_run": true,
+    "runtime_or_ram_estimate": null,
+    "resource_limits": {
+      "wall_clock_budget_seconds": 300,
+      "process_rss_budget_bytes": 536870912,
+      "rss_monitoring": "periodic_observational_not_hard_os_limit"
+    },
+    "benchmark_run": false
+  },
+  "failure_policy": {
+    "invalid_config": "block before RNG stream construction or callbacks",
+    "nonfinite_trace": "record failure; no serialization or silent omission",
+    "missing_B_or_C_trace": "retain failure status; no paired comparison",
+    "retry_with_new_seed": false,
+    "posthoc_exclusion": false,
+    "overwrite_historical_outputs": false
+  },
+  "claim_boundary": {
+    "new_performance_evidence": false,
+    "new_ber_estimand": false,
+    "established_root_cause": false,
+    "physical_hf_eb_n0_claim": false,
+    "general_channel_claim": false,
+    "paper_exact_receiver": false
+  },
+  "authorization": {
+    "explicit_user_approval": true,
+    "authorization_id": "user_instruction_M6b-run_2026-10-30",
+    "approved_at_utc": "2026-10-30T07:48:39Z",
+    "source_draft_sha256": "218881f447919b27c4b598269e6d9c9184187ee51cb353d3a3acacfe2a2dc844",
+    "authorization_provenance": "explicit user authorization provided through this M6b-run Codex instruction"
+  }
+}

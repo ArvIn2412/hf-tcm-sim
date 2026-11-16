@@ -1,0 +1,36 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.pytest-m4-7b-temp/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.egg-info/
+build/
+dist/
+outputs/
+.ipynb_checkpoints/
+.DS_Store
+
+# Тимчасові файли
+tmp/
+outputs/
+.pytest-*/
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# Локальне середовище
+.venv/
+venv/
+.env
+.env.*
+
+# Великі архіви
+*.zip
+*.7z
+
+chatgpt_review_bundle/

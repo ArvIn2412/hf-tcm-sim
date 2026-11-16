@@ -1,0 +1,17 @@
+{
+  "schema_version": "repro04-separate-receiver-v1",
+  "expected_symbol_count": 20000,
+  "initial_state": [0, 0],
+  "termination_policy": "none",
+  "timing_offset_samples": 0,
+  "front_end": {
+    "mode": "fixed_nominal",
+    "amplitude": 1.0,
+    "phase_offset_rad": 0.0,
+    "known_static_gain": [1.0, 0.0]
+  },
+  "encoder_id": "encoder_a_rate_2_3_repro01_v1",
+  "mapping_id": "adr002_assumed_natural_binary_c2_c1_c0_v1",
+  "tie_policy": "canonical_first_edge_then_state_order",
+  "phase_increment_rad": 0.7853981633974483
+}

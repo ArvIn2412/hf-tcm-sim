@@ -1,0 +1,781 @@
+{
+  "experiment": "SCIENTIFIC-EXP-03B",
+  "metric_trials": 22800,
+  "system_trials": 8300,
+  "total_trials": 31100,
+  "metric_isolation": {
+    "pairing_verified": true,
+    "target_ber_0_05": {
+      "awgn_direct": {
+        "bootstrap": {
+          "linear_ber": {
+            "conditional_ci95": [
+              2.8294725982401867,
+              2.899798110886382
+            ],
+            "gain_db_ci95": [
+              2.8294725982401867,
+              2.899798110886382
+            ],
+            "replicates": 5000,
+            "valid_fraction": 1.0,
+            "valid_replicates": 5000
+          },
+          "log_ber": {
+            "conditional_ci95": [
+              2.819707046123091,
+              2.9140295199392847
+            ],
+            "gain_db_ci95": [
+              2.819707046123091,
+              2.9140295199392847
+            ],
+            "replicates": 5000,
+            "valid_fraction": 1.0,
+            "valid_replicates": 5000
+          }
+        },
+        "gain_db_log_ber": 2.8667962392213298,
+        "noise_variance_complex": 0.05,
+        "observed": {
+          "linear_ber": {
+            "euclidean": {
+              "bracket_db": [
+                2.030899869919438,
+                3.0308998699194363
+              ],
+              "gamma_db": 2.9268479631397755,
+              "status": "BRACKETED"
+            },
+            "hamming": {
+              "bracket_db": [
+                5.030899869919436,
+                6.030899869919436
+              ],
+              "gamma_db": 5.791467327939123,
+              "status": "BRACKETED"
+            }
+          },
+          "log_ber": {
+            "euclidean": {
+              "bracket_db": [
+                2.030899869919438,
+                3.0308998699194363
+              ],
+              "gamma_db": 2.875282953091568,
+              "status": "BRACKETED"
+            },
+            "hamming": {
+              "bracket_db": [
+                5.030899869919436,
+                6.030899869919436
+              ],
+              "gamma_db": 5.7420791923128975,
+              "status": "BRACKETED"
+            }
+          }
+        },
+        "precision_assessment": {
+          "arm_checks": {
+            "euclidean": {
+              "bracket_points": [
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.10296223958333334,
+                    0.1072412109375
+                  ],
+                  "ber_ci95_half_width": 0.002177734375000004,
+                  "bit_errors": 64551,
+                  "gamma_db": 2.030899869919438
+                },
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.042018188476562496,
+                    0.0452376708984375
+                  ],
+                  "ber_ci95_half_width": 0.0016325276692708349,
+                  "bit_errors": 26791,
+                  "gamma_db": 3.0308998699194363
+                }
+              ],
+              "crossing_status": "BRACKETED"
+            },
+            "hamming": {
+              "bracket_points": [
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.07028971354166667,
+                    0.07245930989583334
+                  ],
+                  "ber_ci95_half_width": 0.001088867187499995,
+                  "bit_errors": 43855,
+                  "gamma_db": 5.030899869919436
+                },
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.04238118489583333,
+                    0.04416837565104166
+                  ],
+                  "ber_ci95_half_width": 0.0008985188802083308,
+                  "bit_errors": 26585,
+                  "gamma_db": 6.030899869919436
+                }
+              ],
+              "crossing_status": "BRACKETED"
+            }
+          },
+          "bootstrap_valid_fraction": 1.0,
+          "gain_ci95": [
+            2.819707046123091,
+            2.9140295199392847
+          ],
+          "gain_ci95_half_width_db": 0.04723328071795496,
+          "maximum_ber_ci95_half_width": 0.01,
+          "maximum_gain_ci95_half_width_db": 0.5,
+          "minimum_valid_bootstrap_crossing_fraction": 0.95,
+          "reasons": [],
+          "required_errors_per_bracket_point_per_arm": 200,
+          "status": "PRECISION_CRITERIA_MET",
+          "target_ber": 0.05
+        },
+        "required_energy_per_information_bit_discrete": {
+          "euclidean": 0.09693894739278433,
+          "hamming": 0.1875762820977859
+        },
+        "target_ber": 0.05
+      },
+      "awgn_pilot": {
+        "bootstrap": {
+          "linear_ber": {
+            "conditional_ci95": [
+              2.2778788570109914,
+              2.4932336766687575
+            ],
+            "gain_db_ci95": [
+              2.2778788570109914,
+              2.4932336766687575
+            ],
+            "replicates": 5000,
+            "valid_fraction": 1.0,
+            "valid_replicates": 5000
+          },
+          "log_ber": {
+            "conditional_ci95": [
+              2.1585861627912846,
+              2.4236149547883596
+            ],
+            "gain_db_ci95": [
+              2.1585861627912846,
+              2.4236149547883596
+            ],
+            "replicates": 5000,
+            "valid_fraction": 1.0,
+            "valid_replicates": 5000
+          }
+        },
+        "gain_db_log_ber": 2.295965960600185,
+        "noise_variance_complex": 0.05,
+        "observed": {
+          "linear_ber": {
+            "euclidean": {
+              "bracket_db": [
+                6.1108193396963015,
+                7.610819339696303
+              ],
+              "gamma_db": 7.517778492495093,
+              "status": "BRACKETED"
+            },
+            "hamming": {
+              "bracket_db": [
+                9.110819339696302,
+                10.610819339696304
+              ],
+              "gamma_db": 9.908055789293872,
+              "status": "BRACKETED"
+            }
+          },
+          "log_ber": {
+            "euclidean": {
+              "bracket_db": [
+                6.1108193396963015,
+                7.610819339696303
+              ],
+              "gamma_db": 7.48722380550103,
+              "status": "BRACKETED"
+            },
+            "hamming": {
+              "bracket_db": [
+                9.110819339696302,
+                10.610819339696304
+              ],
+              "gamma_db": 9.783189766101215,
+              "status": "BRACKETED"
+            }
+          }
+        },
+        "precision_assessment": {
+          "arm_checks": {
+            "euclidean": {
+              "bracket_points": [
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.08265062313988095,
+                    0.0887372581845238
+                  ],
+                  "ber_ci95_half_width": 0.0031008649553571493,
+                  "bit_errors": 46100,
+                  "gamma_db": 6.1108193396963015
+                },
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.04515806361607143,
+                    0.050126534598214284
+                  ],
+                  "ber_ci95_half_width": 0.0024907459077380956,
+                  "bit_errors": 25609,
+                  "gamma_db": 7.610819339696303
+                }
+              ],
+              "crossing_status": "BRACKETED"
+            },
+            "hamming": {
+              "bracket_points": [
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.06546070498511904,
+                    0.06960765438988095
+                  ],
+                  "ber_ci95_half_width": 0.002104399181547631,
+                  "bit_errors": 36323,
+                  "gamma_db": 9.110819339696302
+                },
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.03302269345238095,
+                    0.035986002604166664
+                  ],
+                  "ber_ci95_half_width": 0.0014936755952380948,
+                  "bit_errors": 18556,
+                  "gamma_db": 10.610819339696304
+                }
+              ],
+              "crossing_status": "BRACKETED"
+            }
+          },
+          "bootstrap_valid_fraction": 1.0,
+          "gain_ci95": [
+            2.1585861627912846,
+            2.4236149547883596
+          ],
+          "gain_ci95_half_width_db": 0.13737979780890042,
+          "maximum_ber_ci95_half_width": 0.01,
+          "maximum_gain_ci95_half_width_db": 0.5,
+          "minimum_valid_bootstrap_crossing_fraction": 0.95,
+          "reasons": [],
+          "required_errors_per_bracket_point_per_arm": 200,
+          "status": "PRECISION_CRITERIA_MET",
+          "target_ber": 0.05
+        },
+        "required_energy_per_information_bit_discrete": {
+          "euclidean": 0.280344722490122,
+          "hamming": 0.4756516207855285
+        },
+        "target_ber": 0.05
+      },
+      "rician_period32": {
+        "bootstrap": {
+          "linear_ber": {
+            "conditional_ci95": null,
+            "gain_db_ci95": null,
+            "replicates": 5000,
+            "valid_fraction": 0.0,
+            "valid_replicates": 0
+          },
+          "log_ber": {
+            "conditional_ci95": null,
+            "gain_db_ci95": null,
+            "replicates": 5000,
+            "valid_fraction": 0.0,
+            "valid_replicates": 0
+          }
+        },
+        "gain_db_log_ber": null,
+        "noise_variance_complex": 0.05,
+        "observed": {
+          "linear_ber": {
+            "euclidean": {
+              "status": "NO_UNIQUE_BRACKET"
+            },
+            "hamming": {
+              "status": "NO_UNIQUE_BRACKET"
+            }
+          },
+          "log_ber": {
+            "euclidean": {
+              "status": "NO_UNIQUE_BRACKET"
+            },
+            "hamming": {
+              "status": "NO_UNIQUE_BRACKET"
+            }
+          }
+        },
+        "precision_assessment": {
+          "arm_checks": {
+            "euclidean": {
+              "bracket_points": [],
+              "crossing_status": "NO_UNIQUE_BRACKET"
+            },
+            "hamming": {
+              "bracket_points": [],
+              "crossing_status": "NO_UNIQUE_BRACKET"
+            }
+          },
+          "bootstrap_valid_fraction": 0.0,
+          "gain_ci95": null,
+          "gain_ci95_half_width_db": null,
+          "maximum_ber_ci95_half_width": 0.01,
+          "maximum_gain_ci95_half_width_db": 0.5,
+          "minimum_valid_bootstrap_crossing_fraction": 0.95,
+          "reasons": [
+            "euclidean:target_not_bracketed:NO_UNIQUE_BRACKET",
+            "hamming:target_not_bracketed:NO_UNIQUE_BRACKET",
+            "bootstrap_crossing_fraction_below_threshold:0",
+            "gain_confidence_interval_unavailable"
+          ],
+          "required_errors_per_bracket_point_per_arm": 200,
+          "status": "TARGET_NOT_ESTIMABLE",
+          "target_ber": 0.05
+        },
+        "required_energy_per_information_bit_discrete": {
+          "euclidean": null,
+          "hamming": null
+        },
+        "target_ber": 0.05
+      },
+      "rician_period8": {
+        "bootstrap": {
+          "linear_ber": {
+            "conditional_ci95": null,
+            "gain_db_ci95": null,
+            "replicates": 5000,
+            "valid_fraction": 0.0,
+            "valid_replicates": 0
+          },
+          "log_ber": {
+            "conditional_ci95": null,
+            "gain_db_ci95": null,
+            "replicates": 5000,
+            "valid_fraction": 0.0,
+            "valid_replicates": 0
+          }
+        },
+        "gain_db_log_ber": null,
+        "noise_variance_complex": 0.05,
+        "observed": {
+          "linear_ber": {
+            "euclidean": {
+              "bracket_db": [
+                13.041199826559248,
+                16.041199826559243
+              ],
+              "gamma_db": 14.582260995873202,
+              "status": "BRACKETED"
+            },
+            "hamming": {
+              "status": "NO_UNIQUE_BRACKET"
+            }
+          },
+          "log_ber": {
+            "euclidean": {
+              "bracket_db": [
+                13.041199826559248,
+                16.041199826559243
+              ],
+              "gamma_db": 14.437240494110565,
+              "status": "BRACKETED"
+            },
+            "hamming": {
+              "status": "NO_UNIQUE_BRACKET"
+            }
+          }
+        },
+        "precision_assessment": {
+          "arm_checks": {
+            "euclidean": {
+              "bracket_points": [
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.05832999674479166,
+                    0.061539713541666666
+                  ],
+                  "ber_ci95_half_width": 0.00164388020833333,
+                  "bit_errors": 18400,
+                  "gamma_db": 13.041199826559248
+                },
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.039234863281250004,
+                    0.04207698567708333
+                  ],
+                  "ber_ci95_half_width": 0.001445475260416662,
+                  "bit_errors": 12482,
+                  "gamma_db": 16.041199826559243
+                }
+              ],
+              "crossing_status": "BRACKETED"
+            },
+            "hamming": {
+              "bracket_points": [],
+              "crossing_status": "NO_UNIQUE_BRACKET"
+            }
+          },
+          "bootstrap_valid_fraction": 0.0,
+          "gain_ci95": null,
+          "gain_ci95_half_width_db": null,
+          "maximum_ber_ci95_half_width": 0.01,
+          "maximum_gain_ci95_half_width_db": 0.5,
+          "minimum_valid_bootstrap_crossing_fraction": 0.95,
+          "reasons": [
+            "hamming:target_not_bracketed:NO_UNIQUE_BRACKET",
+            "bootstrap_crossing_fraction_below_threshold:0",
+            "gain_confidence_interval_unavailable"
+          ],
+          "required_errors_per_bracket_point_per_arm": 200,
+          "status": "TARGET_NOT_ESTIMABLE",
+          "target_ber": 0.05
+        },
+        "required_energy_per_information_bit_discrete": {
+          "euclidean": 1.3889737998799927,
+          "hamming": null
+        },
+        "target_ber": 0.05
+      },
+      "static_pilot": {
+        "bootstrap": {
+          "linear_ber": {
+            "conditional_ci95": [
+              2.3148472139647676,
+              2.505501329594645
+            ],
+            "gain_db_ci95": [
+              2.3148472139647676,
+              2.505501329594645
+            ],
+            "replicates": 5000,
+            "valid_fraction": 1.0,
+            "valid_replicates": 5000
+          },
+          "log_ber": {
+            "conditional_ci95": [
+              2.3374892284050355,
+              2.53349236046052
+            ],
+            "gain_db_ci95": [
+              2.3374892284050355,
+              2.53349236046052
+            ],
+            "replicates": 5000,
+            "valid_fraction": 1.0,
+            "valid_replicates": 5000
+          }
+        },
+        "gain_db_log_ber": 2.4372681419444415,
+        "noise_variance_complex": 0.05,
+        "observed": {
+          "linear_ber": {
+            "euclidean": {
+              "bracket_db": [
+                6.1108193396963015,
+                7.610819339696303
+              ],
+              "gamma_db": 7.154882628553136,
+              "status": "BRACKETED"
+            },
+            "hamming": {
+              "bracket_db": [
+                9.110819339696302,
+                10.610819339696304
+              ],
+              "gamma_db": 9.565776249610122,
+              "status": "BRACKETED"
+            }
+          },
+          "log_ber": {
+            "euclidean": {
+              "bracket_db": [
+                6.1108193396963015,
+                7.610819339696303
+              ],
+              "gamma_db": 7.027513690853642,
+              "status": "BRACKETED"
+            },
+            "hamming": {
+              "bracket_db": [
+                9.110819339696302,
+                10.610819339696304
+              ],
+              "gamma_db": 9.464781832798083,
+              "status": "BRACKETED"
+            }
+          }
+        },
+        "precision_assessment": {
+          "arm_checks": {
+            "euclidean": {
+              "bracket_points": [
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.07590387834821428,
+                    0.08154022507440477
+                  ],
+                  "ber_ci95_half_width": 0.0028182198660714336,
+                  "bit_errors": 42321,
+                  "gamma_db": 6.1108193396963015
+                },
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.035247256324404765,
+                    0.039548084077380946
+                  ],
+                  "ber_ci95_half_width": 0.002209960937499998,
+                  "bit_errors": 20137,
+                  "gamma_db": 7.610819339696303
+                }
+              ],
+              "crossing_status": "BRACKETED"
+            },
+            "hamming": {
+              "bracket_points": [
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.05716517857142857,
+                    0.06111244419642857
+                  ],
+                  "ber_ci95_half_width": 0.002012741815476192,
+                  "bit_errors": 31772,
+                  "gamma_db": 9.110819339696302
+                },
+                {
+                  "adequate": true,
+                  "ber_ci95": [
+                    0.027723167782738093,
+                    0.030569382440476186
+                  ],
+                  "ber_ci95_half_width": 0.0014715401785714254,
+                  "bit_errors": 15643,
+                  "gamma_db": 10.610819339696304
+                }
+              ],
+              "crossing_status": "BRACKETED"
+            }
+          },
+          "bootstrap_valid_fraction": 1.0,
+          "gain_ci95": [
+            2.3374892284050355,
+            2.53349236046052
+          ],
+          "gain_ci95_half_width_db": 0.09977891353940604,
+          "maximum_ber_ci95_half_width": 0.01,
+          "maximum_gain_ci95_half_width_db": 0.5,
+          "minimum_valid_bootstrap_crossing_fraction": 0.95,
+          "reasons": [],
+          "required_errors_per_bracket_point_per_arm": 200,
+          "status": "PRECISION_CRITERIA_MET",
+          "target_ber": 0.05
+        },
+        "required_energy_per_information_bit_discrete": {
+          "euclidean": 0.25218623238296783,
+          "hamming": 0.44202637891158836
+        },
+        "target_ber": 0.05
+      }
+    }
+  },
+  "awgn": {
+    "metric_direct_gain_db_target_0_05": 2.8667962392213298,
+    "metric_pilot_gain_db_target_0_05": 2.295965960600185,
+    "joint_b0_gain_db_target_0_05": 1.6664296043809133
+  },
+  "static_multipath": {
+    "metric_pilot_gain_db_target_0_05": 2.4372681419444415,
+    "joint_b0_point_gain_db_target_0_05": 5.492805243906547,
+    "joint_b1_point_gain_db_target_0_05": 2.23883394858009
+  },
+  "rician_ar1": {
+    "metric_gain_db_target_0_05": null,
+    "metric_gain_status": "TARGET_NOT_ESTIMABLE",
+    "joint_b0_gain_db_target_0_05": null
+  },
+  "energy_gain_db": {
+    "A_metric_isolation/awgn_direct/euclidean_vs_hamming/BER=0.001": null,
+    "A_metric_isolation/awgn_direct/euclidean_vs_hamming/BER=0.01": null,
+    "A_metric_isolation/awgn_direct/euclidean_vs_hamming/BER=0.05": 2.8667962392213298,
+    "A_metric_isolation/awgn_pilot/euclidean_vs_hamming/BER=0.001": null,
+    "A_metric_isolation/awgn_pilot/euclidean_vs_hamming/BER=0.01": null,
+    "A_metric_isolation/awgn_pilot/euclidean_vs_hamming/BER=0.05": 2.295965960600185,
+    "A_metric_isolation/rician_period32/euclidean_vs_hamming/BER=0.001": null,
+    "A_metric_isolation/rician_period32/euclidean_vs_hamming/BER=0.01": null,
+    "A_metric_isolation/rician_period32/euclidean_vs_hamming/BER=0.05": null,
+    "A_metric_isolation/rician_period8/euclidean_vs_hamming/BER=0.001": null,
+    "A_metric_isolation/rician_period8/euclidean_vs_hamming/BER=0.01": null,
+    "A_metric_isolation/rician_period8/euclidean_vs_hamming/BER=0.05": null,
+    "A_metric_isolation/static_pilot/euclidean_vs_hamming/BER=0.001": null,
+    "A_metric_isolation/static_pilot/euclidean_vs_hamming/BER=0.01": null,
+    "A_metric_isolation/static_pilot/euclidean_vs_hamming/BER=0.05": 2.4372681419444415,
+    "B_full_system/awgn/joint_vs_b0/BER=0.001": null,
+    "B_full_system/awgn/joint_vs_b0/BER=0.01": null,
+    "B_full_system/awgn/joint_vs_b0/BER=0.05": 1.6664296043809133,
+    "B_full_system/rician/joint_vs_b0/BER=0.001": null,
+    "B_full_system/rician/joint_vs_b0/BER=0.01": null,
+    "B_full_system/rician/joint_vs_b0/BER=0.05": null,
+    "B_full_system/static/joint_vs_b0/BER=0.001": null,
+    "B_full_system/static/joint_vs_b1/BER=0.001": 4.391675278049358,
+    "B_full_system/static/joint_vs_b0/BER=0.01": 9.81866867382335,
+    "B_full_system/static/joint_vs_b1/BER=0.01": 2.8961793680030654,
+    "B_full_system/static/joint_vs_b0/BER=0.05": 5.492805243906547,
+    "B_full_system/static/joint_vs_b1/BER=0.05": 2.23883394858009
+  },
+  "confidence_intervals": {
+    "A_metric_isolation/awgn_direct/euclidean_vs_hamming/BER=0.001": [
+      null,
+      null
+    ],
+    "A_metric_isolation/awgn_direct/euclidean_vs_hamming/BER=0.01": [
+      null,
+      null
+    ],
+    "A_metric_isolation/awgn_direct/euclidean_vs_hamming/BER=0.05": [
+      2.819707046123091,
+      2.9140295199392847
+    ],
+    "A_metric_isolation/awgn_pilot/euclidean_vs_hamming/BER=0.001": [
+      null,
+      null
+    ],
+    "A_metric_isolation/awgn_pilot/euclidean_vs_hamming/BER=0.01": [
+      null,
+      null
+    ],
+    "A_metric_isolation/awgn_pilot/euclidean_vs_hamming/BER=0.05": [
+      2.1585861627912846,
+      2.4236149547883596
+    ],
+    "A_metric_isolation/rician_period32/euclidean_vs_hamming/BER=0.001": [
+      null,
+      null
+    ],
+    "A_metric_isolation/rician_period32/euclidean_vs_hamming/BER=0.01": [
+      null,
+      null
+    ],
+    "A_metric_isolation/rician_period32/euclidean_vs_hamming/BER=0.05": [
+      null,
+      null
+    ],
+    "A_metric_isolation/rician_period8/euclidean_vs_hamming/BER=0.001": [
+      null,
+      null
+    ],
+    "A_metric_isolation/rician_period8/euclidean_vs_hamming/BER=0.01": [
+      null,
+      null
+    ],
+    "A_metric_isolation/rician_period8/euclidean_vs_hamming/BER=0.05": [
+      null,
+      null
+    ],
+    "A_metric_isolation/static_pilot/euclidean_vs_hamming/BER=0.001": [
+      null,
+      null
+    ],
+    "A_metric_isolation/static_pilot/euclidean_vs_hamming/BER=0.01": [
+      null,
+      null
+    ],
+    "A_metric_isolation/static_pilot/euclidean_vs_hamming/BER=0.05": [
+      2.3374892284050355,
+      2.53349236046052
+    ],
+    "B_full_system/awgn/joint_vs_b0/BER=0.001": [
+      null,
+      null
+    ],
+    "B_full_system/awgn/joint_vs_b0/BER=0.01": [
+      null,
+      null
+    ],
+    "B_full_system/awgn/joint_vs_b0/BER=0.05": [
+      1.2921182115647893,
+      2.0016097475394
+    ],
+    "B_full_system/rician/joint_vs_b0/BER=0.001": [
+      null,
+      null
+    ],
+    "B_full_system/rician/joint_vs_b0/BER=0.01": [
+      null,
+      null
+    ],
+    "B_full_system/rician/joint_vs_b0/BER=0.05": [
+      null,
+      null
+    ],
+    "B_full_system/static/joint_vs_b0/BER=0.001": [
+      null,
+      null
+    ],
+    "B_full_system/static/joint_vs_b1/BER=0.001": [
+      null,
+      null
+    ],
+    "B_full_system/static/joint_vs_b0/BER=0.01": [
+      null,
+      null
+    ],
+    "B_full_system/static/joint_vs_b1/BER=0.01": [
+      null,
+      null
+    ],
+    "B_full_system/static/joint_vs_b0/BER=0.05": [
+      null,
+      null
+    ],
+    "B_full_system/static/joint_vs_b1/BER=0.05": [
+      null,
+      null
+    ]
+  },
+  "statistical_conclusions": {
+    "bootstrap_replicates": 5000,
+    "bootstrap_seed_root": 833101,
+    "metric_gain_confirmed_at_0_05": [
+      "awgn_direct",
+      "awgn_pilot",
+      "static_pilot"
+    ],
+    "rician_metric_gain": "ENERGY_GAIN_NOT_ESTIMABLE",
+    "system_gain_precision_pass": [
+      "awgn/joint_vs_b0/0.05"
+    ]
+  },
+  "audit_limitations": [
+    "All 31,100 trials have trial-level counters, denominators, parameters, seeds and hash references; raw signal arrays are present only in the deterministic stratified sample.",
+    "Non-sampled NPZ SHA values are bound to the full archive manifest but not re-read by this compact audit.",
+    "Physical Eb/N0 is not validated; the energy axis is a project-defined discrete normalization.",
+    "No gain is extrapolated outside observed BER brackets.",
+    "The article's 1.5 dB is not claimed as reproduced."
+  ]
+}

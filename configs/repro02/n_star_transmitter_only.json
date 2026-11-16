@@ -1,0 +1,14 @@
+{
+  "schema_version": "repro02-transmitter-v1",
+  "source_mode": "pattern",
+  "frame_symbols": 20000,
+  "pattern_id": "alternating",
+  "initial_state": [0, 0],
+  "termination_policy": "none",
+  "encoder_id": "encoder_a_rate_2_3_repro01_v1",
+  "mapping_id": "adr002_assumed_natural_binary_c2_c1_c0_v1",
+  "amplitude": 1.0,
+  "phase_offset_rad": 0.0,
+  "phase_increment_rad": 0.7853981633974483,
+  "samples_per_symbol": 8
+}

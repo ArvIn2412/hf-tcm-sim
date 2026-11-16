@@ -1,0 +1,772 @@
+{
+  "figures": [
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/amplitude_fixed_noise/ber.png",
+      "bytes": 234195,
+      "sha256": "bda1159279fde90083c78f4f82121dd9bc125c76490bf035fdb4f5a1408771ba",
+      "width": 2854,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/amplitude_fixed_noise/ber.svg",
+      "bytes": 79047,
+      "sha256": "a78cbc0244f585dbebcc27179f83e59c8e9e1025f2e6aca437880ede82fd734f",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/amplitude_fixed_noise/energy_gain.png",
+      "bytes": 100772,
+      "sha256": "342d6be2a3b7f97173ae61e5623b5ac56e5c40f45d2f4f1f3f950776c41a7e13",
+      "width": 2674,
+      "height": 1774
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/amplitude_fixed_noise/energy_gain.svg",
+      "bytes": 51449,
+      "sha256": "05d2567200742f70b4e36caef17a2f68a561399576f94012b0e69179c4fce9c3",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/amplitude_fixed_noise/fer.png",
+      "bytes": 184461,
+      "sha256": "64a6ac2a065e909c8509edfaf45853b0d9b7b42b3b35c274bb935626121fd6ba",
+      "width": 2854,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/amplitude_fixed_noise/fer.svg",
+      "bytes": 76230,
+      "sha256": "6afc06d89f3489916ec4167a140f553f8e2c4a570be64aa3239fbe01576ba951",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/amplitude_fixed_noise/paired_delta_ber.png",
+      "bytes": 182779,
+      "sha256": "553d4b61f5da83eb751e3291a0a855fe20d4cac7a8510e5a16137c895350b620",
+      "width": 2860,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/amplitude_fixed_noise/paired_delta_ber.svg",
+      "bytes": 56982,
+      "sha256": "3dee309afe8c4ec2600c8608f7027d37a3194b553da7b27bf3b07e4b865e9f8d",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/amplitude_fixed_noise/ser.png",
+      "bytes": 236925,
+      "sha256": "e5e025ccd6af24b9c6d38847100f6202c286bdc3268e1e3b1be54ee87e13cbd4",
+      "width": 2854,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/amplitude_fixed_noise/ser.svg",
+      "bytes": 77477,
+      "sha256": "4c9ab46252ede376708d50edaa1477f24e44f8ebfc5a52d9b73f2819c21cbea1",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/noise_fixed_amplitude/ber.png",
+      "bytes": 236075,
+      "sha256": "af2457cfe911cdf272e8ebbbd49032aac93a5378f58630028999ef85c9c29bb7",
+      "width": 2854,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/noise_fixed_amplitude/ber.svg",
+      "bytes": 77484,
+      "sha256": "922c8efc9069c6cfc04f59838ff5e95ff3e51fb52a863bf6f912e256d6492a1c",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/noise_fixed_amplitude/fer.png",
+      "bytes": 184500,
+      "sha256": "6b5334f2149c04a5bf57722ce92c1dbce5b4acbbab0438345665088115c05838",
+      "width": 2854,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/noise_fixed_amplitude/fer.svg",
+      "bytes": 76775,
+      "sha256": "bbae45d37464e5ef7faca3ee8b60be12bfe4aa95dba12a1339a82392dc615a23",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/noise_fixed_amplitude/ser.png",
+      "bytes": 236422,
+      "sha256": "8ba8c956ea71ee8d78679a41b70cccd29aa5d8daa3f06e40ddf0929e1538b861",
+      "width": 2854,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_direct/noise_fixed_amplitude/ser.svg",
+      "bytes": 78022,
+      "sha256": "956e2c4f97542ac59f5a0560daa37ff0db8c211211b83778575aaad4c4f28a47",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/amplitude_fixed_noise/ber.png",
+      "bytes": 224317,
+      "sha256": "c71f780b779e560cf521dee59f0cac6f44ba2ce89959583fdb24ce704124d40d",
+      "width": 3103,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/amplitude_fixed_noise/ber.svg",
+      "bytes": 79710,
+      "sha256": "6b08c714ede01c68f25fbdd4b4ba27c7b9d95b9f2bfa1535d377c446f8de56ae",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/amplitude_fixed_noise/energy_gain.png",
+      "bytes": 97399,
+      "sha256": "e5a9d9d4f512b04362af5046ac101767d0cd909dfebd9a43789a535a10d40ade",
+      "width": 2674,
+      "height": 1774
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/amplitude_fixed_noise/energy_gain.svg",
+      "bytes": 49120,
+      "sha256": "c80eb890bbb519fa7fc5fc016df8a855dd28525d755e2d237e2de5371f1c7d44",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/amplitude_fixed_noise/fer.png",
+      "bytes": 175995,
+      "sha256": "15f6327923fc65373f6a995efc9360fe1dba1accd0008edbac3deff644bde27a",
+      "width": 3097,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/amplitude_fixed_noise/fer.svg",
+      "bytes": 77226,
+      "sha256": "128cef04894f4f0baf6dec61f8976a2adb2275b0501054f6dc8f6dedf2e5ed3f",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/amplitude_fixed_noise/paired_delta_ber.png",
+      "bytes": 181910,
+      "sha256": "a2652493ca2cd11b4adbf56c6e56a3aee2a8be794d25707e2243ae7c956ae673",
+      "width": 3280,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/amplitude_fixed_noise/paired_delta_ber.svg",
+      "bytes": 62266,
+      "sha256": "a9450ec07757e15d1c0eb71899884cd9bc15e3186ea0df4f7ffea14cf20ad6ca",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/amplitude_fixed_noise/ser.png",
+      "bytes": 223624,
+      "sha256": "be5a0d46d8bf036a22789ee081aee3646113698099a05ecacfffc79655b43cae",
+      "width": 3100,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/amplitude_fixed_noise/ser.svg",
+      "bytes": 78482,
+      "sha256": "4436a1237af9d41d3010af37cc34ed86fb9fa8919526786fe007174cb7be6675",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/noise_fixed_amplitude/ber.png",
+      "bytes": 222800,
+      "sha256": "459e6ca7e7aeac6603ce9c0da348bf905d81ea54b136e8c32ab2bef7be69eda0",
+      "width": 3036,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/noise_fixed_amplitude/ber.svg",
+      "bytes": 78485,
+      "sha256": "658540447dc21cb32cffa17ddf8dc82ff33ba9aebc6d667d8c8e3affe4a42a7d",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/noise_fixed_amplitude/fer.png",
+      "bytes": 175458,
+      "sha256": "8eb1581fe18f5902f2a3b6927ae18af6c44298a0e79a12824b5d69f372193e23",
+      "width": 3033,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/noise_fixed_amplitude/fer.svg",
+      "bytes": 77771,
+      "sha256": "89ebc987bffd86760ac6b2c204b52a45c803d95a59b1f53ed37bf2906daa5d36",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/noise_fixed_amplitude/ser.png",
+      "bytes": 221041,
+      "sha256": "32b9b4064b66dd33ca22cb05465b9d469122d0d95866e61a20a97ca83e4ad7b2",
+      "width": 3034,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/awgn_pilot/noise_fixed_amplitude/ser.svg",
+      "bytes": 79018,
+      "sha256": "0244dd48e4964b84674ab6f38274e40c14e9db9fbdf233e0066d5052aac6684e",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/amplitude_fixed_noise/ber.png",
+      "bytes": 168982,
+      "sha256": "7db4d679cd2f3b894a076b8387748a0fd1bc2a3d20a355bb121a2e8bbf04850f",
+      "width": 3172,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/amplitude_fixed_noise/ber.svg",
+      "bytes": 74357,
+      "sha256": "ab7e3a91f9464d578910a37f0e543958341e66c41091aae895905676189f33f6",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/amplitude_fixed_noise/energy_gain.png",
+      "bytes": 103820,
+      "sha256": "51db8d425a1e0de5e79a780c0f85a7233fb434d5467dcd3b250dd9889c6923ab",
+      "width": 2674,
+      "height": 1774
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/amplitude_fixed_noise/energy_gain.svg",
+      "bytes": 49228,
+      "sha256": "e75e6c441e909ea5944b160d7f4120e3debb79367ff166afb5bf594590c2eb85",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/amplitude_fixed_noise/fer.png",
+      "bytes": 159747,
+      "sha256": "c7e89ea9178682aa7b3b5dbb3f155b8497a523ca5a7f23b0696718c67ab92e69",
+      "width": 3166,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/amplitude_fixed_noise/fer.svg",
+      "bytes": 74293,
+      "sha256": "e1539e9247f5da22b739c5d310ba0794a4b3ee2088b440f92f623d5dde8a6dd8",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/amplitude_fixed_noise/paired_delta_ber.png",
+      "bytes": 145188,
+      "sha256": "4510b9262ac312491f2d540aedf419ae8087f01fa5c48d715be0408983a7c279",
+      "width": 3349,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/amplitude_fixed_noise/paired_delta_ber.svg",
+      "bytes": 56324,
+      "sha256": "046f0f642178dd7da29ef721f5fd7aae4d236a6502c87c3433f9fec6c807c9c4",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/amplitude_fixed_noise/ser.png",
+      "bytes": 169323,
+      "sha256": "6e047bfe706612bbefb4a1176e90264d9638b0507cabe1db672a79aeaa26e643",
+      "width": 3169,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/amplitude_fixed_noise/ser.svg",
+      "bytes": 74901,
+      "sha256": "2017e73917322c9901b40f0e94248de5725bff2f8a0baa7ef03f898d2cc79f8e",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/noise_fixed_amplitude/ber.png",
+      "bytes": 169080,
+      "sha256": "7c9758ac493a361f471119711ab8fbfefbd03c720cca901190825d1029b3db05",
+      "width": 3101,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/noise_fixed_amplitude/ber.svg",
+      "bytes": 74905,
+      "sha256": "2e5c23a202087dc0465017d5555129099e44aa9b25cd83e0e2dfc393f577ee50",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/noise_fixed_amplitude/fer.png",
+      "bytes": 159352,
+      "sha256": "d6be5c79b9fe9aac5075ee9364c20070f027d91663ffa36707625f22cdda43ac",
+      "width": 3095,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/noise_fixed_amplitude/fer.svg",
+      "bytes": 74834,
+      "sha256": "e3609787e0effb04d2e35390b1b8ac3d00c0ff9c633719fa8a3e47362c70b5bb",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/noise_fixed_amplitude/ser.png",
+      "bytes": 168309,
+      "sha256": "5e21ba865d39f6a241345505ef85dbbdcdb7008b2c7590ad8c02293a554942f1",
+      "width": 3098,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period32/noise_fixed_amplitude/ser.svg",
+      "bytes": 75448,
+      "sha256": "53c8280091c85786361fbfae5706255b820b95790380f14fb3ea229ef38555ad",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/amplitude_fixed_noise/ber.png",
+      "bytes": 184859,
+      "sha256": "90e9facb2c84cdc0e429fe866ebd4264f07cca41f53be3ad4e00cc8a2b00ace4",
+      "width": 3151,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/amplitude_fixed_noise/ber.svg",
+      "bytes": 79452,
+      "sha256": "5cd99e1c1a550f4e756eb6db05ccb25d8b4db946b12c0681fc8392870457f74c",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/amplitude_fixed_noise/energy_gain.png",
+      "bytes": 103628,
+      "sha256": "d64074d0419e4aa1e1bbe6773fed43b681c8fa34274d6dfda903d114145feacf",
+      "width": 2674,
+      "height": 1774
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/amplitude_fixed_noise/energy_gain.svg",
+      "bytes": 48438,
+      "sha256": "6fabba92c35fe51635941f6fe3d5db21297500953bfbe4b888f0f58f5ebe0e55",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/amplitude_fixed_noise/fer.png",
+      "bytes": 161910,
+      "sha256": "23fb5e0115aab1c859edb0d44ddc23a7dd9777393676d53ac94f53d94d929698",
+      "width": 3145,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/amplitude_fixed_noise/fer.svg",
+      "bytes": 78556,
+      "sha256": "610a9bd82ff95fd4d56bcebba79e9474d402b3d46c132ce7db63a864e62fd999",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/amplitude_fixed_noise/paired_delta_ber.png",
+      "bytes": 152749,
+      "sha256": "8da6dcec7876edee8d96c2ce2548d534ae5eab4786578f86ace9e2d26e7c4db5",
+      "width": 3328,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/amplitude_fixed_noise/paired_delta_ber.svg",
+      "bytes": 57263,
+      "sha256": "ccaca9bb85aa0d7baa46f34e86fb83d444e2ec33409759769ef861ee7bc25cbb",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/amplitude_fixed_noise/ser.png",
+      "bytes": 187622,
+      "sha256": "b24f2510aa984627e6e454f03b2f61f074f063c7df109c3fcc388e47702101b9",
+      "width": 3148,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/amplitude_fixed_noise/ser.svg",
+      "bytes": 79199,
+      "sha256": "6ffe8a0522efe30bfa5e1a8c63b924fa2292ab71f82bc6e071ec0c8db5ddbbd0",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/noise_fixed_amplitude/ber.png",
+      "bytes": 185214,
+      "sha256": "cc7b0f6bca290a3a59c58dc46d1a68a62641c464905739aefed916f4aebd2e2c",
+      "width": 3080,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/noise_fixed_amplitude/ber.svg",
+      "bytes": 79285,
+      "sha256": "3885716387a34d9487fb2ab08df8b278b7dbdd6ff382380630e4af3e3b8a2d00",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/noise_fixed_amplitude/fer.png",
+      "bytes": 161576,
+      "sha256": "896de797022aacc59fc51c4d59ba969abac51192ad0f022d1c6eac00991f4761",
+      "width": 3075,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/noise_fixed_amplitude/fer.svg",
+      "bytes": 79103,
+      "sha256": "c2a7487cf4bd3428f74a2906804ed2d071882c25c579924a4d99f145d55140e6",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/noise_fixed_amplitude/ser.png",
+      "bytes": 185151,
+      "sha256": "8030d6b771b88f1abc96d560e18437cb3f7b80ce6f39345e91cae9c4fb60bb05",
+      "width": 3078,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/rician_period8/noise_fixed_amplitude/ser.svg",
+      "bytes": 79749,
+      "sha256": "0697089bc3dd02dceab9161abc993d1ba4440cb398567de792123156b9335fa6",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/amplitude_fixed_noise/ber.png",
+      "bytes": 230835,
+      "sha256": "a8e6b3ab31d8838b8dabbf295361962af8b46e6237726060420221f0b5334c41",
+      "width": 3509,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/amplitude_fixed_noise/ber.svg",
+      "bytes": 79885,
+      "sha256": "6434619d8aa95c3b3bd86b944be02ec2e191706e40c6d30c84fcfc508986c5c7",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/amplitude_fixed_noise/energy_gain.png",
+      "bytes": 96576,
+      "sha256": "558e987961220a3924fdae0716a21281f870b52213163e0ad854ebf7633b6662",
+      "width": 2674,
+      "height": 1774
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/amplitude_fixed_noise/energy_gain.svg",
+      "bytes": 49094,
+      "sha256": "48ccfa832569c9dd383f5c035346bbd552d54f0195320ec17ce869d24c51ef62",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/amplitude_fixed_noise/fer.png",
+      "bytes": 183963,
+      "sha256": "11d4feffcea07ae7bf8260deea4998069d48e9089bb7cd962db2e40907e9ac0d",
+      "width": 3504,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/amplitude_fixed_noise/fer.svg",
+      "bytes": 77994,
+      "sha256": "50ac7332ce13012e70f946281dd7b74432ddb00399aae08f230ec84f35b4bd14",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/amplitude_fixed_noise/paired_delta_ber.png",
+      "bytes": 186009,
+      "sha256": "1c968a7b68450ea36dc14c00ed6447b7ea3a64fa12095d4b8ba960d18a95ac77",
+      "width": 3686,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/amplitude_fixed_noise/paired_delta_ber.svg",
+      "bytes": 62475,
+      "sha256": "dbd7c9b6fd37e042bd845b4af36d9cb813e6424e8d9a1c67d2fd425bcd0219e5",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/amplitude_fixed_noise/ser.png",
+      "bytes": 229104,
+      "sha256": "8a9b533f6419b77cc2346fb7713fd67654f4e9177cdae8d1823fa2a70b807e26",
+      "width": 3506,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/amplitude_fixed_noise/ser.svg",
+      "bytes": 78663,
+      "sha256": "f0fbfd9fe489be9da5cc1ad82b4ba261fc0ec62ca82b5a89cd2dd5cfa023eedf",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/noise_fixed_amplitude/ber.png",
+      "bytes": 228852,
+      "sha256": "21d5160c384a4fa409e1c30b1f2264fd3bacc45c6c54b60d9905fc77dec595b2",
+      "width": 3438,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/noise_fixed_amplitude/ber.svg",
+      "bytes": 78644,
+      "sha256": "531d8383ee41b4ba53e0b71a8a919c27892b0d947fcf9b77eaccd24f393c81db",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/noise_fixed_amplitude/fer.png",
+      "bytes": 182901,
+      "sha256": "25b7f5d5bf9cce89262177be9c11d0e5983c63f1ce9d3a40d1901aa4e7b48140",
+      "width": 3433,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/noise_fixed_amplitude/fer.svg",
+      "bytes": 78525,
+      "sha256": "151dd4221095b524d54412fd399cb62e357c86e7712a984157ffcff6bd6923ff",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/noise_fixed_amplitude/ser.png",
+      "bytes": 228869,
+      "sha256": "1bb0dd0091ec9baf2f4df8201990ec75723cfd315bfcaa4123c5ddd9c419a161",
+      "width": 3436,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/metric/static_pilot/noise_fixed_amplitude/ser.svg",
+      "bytes": 79177,
+      "sha256": "0c1ad2e04d804dbd77a07acd10f1296420bde450b794700adb0bbea769687cb0",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/awgn/ber.png",
+      "bytes": 239217,
+      "sha256": "3d707138f3e4afd3f92c5c85fc02a02d63a992ae81544625d4b1fa527086b495",
+      "width": 2854,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/awgn/ber.svg",
+      "bytes": 92038,
+      "sha256": "b14705587ca868f1b3438b4b9e1f4253aa74b20a0d6cc71ac935708548d73855",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/awgn/fer.png",
+      "bytes": 173180,
+      "sha256": "78154ca028164cc947166a378bdceb857eb143d8c30e312ba4a4bcb09370011c",
+      "width": 2854,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/awgn/fer.svg",
+      "bytes": 82204,
+      "sha256": "91373ebac84f4f45c229ce213a0911f2f3f1db2f48ec70e9f101343e6ab4b32e",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/awgn/gain_joint_b0.png",
+      "bytes": 103545,
+      "sha256": "6336f80c06fc9171ba8a06d320f85d1942908fc6572efcfdaa12cde21a94856f",
+      "width": 2674,
+      "height": 1774
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/awgn/gain_joint_b0.svg",
+      "bytes": 48282,
+      "sha256": "2ff50eb9deb5014e3718ec89d36bac3767d1c44f9adc7b5b5adffd9ee5f90d39",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/awgn/information_efficiency.png",
+      "bytes": 196800,
+      "sha256": "f012bb096d65c7d1ba8d6e438397a566e1ecc4f5f31b03b5abe90682cc1b1ed7",
+      "width": 2614,
+      "height": 1714
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/awgn/information_efficiency.svg",
+      "bytes": 64223,
+      "sha256": "c0b922344872e3bf4d9aeb215957d334689a15b51a040e2baf4312c08403ccdd",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/awgn/runtime.png",
+      "bytes": 142187,
+      "sha256": "2b421639773bbb8936db4893ccfe1f2ac587ffbb8e8139762906ae908b31a831",
+      "width": 2596,
+      "height": 1714
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/awgn/runtime.svg",
+      "bytes": 42177,
+      "sha256": "a62f7a326a19e243fd59e2bc2f4006a5abc93c94fc770aece6520ff019e26ace",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/awgn/ser.png",
+      "bytes": 224924,
+      "sha256": "6ef7a34c53bc98898eaeb5f11cedf2096c4065c5dbbd487dc65f8951687398b7",
+      "width": 2854,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/awgn/ser.svg",
+      "bytes": 84544,
+      "sha256": "83aa65bff7d0030712e6a8ee07f8887cfdd4678e4117b580bdf032e99dd16cd3",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/rician/ber.png",
+      "bytes": 212933,
+      "sha256": "a6a31f25a4e424524d721931a4aaab218a8d032bbd35ab3834b8ee77de5c8352",
+      "width": 2854,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/rician/ber.svg",
+      "bytes": 85752,
+      "sha256": "43a512ed9c0133eae53df94cf695cc0c3ca40a6f4fabf56065dd5c89334c33c6",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/rician/fer.png",
+      "bytes": 150301,
+      "sha256": "cb9a3407e03afb0c6ed607cdad38acbf4bba6b1d75a376aaa0367b0c13387c90",
+      "width": 2854,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/rician/fer.svg",
+      "bytes": 78190,
+      "sha256": "6c8bc70e38ac3b9d956eb6d55b801445257df547fc1405832176aa5f1bcef469",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/rician/gain_joint_b0.png",
+      "bytes": 107417,
+      "sha256": "7d77b4be2df11cf1edc58ddbabd9104c9cc4f1ddf70680ea5bbf483b22c97a6d",
+      "width": 2674,
+      "height": 1774
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/rician/gain_joint_b0.svg",
+      "bytes": 45950,
+      "sha256": "6c71dd7a03fd722fbd1a8d5ac2aeebd4f2295002a3e1f143301bf599b6818c69",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/rician/information_efficiency.png",
+      "bytes": 196023,
+      "sha256": "ae4100f8e7bcaabf63e9fab362a7c8ec25dd577ae3e1bbe16d5c417f7f09bc33",
+      "width": 2614,
+      "height": 1714
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/rician/information_efficiency.svg",
+      "bytes": 64530,
+      "sha256": "567d706cfbc91d88edfd07dd1b54177669f5777f719a62301fd5b8dfdb0a7221",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/rician/runtime.png",
+      "bytes": 147146,
+      "sha256": "922ef7522dc7efcf3fc061705dda77be0558862310cde1fa566a5952b6ab7405",
+      "width": 2596,
+      "height": 1714
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/rician/runtime.svg",
+      "bytes": 42004,
+      "sha256": "9f45ac2dff49e91c9f1d9760c49812c6ab70ac57067acc36141fda9460c1b475",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/rician/ser.png",
+      "bytes": 196647,
+      "sha256": "f7a4136be5b33fd8780d8d3de15eb8fc0046a57162844bd6d5e778de2030c272",
+      "width": 2854,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/rician/ser.svg",
+      "bytes": 80863,
+      "sha256": "0b8f7a88dc61e86f64b26f9fbdfd8a6be98a35d0bda5ee332b86c289722bf2d0",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/ber.png",
+      "bytes": 269196,
+      "sha256": "348598b2fe617933938e9ad602c530952663f36fb4b3f0c20a76a7aba346f8b3",
+      "width": 2997,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/ber.svg",
+      "bytes": 114760,
+      "sha256": "8db62f6526649f65b6a23e3927cafd8d76d11d8ee761de0f2a1390c9ce9bfd1b",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/fer.png",
+      "bytes": 190328,
+      "sha256": "69d7a87fea674c83e91e6421fbce1297cdad3da6e6f4cb73984bc846fd2af07f",
+      "width": 2997,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/fer.svg",
+      "bytes": 103823,
+      "sha256": "6542f9f28d3487a3182f1b13d2869802f254d93a6d18b70077154f3f7f7b02f1",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/gain_joint_b0.png",
+      "bytes": 109240,
+      "sha256": "443b7401963518316f4304dfd04f1726c431b6b7c826b44e19b38a1d9c7fdd13",
+      "width": 2674,
+      "height": 1774
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/gain_joint_b0.svg",
+      "bytes": 53763,
+      "sha256": "0ba09b3257d2f12efa979ea5bcaf6ce3d0f583f22a93a5bbbdfb40b84fe67bc0",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/gain_joint_b1.png",
+      "bytes": 103942,
+      "sha256": "58b38a06ab41d7d3e33eb190b4963d9671fd2468d83ef67fd59be818d37c74ee",
+      "width": 2674,
+      "height": 1774
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/gain_joint_b1.svg",
+      "bytes": 48392,
+      "sha256": "4969866404a672a113527acc9ceedb44c5bf6f543d78bfb94d9b88dcfeaad1f4",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/information_efficiency.png",
+      "bytes": 245430,
+      "sha256": "69e1315d23f1ba2643ee63450b0e767a1d43aa6bad69802fe9f89e268711d73d",
+      "width": 2704,
+      "height": 1714
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/information_efficiency.svg",
+      "bytes": 74283,
+      "sha256": "a4214c03889f26e38021db9c72000bf9dbd451792ceb50183e20777eb5f59de2",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/runtime.png",
+      "bytes": 152076,
+      "sha256": "af704c32d560d920380c05562cbfb68adef24058116371fe0403169431400fb4",
+      "width": 2801,
+      "height": 1714
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/runtime.svg",
+      "bytes": 44480,
+      "sha256": "cecc107981acbb326e18004a50cc8b2e7e3549db6a56af8ad88f558e59f3082b",
+      "vector": true
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/ser.png",
+      "bytes": 254177,
+      "sha256": "e6d940644110908193661cc1e48d40edf8b01258bc8c465072a3db6d8e16aede",
+      "width": 2997,
+      "height": 1894
+    },
+    {
+      "path": "docs/research/figures/SCIENTIFIC_EXP_03B/system/static/ser.svg",
+      "bytes": 106233,
+      "sha256": "df7eff16b49d200f71fb392a93a058449f40c8555bd5845809c6e81860dcfc84",
+      "vector": true
+    }
+  ],
+  "count": 118
+}

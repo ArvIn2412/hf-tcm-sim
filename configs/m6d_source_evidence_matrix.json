@@ -1,0 +1,305 @@
+{
+  "schema_version": 1,
+  "artifact_type": "source_evidence_matrix_not_author_confirmed_config",
+  "audit_id": "M6d",
+  "dossier_status": "source clarification dossier; no author response recorded",
+  "source_files": [
+    {
+      "citation_id": "A",
+      "path": "references/source_paper_2026.docx",
+      "title_as_stored": "Information Technology for the Joint Demodulation and Decoding of Radio Signals",
+      "authors_as_stored": ["Ihor Yakoviv", "Oleh Hrynenko"],
+      "version": "local supplied original; no independent publication/version identifier recorded in repository metadata",
+      "sha256": "a03ff0b41a79d1fe9b4051c2e94c4ea78f72ac5f7fc30269e590150b2ed653c8",
+      "coverage_note": "Full DOCX text/structure inspected; embedded Office equation objects are not all text-extractable. Readable page scans available and visually audited for printed pp. 4-7. Separate page scans for pp. 1-3 are absent; visual-only content on those pages is SOURCE_UNAVAILABLE in this audit."
+    },
+    {
+      "citation_id": "A-page-4",
+      "path": "references/key_pages/page-4.png",
+      "printed_page": 4,
+      "sha256": "9badaf252cf49f39966ac1df95cfa4abf8ce588c8914a5fc5b363e290b9a89ee"
+    },
+    {
+      "citation_id": "A-page-5",
+      "path": "references/key_pages/page-5.png",
+      "printed_page": 5,
+      "sha256": "1cf330cf21eee47035fc2b6dba57c9e34a8b6150d55106b06c1f8a85b27aa791"
+    },
+    {
+      "citation_id": "A-page-6",
+      "path": "references/key_pages/page-6.png",
+      "printed_page": 6,
+      "sha256": "571b196c7496e5de2ded8923ff10168c7b2f0fe13ecb278f602ae946abc16053"
+    },
+    {
+      "citation_id": "A-page-7",
+      "path": "references/key_pages/page-7.png",
+      "printed_page": 7,
+      "sha256": "404ea3a6a6728771e360f70b064e13af6dc7eac0c4c5df0a8e56f41dbd28bc3e"
+    }
+  ],
+  "evidence_statuses": [
+    "SOURCE_EXPLICIT",
+    "SOURCE_DERIVABLE",
+    "SOURCE_AMBIGUOUS",
+    "RECONSTRUCTION_ASSUMPTION",
+    "EXTERNAL_REFERENCE_ONLY",
+    "UNAVAILABLE"
+  ],
+  "claims": [
+    {
+      "claim_id": "A-B-RANGE",
+      "claim": "The article defines b(t_i) as the discrete 8PSK signal parameter taking values 0 through 7.",
+      "evidence_status": "SOURCE_EXPLICIT",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 5,
+        "object": "text immediately following equation (3)",
+        "visual_locator": "paragraph defining b(t_i), immediately above equation (4)"
+      },
+      "interpretive_limit": "This defines the parameter range, not its mapping from encoder output bits or trellis edges."
+    },
+    {
+      "claim_id": "A-B-PHASE-TERM",
+      "claim": "b contributes the additive phase term b(t_i)·Δφ in the passband cosine, with Δφ=π/4.",
+      "evidence_status": "SOURCE_EXPLICIT",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 5,
+        "object": "equation (3) and definition of Δφ immediately below it",
+        "visual_locator": "passband model and following text before equation (4)"
+      },
+      "interpretive_limit": "This establishes the b-dependent phase increment. Absolute phase also contains ω₀t_i and ψ(t_i); no complex-baseband phase origin is thereby fixed."
+    },
+    {
+      "claim_id": "A-A5-QUADRATURES",
+      "claim": "Equation (5) defines U_s=μ_1[-sin(bΔφ)] and U_c=μ_2[cos(bΔφ)].",
+      "evidence_status": "SOURCE_EXPLICIT",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 5,
+        "object": "equation (5)",
+        "visual_locator": "center of page, after equation (4), labeled (5)"
+      },
+      "interpretive_limit": "The formula names sine and cosine components, but does not define a complex envelope, I/Q axis names/order, or equivalence to ADR-012."
+    },
+    {
+      "claim_id": "A-PASSBAND-SIGNAL",
+      "claim": "The article writes the transmitted signal as A(t_i)cos[ω₀t_i+b(t_i)Δφ+ψ(t_i)] and the received signal as a sum of U_s sin(ω₀t_i) and U_c cos(ω₀t_i), plus disturbance.",
+      "evidence_status": "SOURCE_EXPLICIT",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 5,
+        "object": "equations (3) and (4)",
+        "visual_locator": "equations in the central half of page 5"
+      },
+      "interpretive_limit": "These are passband expressions. They do not specify the project complex-baseband convention y=a·exp(jθ)."
+    },
+    {
+      "claim_id": "A-MU-COEFFICIENTS",
+      "claim": "Equation (6) relates μ_1 and μ_2 to amplitude, path delay, phase, and the sine/cosine components of the path coefficient.",
+      "evidence_status": "SOURCE_EXPLICIT",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 5,
+        "object": "equation (6) and its symbol legend",
+        "visual_locator": "below equation (5), through the path-delay definitions"
+      },
+      "interpretive_limit": "No fixed real gain a=0.75, normalization, units, or project estimator initialization is specified here."
+    },
+    {
+      "claim_id": "A-B-TO-PHASE-INCREMENT",
+      "claim": "The b-dependent term contributes the phase increment bπ/4.",
+      "evidence_status": "SOURCE_DERIVABLE",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 5,
+        "object": "equation (3), equation (5), and Δφ definition",
+        "visual_locator": "passband model and quadrature equations"
+      },
+      "interpretive_limit": "This does not independently identify edge/output bits with b, nor the absolute complex phase including carrier and ψ(t_i)."
+    },
+    {
+      "claim_id": "A-CODER-STRUCTURE",
+      "claim": "Figure 2 depicts two inputs X₀/X₁ and three outputs C₂/C₁/C₀; Figure 3 depicts four labeled trellis nodes.",
+      "evidence_status": "SOURCE_EXPLICIT",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 6,
+        "object": "figures 2 and 3",
+        "visual_locator": "Figure 2 encoder shift-register drawing in upper half; Figure 3 trellis immediately below"
+      },
+      "interpretive_limit": "The figures do not provide a complete 16-row table identifying every (state,input pair,output bits,next state,b) relation or a bit-order legend for 8PSK labeling. Figure 3's branch labels have no adequate legend to establish that mapping."
+    },
+    {
+      "claim_id": "A-SAMPLE-COUNT",
+      "claim": "The simulation description says there are eight samples per signal element; equation (10) defines n as the number of samples over signal-element duration T.",
+      "evidence_status": "SOURCE_EXPLICIT",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 6,
+        "object": "simulation parameter list below figure 3",
+        "visual_locator": "bullet stating number of samples per signal element is 8"
+      },
+      "interpretive_limit": "The source text here does not equate signal element with the project symbol index, define rectangular ZOH, sample labels, sample origin, or the mean-of-eight ADR-012 observation. Equation (10) is on printed p. 7."
+    },
+    {
+      "claim_id": "A-A1-RECURSION",
+      "claim": "Equation (1) applies α′ to the previous fluctuating coefficient, adds K̃ times a posterior-weighted sum of observed-minus-predicted quadrature residuals, and forms the full coefficient by adding μ₀.",
+      "evidence_status": "SOURCE_EXPLICIT",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 4,
+        "object": "equation (1) and its explanatory legend",
+        "visual_locator": "middle of page, first displayed recursion and following definitions"
+      },
+      "interpretive_limit": "The algebraic placement/sign is explicit. Numeric α′/K̃/μ₀, initialization, units, and project posterior/clock equivalence are not established by the formula alone."
+    },
+    {
+      "claim_id": "A-POSTERIOR-M",
+      "claim": "The weights in equation (1) are described as a-posteriori probabilities over discrete parameter states; the page states M=2^(ν+k).",
+      "evidence_status": "SOURCE_EXPLICIT",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 4,
+        "object": "equation (1) legend",
+        "visual_locator": "paragraph defining P, M, ν, and k directly below equation (1)"
+      },
+      "interpretive_limit": "The reviewed passage does not give a fully enumerated 8PSK TCM posterior transition table, project edge ordering, or an explicit equality between the source state set and 16 B4d edges."
+    },
+    {
+      "claim_id": "A-U0-U2STAR-ROLE",
+      "claim": "Equation (1) uses U⁰ as the predictor operand based on prior coefficient estimates and a discrete parameter; equation (2) uses U** in the decoder metric, described as sizes generated from coefficient estimates supplied to Viterbi and possible discrete-parameter states.",
+      "evidence_status": "SOURCE_EXPLICIT",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 4,
+        "object": "equations (1), (2), and explanatory text following each",
+        "visual_locator": "equation (1) upper-middle; equation (2) lower third and its legend"
+      },
+      "interpretive_limit": "The notation and operand descriptions differ. The reviewed text does not state a general identity or exact transformation between U⁰ and U**; keep their relationship unresolved."
+    },
+    {
+      "claim_id": "A-EDGE-TO-B",
+      "claim": "Whether each encoder/trellis transition and output-bit tuple maps to a specific b is not identifiable from the inspected source evidence.",
+      "evidence_status": "SOURCE_AMBIGUOUS",
+      "source_mapping_status": "AUTHOR_MAPPING_NOT_IDENTIFIABLE_FROM_AVAILABLE_SOURCE_EVIDENCE",
+      "reconstruction_status": "RECONSTRUCTION_ASSUMPTION",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 5,
+        "object": "equation (3), equation (5), and b definition; compare printed p. 6 figures 2-3",
+        "visual_locator": "b range and phase term on p. 5; code/trellis drawings on p. 6"
+      },
+      "interpretive_limit": "An unavailable table is not evidence that the authors had no mapping. The statement is limited to available and legible source evidence reviewed here."
+    },
+    {
+      "claim_id": "A-LABELING-CONVENTION",
+      "claim": "The reviewed source evidence does not identify natural-binary versus Gray labeling, coded-bit order, a differential encoder, or an explicit phase permutation/offset between encoder output and b.",
+      "evidence_status": "UNAVAILABLE",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 5,
+        "object": "equation (3), equation (5), b definition, and page-6 figures 2-3 reviewed for mapping legend",
+        "visual_locator": "No explicit labeling table/legend is present in these inspected objects; pp. 1-3 visual-only content remains SOURCE_UNAVAILABLE"
+      },
+      "interpretive_limit": "Do not infer absence from the author's method globally; request the labeling table/definition."
+    },
+    {
+      "claim_id": "A-COMPLEX-IQ",
+      "claim": "No author definition equating the passband sine/cosine components to a complex-baseband I/Q pair y or to ADR-012 (-Im(y),Re(y)) was found in the available audited pages.",
+      "evidence_status": "UNAVAILABLE",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 5,
+        "object": "equations (3)-(6) and quadrature symbol legend",
+        "visual_locator": "passband cosine/received sine-cosine equations; no complex-envelope definition on inspected page"
+      },
+      "interpretive_limit": "The ADR-012 identity for y=a·exp(jθ) is an algebraic project convention, not author confirmation."
+    },
+    {
+      "claim_id": "A-TIME-ORIGIN",
+      "claim": "The source uses continuous-time sample instants t_i and a signal-element duration T, but the available evidence does not fix the absolute sample origin, relation of i to symbol/sample indices, or update cutoff convention used by ADR-012.",
+      "evidence_status": "SOURCE_AMBIGUOUS",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 5,
+        "object": "equations (3)-(4) and text defining values at t_i; compare printed pp. 6-7 sample-count/n definitions",
+        "visual_locator": "t_i signal equations on p. 5; eight samples per signal element on p. 6; n/T definition below equation (10) on p. 7"
+      },
+      "interpretive_limit": "No source basis for assigning 8sps rectangular ZOH, sample window O+8f…O+8f+7, or estimator tick i=f."
+    },
+    {
+      "claim_id": "A-COEFFICIENT-NUMERICS",
+      "claim": "Equation (1) names α′, K̃, μ₀ and related coefficients as known/defined quantities, but the audited pages do not provide the numerical fixed values used by the M5j reconstructed policy or a source-derived stability criterion.",
+      "evidence_status": "UNAVAILABLE",
+      "locator": {
+        "document": "[A]",
+        "version": "local supplied original; SHA-256 in source_files",
+        "printed_page": 4,
+        "object": "equation (1) legend",
+        "visual_locator": "known-coefficient and quasi-stationary-cumulant definitions below equation (1)"
+      },
+      "interpretive_limit": "No parameter optimality or inferiority conclusion follows from this absence."
+    }
+  ],
+  "external_reference_notes": [
+    {
+      "claim_id": "B-RECURRENCE-COMPARISON",
+      "evidence_status": "EXTERNAL_REFERENCE_ONLY",
+      "locator": "[B] references/Автореферат_1-1.pdf, equation (15), printed p. 10 (PDF p. 12), as audited in docs/M4_EQUATION_TRACEABILITY.md",
+      "fact": "A structurally similar recursion is printed in [B].",
+      "limit": "Does not establish that [A] adopts every [B] parameter, posterior construction, or convention."
+    },
+    {
+      "claim_id": "C-BINARY-LABEL-COMPARISON",
+      "evidence_status": "EXTERNAL_REFERENCE_ONLY",
+      "locator": "[C] references/Раздел_4.pdf, table 4.1, printed p. 127 (PDF p. 19), as audited in docs/M4_OPEN_QUESTIONS.md",
+      "fact": "That [C] table uses an integer expression B=4C₂+2C₁+C₀ for its own rows.",
+      "limit": "Not evidence that [A] uses natural-binary b labeling; [C] has an independently documented row/diagram discrepancy."
+    }
+  ],
+  "project_reconstructed_edges": [
+    {"edge_id": 0, "source_state": [0, 0], "input_pair": [0, 0], "next_state": [0, 0], "encoder_output_bits": [0, 0, 0], "project_phase_index": 0, "project_b": 0, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 1, "source_state": [0, 0], "input_pair": [0, 1], "next_state": [1, 0], "encoder_output_bits": [0, 1, 0], "project_phase_index": 2, "project_b": 2, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 2, "source_state": [0, 0], "input_pair": [1, 0], "next_state": [0, 0], "encoder_output_bits": [1, 0, 0], "project_phase_index": 4, "project_b": 4, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 3, "source_state": [0, 0], "input_pair": [1, 1], "next_state": [1, 0], "encoder_output_bits": [1, 1, 0], "project_phase_index": 6, "project_b": 6, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 4, "source_state": [0, 1], "input_pair": [0, 0], "next_state": [0, 0], "encoder_output_bits": [0, 1, 0], "project_phase_index": 2, "project_b": 2, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 5, "source_state": [0, 1], "input_pair": [0, 1], "next_state": [1, 0], "encoder_output_bits": [0, 0, 0], "project_phase_index": 0, "project_b": 0, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 6, "source_state": [0, 1], "input_pair": [1, 0], "next_state": [0, 0], "encoder_output_bits": [1, 1, 0], "project_phase_index": 6, "project_b": 6, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 7, "source_state": [0, 1], "input_pair": [1, 1], "next_state": [1, 0], "encoder_output_bits": [1, 0, 0], "project_phase_index": 4, "project_b": 4, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 8, "source_state": [1, 0], "input_pair": [0, 0], "next_state": [0, 1], "encoder_output_bits": [0, 0, 1], "project_phase_index": 1, "project_b": 1, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 9, "source_state": [1, 0], "input_pair": [0, 1], "next_state": [1, 1], "encoder_output_bits": [0, 1, 1], "project_phase_index": 3, "project_b": 3, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 10, "source_state": [1, 0], "input_pair": [1, 0], "next_state": [0, 1], "encoder_output_bits": [1, 0, 1], "project_phase_index": 5, "project_b": 5, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 11, "source_state": [1, 0], "input_pair": [1, 1], "next_state": [1, 1], "encoder_output_bits": [1, 1, 1], "project_phase_index": 7, "project_b": 7, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 12, "source_state": [1, 1], "input_pair": [0, 0], "next_state": [0, 1], "encoder_output_bits": [0, 1, 1], "project_phase_index": 3, "project_b": 3, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 13, "source_state": [1, 1], "input_pair": [0, 1], "next_state": [1, 1], "encoder_output_bits": [0, 0, 1], "project_phase_index": 1, "project_b": 1, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 14, "source_state": [1, 1], "input_pair": [1, 0], "next_state": [0, 1], "encoder_output_bits": [1, 1, 1], "project_phase_index": 7, "project_b": 7, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"},
+    {"edge_id": 15, "source_state": [1, 1], "input_pair": [1, 1], "next_state": [1, 1], "encoder_output_bits": [1, 0, 1], "project_phase_index": 5, "project_b": 5, "source_mapping_evidence_status": "UNAVAILABLE", "mapping_status": "project_reconstructed_source_unresolved"}
+  ],
+  "author_edge_to_b_status": "AUTHOR_MAPPING_NOT_IDENTIFIABLE_FROM_AVAILABLE_SOURCE_EVIDENCE",
+  "author_b_to_phase_status": "SOURCE_DERIVABLE_PHASE_INCREMENT_ONLY",
+  "author_confirmation_records": [],
+  "scientific_status_flags": {
+    "paper_exact": false,
+    "receiver_enabled": false
+  },
+  "accepted_adrs_unchanged": ["001", "002", "003", "004", "005", "006", "007", "008", "010", "012", "013", "014", "015"],
+  "proposed_adrs_unchanged": ["009", "011"],
+  "open_scientific_questions": ["SCI-02", "SCI-03", "SCI-METRIC-02"]
+}

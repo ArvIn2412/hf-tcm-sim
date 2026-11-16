@@ -1,0 +1,854 @@
+{
+  "schema_version": 1,
+  "study_id": "M5j-confirmatory-paired-ber",
+  "design_id": "M5i-pilot-informed-confirmatory-design",
+  "design_version": "M5i-1",
+  "design_status": "proposed_confirmatory",
+  "execution_authorized": false,
+  "execution_scope": "none",
+  "purpose": "pilot-informed confirmatory design preparation, NOT executed confirmatory evaluation, NOT new performance evidence",
+  "phase_distinction": {
+    "M5f": "historical_exploratory; excluded from M5h and future M5j records",
+    "M5g": "proposed_design; not executed as confirmatory",
+    "M5h": "independent_planning_pilot; never pooled into M5j",
+    "M5i": "pilot_informed_confirmatory_design_preparation_only",
+    "M5j": "future_separately_authorized_independent_evaluation"
+  },
+  "scientific_profile": {
+    "profile": "reconstructed_offline",
+    "path_count": 1,
+    "real_channel_gain_a": 0.75,
+    "path_delays_samples": [
+      0
+    ],
+    "modulation": "normalized_8PSK",
+    "waveform": "rectangular_ZOH",
+    "samples_per_symbol": 8,
+    "adr": [
+      "ADR-012",
+      "ADR-013",
+      "ADR-014",
+      "ADR-015"
+    ],
+    "accepted_adr": [
+      "ADR-001",
+      "ADR-002",
+      "ADR-003",
+      "ADR-004",
+      "ADR-005",
+      "ADR-006",
+      "ADR-007",
+      "ADR-008",
+      "ADR-010",
+      "ADR-012",
+      "ADR-013",
+      "ADR-014",
+      "ADR-015"
+    ],
+    "proposed_adr": [
+      "ADR-009",
+      "ADR-011"
+    ],
+    "open_science_questions": [
+      "SCI-02",
+      "SCI-03",
+      "SCI-METRIC-02"
+    ],
+    "paper_exact": false,
+    "receiver_enabled": false,
+    "noise_axis_label": "effective discrete gamma_b; not physical HF Eb/N0",
+    "noise_model": "ADR-015 independent circular complex AWGN"
+  },
+  "primary_condition": {
+    "gamma_b_eff_db": 5.0,
+    "gamma_b_eff_linear": 3.1622776601683795,
+    "sigma_squared": 0.7115124735378853,
+    "sigma_squared_formula": "4*a*a / 10^(gamma_b_eff_dB/10)",
+    "role": "sole primary confirmatory stratum"
+  },
+  "run_design": {
+    "independent_cluster": "one complete coded TCM sequence",
+    "run_count": 100,
+    "symbols_per_run_F": 256,
+    "total_independent_sequences": 100,
+    "total_tcm_symbols": 25600,
+    "total_information_bits": 51200,
+    "total_received_complex_samples": 204800,
+    "minimum_B_C_decoder_passes": 200,
+    "strata_count": 1,
+    "planned_run_id_count": 100
+  },
+  "sample_origins": {
+    "absolute_sample_origin": 0,
+    "absolute_symbol_origin": 0,
+    "initial_estimator_time_index": 0,
+    "samples_per_symbol": 8
+  },
+  "receiver_policies": {
+    "shared": {
+      "initial_full_iq": [
+        0.42,
+        0.91
+      ],
+      "initial_fluctuating_iq": [
+        0.42,
+        0.91
+      ],
+      "beta": 0.7,
+      "mu0": [
+        0.0,
+        0.0
+      ]
+    },
+    "B": {
+      "policy": "frozen",
+      "alpha_prime": 1.0,
+      "K_tilde": [
+        0.0,
+        0.0
+      ],
+      "mu0": [
+        0.0,
+        0.0
+      ]
+    },
+    "C": {
+      "policy": "adaptive",
+      "alpha_prime": 0.85,
+      "K_tilde": [
+        0.35,
+        -0.2
+      ],
+      "mu0": [
+        0.0,
+        0.0
+      ]
+    },
+    "only_difference": "estimator update policy"
+  },
+  "pairing_contract": {
+    "identical_reference_input_bits": true,
+    "identical_noisy_received_buffer": true,
+    "identical_initial_estimator_state": true,
+    "identical_beta": true,
+    "identical_symbol_and_time_origins": true,
+    "same_trellis_and_termination_rules": true,
+    "only_difference": "estimator update policy"
+  },
+  "primary_estimand": {
+    "name": "DeltaBER",
+    "definition": "pooled BER_C - pooled BER_B",
+    "condition": "5 dB effective discrete gamma_b",
+    "precision_target_95pct_ci_half_width": 0.02,
+    "precision_target_role": "planning target only; not a stopping rule"
+  },
+  "secondary_analyses": {
+    "metrics": [
+      "DeltaSER",
+      "BER_B",
+      "BER_C",
+      "SER_B",
+      "SER_C",
+      "raw_errors",
+      "denominators",
+      "numerical_failures",
+      "coefficient_trajectory_diagnostics"
+    ],
+    "historical_gamma_diagnostics_db": [
+      0,
+      10,
+      15
+    ],
+    "run_secondary_gamma_strata_in_M5j": false,
+    "simultaneous_four_point_inference": false,
+    "general_adaptive_advantage_claim": false
+  },
+  "sample_size_basis": {
+    "pilot_study_id": "M5h-independent-pilot-candidate",
+    "primary_gamma_b_eff_db": 5.0,
+    "pilot_runs": 30,
+    "pilot_s_d": 0.053093594133490844,
+    "pilot_R_approx": 28,
+    "pilot_R_approx_formula": "ceil((1.96*s_d/epsilon)^2), epsilon=0.02",
+    "recommended_confirmatory_R": 100,
+    "rationale": [
+      "operationally conservative relative to the pilot approximation R=28",
+      "substantially exceeds pilot R_approx",
+      "allows margin for uncertainty in pilot standard deviation",
+      "workload fits within a bounded budget based on the completed pilot workload"
+    ],
+    "pilot_wall_clock_seconds_for_120_runs": 251.0627039000101,
+    "linear_workload_reference_seconds_for_100_runs": 209.21891991667508,
+    "reference_is_runtime_guarantee": false,
+    "R_is_precision_guarantee": false,
+    "R_change_after_confirmatory_outcomes": false
+  },
+  "bootstrap_contract": {
+    "adr": "ADR-014",
+    "independent_cluster": "one complete coded TCM sequence",
+    "paired_same_index_B_C_resampling": true,
+    "replicates": 2000,
+    "confidence_level": 0.95,
+    "interval": "two-sided percentile",
+    "quantile_method": "numpy.quantile(method='linear')",
+    "pooled_integer_counts": true,
+    "explicit_independent_bootstrap_seed": true,
+    "metrics": [
+      "ber_b",
+      "ber_c",
+      "delta_ber",
+      "ser_b",
+      "ser_c",
+      "delta_ser"
+    ],
+    "preserve_warning_flags": true,
+    "zero_interval_interpretation": "CI=[0,0] is not proof of true zero BER",
+    "includes_zero_interpretation": "CI including zero is not evidence of receiver equivalence"
+  },
+  "seed_derivation": {
+    "protocol": "M5h accepted domain-separated derivation",
+    "algorithm": "NumPy SeedSequence(master_seed, spawn_key=(protocol_version_word, partition_code, stratum_index, run_index, stream_code)); generate_state(1,dtype=uint64); initialize PCG64 with derived seed",
+    "protocol_version_word": 1295337521,
+    "partition": "evaluation",
+    "partition_code": 211,
+    "stratum_index_for_primary_5db": 1,
+    "stream_codes": {
+      "data": 11,
+      "noise": 23,
+      "bootstrap": 37
+    },
+    "master_seeds": {
+      "data": 2026110101,
+      "noise": 2026110102,
+      "bootstrap": 2026110103
+    },
+    "pilot_namespaces_used": false,
+    "pilot_evaluation_streams_disjoint": true,
+    "data_noise_bootstrap_domain_separated": true,
+    "seed_bits": 64,
+    "prng": "numpy.random.PCG64",
+    "planned_run_id_template": "{study_id}:evaluation:gamma-5dB:run-{run_index:03d}",
+    "planned_run_index_origin": 1,
+    "manifest_path": "configs/m5i_confirmatory_run_manifest_draft.json"
+  },
+  "numerical_failure_policy": {
+    "missing_valid_B_or_C_output": "retain failure; block full-design inference",
+    "zero_or_max_error_imputation": false,
+    "silent_exclusion": false,
+    "retry_with_new_seed": false,
+    "receiver_parameter_change": false,
+    "completed_only_pooled_metrics": "descriptive only and explicitly labeled with missing-output count",
+    "full_design_completeness_required": true,
+    "finite_unstable_trajectory": "retain valid decoded output and diagnostics",
+    "high_BER": "retain all observed errors",
+    "resume": "same planned IDs, original seeds, identical config/code fingerprint only"
+  },
+  "stopping_rule": {
+    "planned_run_count": 100,
+    "complete_every_planned_run": true,
+    "result_dependent_early_stop": false,
+    "early_stop_on_DeltaBER_or_CI": false,
+    "automatic_run_count_increase": false,
+    "extend_R_after_outcome_review": false,
+    "precision_target_is_stopping_rule": false,
+    "technical_interruption": "checkpoint completed runs; resume only with matching manifest/config/code and original seeds; incomplete otherwise"
+  },
+  "future_execution_budget": {
+    "wall_clock_limit_seconds": 900,
+    "worker_processes": 1,
+    "multiprocessing": false,
+    "rss_budget_bytes": 1610612736,
+    "rss_enforcement": "monitor if supported; polling is not a hard OS limit",
+    "checkpoint": "after each fully completed independent run; atomic replacement",
+    "resume_requires_same_config_manifest_and_code_fingerprint": true,
+    "no_duplicate_run_ids": true,
+    "no_silent_resume_after_code_change": true,
+    "budget_status": "proposed for separate M5j approval; no benchmark run in M5i",
+    "wall_clock_interruption": "stop before starting the next independent run; keep completed checkpoints and mark design incomplete"
+  },
+  "authorization": {
+    "M5i_may_execute": false,
+    "future_M5j_requires_new_immutable_run_specific_config": true,
+    "future_status_required": "approved_for_confirmatory_evaluation",
+    "future_scope_required": "m5j_confirmatory_only",
+    "reuse_M5h_pilot_authorization": false,
+    "receiver_cli_activation": false
+  },
+  "output_contract": {
+    "partition": "evaluation",
+    "pilot_records_enter_confirmatory_sample": false,
+    "reference_bits_or_ChannelTruth_passed_to_decoder": false,
+    "planned_manifest_contains_generated_data_or_noise": false,
+    "retain_raw_integer_counts_and_failure_records": true
+  },
+  "pilot_evidence_provenance": {
+    "approved_run_config_sha256": "b072cd4f5cc7d4997df27827fe2195145f0e51bce03629a4f36428baf303fcf6",
+    "execution_manifest_sha256": "082708177cf1dca9d94f414d35afa2b4db7c6faa43610a41ec9f2530b38ec65a",
+    "summary_sha256": "d5fa0d95a3e7a2fc9979c1021054f6805b7c41aa7f13bdd226e49e36f7a7e9b5",
+    "precision_diagnostic_sha256": "1df16fdcf6bdf28b1a2699fd666f33cbcbe42c28b4aba48121486a4fb5274da4",
+    "checkpoint_count": 120,
+    "ordered_checkpoint_name_hash_pairs_sha256": "c479ffa5736286d158f82838ef326b4e1843a2626b017778f6f735d98aec73af"
+  },
+  "reconstruction_configuration": {
+    "schema_version": 1,
+    "profile": "reconstructed_offline",
+    "paper_exact": false,
+    "receiver_enabled": false,
+    "candidate_index_space": "m4_1_hypothesis_id",
+    "candidate_count": 16,
+    "labeling": {
+      "name": "assumed_natural_binary",
+      "origin": "ADR-002 paired-control setting",
+      "bit_order": [
+        "c2",
+        "c1",
+        "c0"
+      ],
+      "output_to_b": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "phase_offset_rad": 0.0
+    },
+    "transition_model": {
+      "name": "adr003_uniform_allowed_edges",
+      "probabilities": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ]
+    },
+    "initial": {
+      "state": [
+        0,
+        0
+      ],
+      "prior": [
+        0.25,
+        0.25,
+        0.25,
+        0.25,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "likelihood": {
+      "kind": "exp_negative_beta_project_reconstruction_metric",
+      "beta": 0.7
+    },
+    "estimator": {
+      "alpha_prime": 0.85,
+      "k_tilde": [
+        [
+          0.35,
+          -0.2
+        ]
+      ],
+      "mu0": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "initial_time_index": 0,
+      "time_rule": "one_recursion_step_i_to_i_plus_1",
+      "initial_estimates": {
+        "fluctuating_iq": [
+          [
+            0.42,
+            0.91
+          ]
+        ],
+        "full_iq": [
+          [
+            0.42,
+            0.91
+          ]
+        ]
+      }
+    },
+    "timebase": {
+      "name": "approximate_rectangular_8sps",
+      "samples_per_symbol": 8,
+      "sample_rate_hz": 8000.0,
+      "symbol_rate_hz": 1000.0,
+      "symbol_origin_sample": 0,
+      "path_count": 1,
+      "path_delays_samples": [
+        0
+      ]
+    },
+    "observation_model": {
+      "kind": "adr012_l1_real_mean8",
+      "prediction_combination": "explicit_project_prediction",
+      "iq_rule": "(-Im(received), Re(received))",
+      "sample_reduction": "arithmetic_mean_exactly_8",
+      "waveform_rule": "rectangular_zoh"
+    },
+    "search": {
+      "beam_width": 1,
+      "decision_lag_symbols": 0
+    },
+    "assumption_provenance": {
+      "candidate_index_space": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "candidate_count": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "labeling": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "transition_model": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "initial_state": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "initial_prior": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "likelihood_type": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "beta": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "alpha_prime": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "k_tilde": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "mu0": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "initial_estimates": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "estimator_time_index": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "estimator_time_rule": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "timebase": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "samples_per_symbol": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "sample_rate_hz": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "symbol_rate_hz": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "symbol_origin_sample": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "path_delays_samples": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "path_count": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "aggregate_observation_model": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "prediction_combination": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "beam_width": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      },
+      "decision_lag_symbols": {
+        "status": "accepted_project_setting",
+        "source": "explicit M5d paired control",
+        "note": "value is run configuration, not inferred from article"
+      }
+    }
+  },
+  "limitations": [
+    "pilot-informed design preparation only; not executed confirmatory evaluation or new performance evidence",
+    "M5f exploratory and M5h independent pilot records are historical and excluded from M5j",
+    "effective discrete gamma_b is not physical HF Eb/N0",
+    "reconstructed offline receiver is not paper-exact; paper_exact=false and receiver_enabled=false",
+    "one confirmatory point cannot establish general adaptive advantage or disadvantage",
+    "no claim of optimality, universal adaptation benefit, 1.5 dB reproduction, general HF channel performance, complex fading, multipath, or correlated AR(1)",
+    "sample-size target and R=100 are recommendations, not guarantees of CI precision"
+  ],
+  "compute_workload": {
+    "independent_sequences": 100,
+    "tcm_symbols": 25600,
+    "information_bits": 51200,
+    "received_complex_samples": 204800,
+    "decoder_passes_minimum": 200
+  },
+  "tuning_policy": {
+    "automatic_tuning": false,
+    "parameters_frozen": true,
+    "select_parameters_using_M5f_or_M5h_outcomes": false,
+    "change_R_after_confirmatory_outcome_review": false
+  },
+  "scientific_claim_boundary": {
+    "permitted_future_claim": "performance difference between specified frozen and adaptive reconstructed receivers under the fixed ADR-015 single-path discrete-AWGN experimental profile",
+    "general_HF_claim": false,
+    "paper_exact_joint_receiver_claim": false,
+    "physical_EbN0_gain_claim": false,
+    "complex_fading_or_multipath_claim": false,
+    "AR1_claim": false,
+    "optimality_claim": false,
+    "universal_adaptation_claim": false,
+    "1_5_dB_reproduction_claim": false
+  }
+}

@@ -1,0 +1,15 @@
+﻿import fs from 'node:fs';
+const pages=await(await fetch('http://127.0.0.1:9240/json/list')).json();
+const page=pages.find(p=>p.type==='page'); const ws=new WebSocket(page.webSocketDebuggerUrl);await new Promise(r=>ws.addEventListener('open',r,{once:true}));let seq=0;const waiting=new Map();ws.onmessage=e=>{const m=JSON.parse(e.data);if(m.id){const f=waiting.get(m.id);waiting.delete(m.id);m.error?f.reject(m.error):f.resolve(m.result);}};
+const send=(method,params={})=>new Promise((resolve,reject)=>{const id=++seq;waiting.set(id,{resolve,reject});ws.send(JSON.stringify({id,method,params}));});
+const evalJS=async expression=>{const r=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;};
+await send('Page.enable');await send('Emulation.setDeviceMetricsOverride',{width:1366,height:900,deviceScaleFactor:1,mobile:false});await send('Page.navigate',{url:'http://127.0.0.1:8765/scientific'});await new Promise(r=>setTimeout(r,1600));
+const result=await evalJS(`({tabs:[...document.querySelectorAll('.tab')].map(e=>e.textContent),profile:document.querySelector('#article-profile')?.value,N:document.querySelector('#mx-frame')?.value,active:[...document.querySelectorAll('.view.active')].map(e=>e.id)})`);console.log(JSON.stringify(result));if(result.tabs.length!==6||result.N!=='20000'||result.profile!=='article')throw Error('startup failed');
+for(const name of ['parameters','transmitter','constellation','viterbi','metric','saved']){await evalJS(`document.querySelector('[data-view="${name}"]').click()`);await new Promise(r=>setTimeout(r,350));const {data}=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});fs.writeFileSync(`outputs/ui_article_alignment/${name}.png`,Buffer.from(data,'base64'));}
+await evalJS(`document.querySelector('[data-view="parameters"]').click();document.querySelector('#mx-frame').value=32;document.querySelector('#mx-scenario').value='awgn';document.querySelector('#mx-grid').value='-16,-13';document.querySelector('#mx-id').value='ui-acceptance-'+Date.now();document.querySelector('#mx-run').click()`);
+let runtimeStatus='';
+for(let i=0;i<200;i++){await new Promise(r=>setTimeout(r,200));runtimeStatus=await evalJS(`document.querySelector('#mx-status').textContent`);if(runtimeStatus.includes('додаткові sweep-кадри'))break;}
+console.log(runtimeStatus);
+if(!runtimeStatus.includes('Демонстраційні кадри: 1; додаткові sweep-кадри: 2'))throw Error('trial accounting failed');
+await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await evalJS(`document.querySelector('[data-view="metric"]').click()`);const mobile=await evalJS(`({width:innerWidth,scroll:document.documentElement.scrollWidth,columns:getComputedStyle(document.querySelector('.article-pair')).gridTemplateColumns})`);console.log(JSON.stringify(mobile));
+fs.writeFileSync('outputs/ui_article_alignment/browser_results.json',JSON.stringify({startup:result,mobile},null,2));ws.close();

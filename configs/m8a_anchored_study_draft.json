@@ -1,0 +1,179 @@
+{
+  "schema_version": "m8a.anchored-study.v1",
+  "study_id": "m8_anchored_reconstructed_adaptation_v1",
+  "classification": "proposed reconstructed research design; not executed; not optimized; not performance evidence; not source-faithful",
+  "design_status": "proposed",
+  "execution_authorized": false,
+  "execution_scope": "none",
+  "scientific_status": {
+    "paper_exact": false,
+    "receiver_enabled": false,
+    "accepted_adrs": ["001", "002", "003", "004", "005", "006", "007", "008", "010", "012", "013", "014", "015"],
+    "proposed_adrs": ["009", "011"],
+    "open_science_questions": ["SCI-02", "SCI-03", "SCI-METRIC-02"],
+    "author_mapping_status": "SOURCE_UNRESOLVED"
+  },
+  "profile": {
+    "model": "anchored_reconstructed_offline",
+    "parent_reconstruction_profile": "reconstructed_offline",
+    "channel_memory_L": 1,
+    "real_channel_gain": 0.75,
+    "delay_samples": 0,
+    "modulation": "normalized_8PSK",
+    "pulse_shape": "rectangular_ZOH",
+    "samples_per_symbol": 8,
+    "observed_iq_convention": "ADR-012",
+    "likelihood": "ADR-005 reconstructed pseudo-likelihood",
+    "decoder": "ADR-013 conditional full Viterbi",
+    "noise_profile": "ADR-015 independent circular complex AWGN",
+    "gamma_b_eff_db": 5.0,
+    "gamma_b_eff_linear": 3.1622776601683795,
+    "sigma_squared": 0.7115124735378853,
+    "sigma_squared_formula": "4*a*a / 10^(gamma_b_eff_db/10)",
+    "physical_hf_ebn0": false,
+    "source_alignment_claim": false
+  },
+  "anchored_profile": {
+    "nominal_prior_anchor_mu0": [0.42, 0.91],
+    "initial_fluctuating_iq": [0.0, 0.0],
+    "initial_full_iq": [0.42, 0.91],
+    "initial_full_equals_fluctuating_plus_anchor": true,
+    "anchor_is_channel_truth_or_oracle_csi": false,
+    "historical_zero_anchor_profile": {
+      "mu0": [0.0, 0.0],
+      "initial_fluctuating_iq": [0.42, 0.91],
+      "initial_full_iq": [0.42, 0.91]
+    },
+    "shared_beta": 0.7,
+    "same_initial_predictions_expected": true
+  },
+  "sequence_design": {
+    "symbols_per_run_F": 256,
+    "information_bits_per_run": 512,
+    "same_reference_sequence_across_all_arms_within_run": true,
+    "one_noise_realization_per_run_shared_by_all_arms": true,
+    "channel_truth_passed_to_receiver": false,
+    "decoder_calls_per_arm_sequence_target": 1
+  },
+  "policy_grid": {
+    "base_k_tilde": [0.35, -0.2],
+    "anchored_alpha_values": [1.0, 0.95, 0.85],
+    "anchored_k_scales": [0.25, 0.5],
+    "construction": "K_tilde = K_scale * base_k_tilde; alpha-major, scale-minor order",
+    "candidate_policies": [
+      {"candidate_id": "anch_a100_k025", "role": "new_anchored_candidate", "alpha_prime": 1.0, "k_scale": 0.25, "k_tilde": [0.0875, -0.05], "mu0": [0.42, 0.91], "initial_fluctuating_iq": [0.0, 0.0], "initial_full_iq": [0.42, 0.91]},
+      {"candidate_id": "anch_a100_k050", "role": "new_anchored_candidate", "alpha_prime": 1.0, "k_scale": 0.5, "k_tilde": [0.175, -0.1], "mu0": [0.42, 0.91], "initial_fluctuating_iq": [0.0, 0.0], "initial_full_iq": [0.42, 0.91]},
+      {"candidate_id": "anch_a095_k025", "role": "new_anchored_candidate", "alpha_prime": 0.95, "k_scale": 0.25, "k_tilde": [0.0875, -0.05], "mu0": [0.42, 0.91], "initial_fluctuating_iq": [0.0, 0.0], "initial_full_iq": [0.42, 0.91]},
+      {"candidate_id": "anch_a095_k050", "role": "new_anchored_candidate", "alpha_prime": 0.95, "k_scale": 0.5, "k_tilde": [0.175, -0.1], "mu0": [0.42, 0.91], "initial_fluctuating_iq": [0.0, 0.0], "initial_full_iq": [0.42, 0.91]},
+      {"candidate_id": "anch_a085_k025", "role": "new_anchored_candidate", "alpha_prime": 0.85, "k_scale": 0.25, "k_tilde": [0.0875, -0.05], "mu0": [0.42, 0.91], "initial_fluctuating_iq": [0.0, 0.0], "initial_full_iq": [0.42, 0.91]},
+      {"candidate_id": "anch_a085_k050", "role": "new_anchored_candidate", "alpha_prime": 0.85, "k_scale": 0.5, "k_tilde": [0.175, -0.1], "mu0": [0.42, 0.91], "initial_fluctuating_iq": [0.0, 0.0], "initial_full_iq": [0.42, 0.91]},
+      {"candidate_id": "historical_frozen_B", "role": "historical_control", "alpha_prime": 1.0, "k_scale": 0.0, "k_tilde": [0.0, 0.0], "mu0": [0.0, 0.0], "initial_fluctuating_iq": [0.42, 0.91], "initial_full_iq": [0.42, 0.91]},
+      {"candidate_id": "historical_combined_C", "role": "historical_control", "alpha_prime": 0.85, "k_scale": 1.0, "k_tilde": [0.35, -0.2], "mu0": [0.0, 0.0], "initial_fluctuating_iq": [0.42, 0.91], "initial_full_iq": [0.42, 0.91]}
+    ],
+    "candidate_count": 8,
+    "candidate_policies_are_author_algorithms": false,
+    "historical_B_and_C_parameters_unchanged": true,
+    "parameter_search_in_prep": false
+  },
+  "selection": {
+    "training_only": true,
+    "eligibility": "40 complete valid records for candidate; no completed-only pooling",
+    "primary": "minimum pooled raw integer-count BER among eligible arms",
+    "tie_break_order": ["lower pooled raw-count SER", "lower absolute K_scale", "alpha_prime closest to 1.0", "lexicographically lower candidate_id"],
+    "frozen_B_may_win": true,
+    "if_frozen_B_wins": "end negative exploratory result; do not promote runner-up or run same-policy adaptive validation",
+    "training_statistics": "exploratory selection only; not confirmatory"
+  },
+  "failure_policy": {
+    "retain_success_and_failure_records": true,
+    "invalid_or_incomplete_candidate": "ineligible",
+    "finite_high_error_trajectory": "retain all observed errors",
+    "zero_error_imputation": false,
+    "maximum_error_imputation": false,
+    "silent_exclusion": false,
+    "seed_replacement": false,
+    "incomplete_frozen_B": "block paired winner selection"
+  },
+  "partitions": {
+    "historical_inputs_excluded": ["M5f", "M5h", "M5j", "M6b", "M6g", "M6h", "M7b"],
+    "training": {
+      "sequence_count": 40,
+      "symbols_per_sequence_F": 256,
+      "run_id_template": "{study_id}:train:run-{run_index:03d}",
+      "seed_namespaces": {"data": 2027011001, "noise": 2027011002, "bootstrap": 2027011003, "experiment_metadata": 2027011004}
+    },
+    "validation": {
+      "sequence_count": 40,
+      "symbols_per_sequence_F": 256,
+      "run_id_template": "{study_id}:validation:run-{run_index:03d}",
+      "policies": ["historical_frozen_B", "one_training_selected_anchored_policy"],
+      "new_independent_partition": true,
+      "seed_namespaces": {"data": 2027012001, "noise": 2027012002, "bootstrap": 2027012003, "experiment_metadata": 2027012004},
+      "selection_repeated": false,
+      "if_training_winner_is_B": "do not execute validation; close negative exploratory result"
+    },
+    "future_final": {
+      "sequence_count": null,
+      "design_status": "requires separate future design and explicit authorization",
+      "run_id_template": "{study_id}:final:run-{run_index:03d}",
+      "seed_namespaces": {"data": 2027013001, "noise": 2027013002, "bootstrap": 2027013003, "experiment_metadata": 2027013004},
+      "automatic_after_validation": false
+    },
+    "seed_roots_are_proposed_not_generated": true,
+    "historical_seed_roots_reused": false
+  },
+  "seed_derivation": {
+    "algorithm": "numpy.random.SeedSequence(master_seed, spawn_key=(1295337521, partition_code, zero_based_run_index, stream_code)).generate_state(1, dtype=uint64)[0]; initialize PCG64 with the derived seed",
+    "protocol_version_word": 1295337521,
+    "partition_codes": {"training": 801, "validation": 802, "future_final": 803},
+    "stream_codes": {"data": 11, "noise": 23, "bootstrap": 37, "experiment_metadata": 41},
+    "displayed_run_index_origin": 1,
+    "spawned_run_index_origin": 0,
+    "streams_generated_in_M8a": false
+  },
+  "diagnostics": {
+    "raw_integer_ber_ser": true,
+    "coefficient_finite_flags": true,
+    "coefficient_error_evaluation_only_after_receiver": true,
+    "initial_final_coefficient_norms": true,
+    "increment_norms": true,
+    "received_hashes": true,
+    "candidate_eligibility_and_failure_records": true,
+    "coefficient_error_is_selection_criterion": false,
+    "true_gain_access_in_receiver": false
+  },
+  "workload": {
+    "training_sequences": 40,
+    "training_arms_per_sequence": 8,
+    "training_decoder_passes": 320,
+    "training_policy_symbol_passes": 81920,
+    "training_unique_received_samples": 81920,
+    "validation_sequences": 40,
+    "validation_arms_per_sequence": 2,
+    "validation_decoder_passes": 80,
+    "validation_policy_symbol_passes": 20480,
+    "validation_unique_received_samples": 81920,
+    "single_process": true,
+    "multiprocessing": false,
+    "atomic_checkpoint_per_sequence": true,
+    "runtime_or_rss_estimate": null,
+    "actual_budget_requires_separate_approval": true
+  },
+  "authorization_gates": {
+    "M8a_execution_allowed": false,
+    "M8b_requires_separate_run_specific_approval": true,
+    "training_to_validation_automatic": false,
+    "validation_to_final_automatic": false,
+    "approved_config_created_in_M8a": false
+  },
+  "scientific_limitations": [
+    "M7b TRAIN outcomes informed this subsequent hypothesis-generating direction",
+    "M7b records are not M8 training observations and cannot select M8 policies",
+    "M5j is not independent validation of M8",
+    "anchored_reconstructed_offline is a proposed project variant, not an author-defined mu0 convention",
+    "author edge-to-phase mapping, quadrature and source innovation semantics remain unresolved",
+    "single effective discrete gamma_b point; not physical HF Eb/N0",
+    "L=1 real channel and zero delay; no multipath, AR(1), or complex fading",
+    "no adaptive gain or source-paper fidelity claim is authorized"
+  ]
+}

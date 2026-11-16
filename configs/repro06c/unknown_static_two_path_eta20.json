@@ -1,0 +1,18 @@
+{
+  "expected_symbol_count": 32,
+  "paths": [
+    {"delay_samples": 0, "prior_mean": [1.0, 0.0], "prior_variance": 0.5},
+    {"delay_samples": 3, "prior_mean": [0.5, 0.0], "prior_variance": 0.5}
+  ],
+  "channel_mode": "unknown_static",
+  "observation_noise_variance": 0.02,
+  "correlation": 1.0,
+  "forgetting_factor": 1.0,
+  "decoder_mode": "finite_depth",
+  "traceback_depth": 20,
+  "initial_state": [0, 0],
+  "termination_policy": "none",
+  "metric_profile": "squared_euclidean",
+  "trace_output_mode": "compact",
+  "profile_id": "repro06c_unknown_static_two_path_eta20_project_v1"
+}

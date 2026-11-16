@@ -1,0 +1,147 @@
+{
+  "description_docx": "Опис_компютерної_програми_HF-TCM-SIM.docx",
+  "source_code_docx": "Текст_програми_HF-TCM-SIM.docx",
+  "source_files": 27,
+  "source_lines": 7599,
+  "source_integrity": "PASS",
+  "screenshots": 5,
+  "screenshot_integrity": "PASS",
+  "docx_zip_crc": "PASS",
+  "verified_files": [
+    {
+      "path": "src/hf_tcm/repro/scientific_studio.py",
+      "lines": 32,
+      "sha256": "39d7f9078913d0688c3d5800eaf70838841c8f96db9d27e4ac187c9a8e6aef33"
+    },
+    {
+      "path": "src/hf_tcm/studio/server.py",
+      "lines": 585,
+      "sha256": "cc52db8319d9d1b4345f4bd883e7467f2ce470a95677e39fd3d9216815d889ab"
+    },
+    {
+      "path": "src/hf_tcm/studio/scientific.py",
+      "lines": 1390,
+      "sha256": "0c508ec9a6480c5376b4821861b2a693d20f56a4879886196336bc5e91a1c57a"
+    },
+    {
+      "path": "src/hf_tcm/studio/energy.py",
+      "lines": 495,
+      "sha256": "41bc9c26412d3965684a5311d8c8974ed6cbd66b961301b06c63cd4b9c4346ae"
+    },
+    {
+      "path": "src/hf_tcm/studio/scientific_exp03b_results.py",
+      "lines": 120,
+      "sha256": "fcfc0b13617c9d5070d8146d49cb713eed2d87e87d81d74f176bcd72d2ddbf42"
+    },
+    {
+      "path": "src/hf_tcm/studio/static/scientific.html",
+      "lines": 121,
+      "sha256": "4705e5e885579b426570bc9fb969cc525db375e9e2935c27d40105a263385169"
+    },
+    {
+      "path": "src/hf_tcm/studio/static/scientific.js",
+      "lines": 1300,
+      "sha256": "596532d38dee725256c93b9cad0b1f77bcf9aa434126ec53531d04e54e395b23"
+    },
+    {
+      "path": "src/hf_tcm/repro/source_bits.py",
+      "lines": 82,
+      "sha256": "2cfd2a46d262d0852df4c039b7ecdfc85eda031bed3dcb6931c333711015c6e7"
+    },
+    {
+      "path": "src/hf_tcm/repro/encoder.py",
+      "lines": 136,
+      "sha256": "5ee1bc65f19cb388862c4a94b6c60aba5f1626a6b036aeab26f7caf040c4f3d9"
+    },
+    {
+      "path": "src/hf_tcm/repro/transmitter.py",
+      "lines": 156,
+      "sha256": "7c1573a45c990fb9db40ca6d137cff30107c2b36fd1517aaebad47dc3a7f23fb"
+    },
+    {
+      "path": "src/hf_tcm/repro/modulator.py",
+      "lines": 81,
+      "sha256": "827519aedd75cf12efbaaae07d584891ea19e77ed08332f7149755cfa50be45e"
+    },
+    {
+      "path": "src/hf_tcm/repro/channel_runner.py",
+      "lines": 148,
+      "sha256": "5f3d3ce660014e3477007ed44a885d5753c2304c0ec34c02c3db7ef3e666ab00"
+    },
+    {
+      "path": "src/hf_tcm/repro/noise.py",
+      "lines": 37,
+      "sha256": "12b57c043ddafc2219cb7c84afbbc84517047565af61cd8f6848593e11c58b87"
+    },
+    {
+      "path": "src/hf_tcm/repro/rician_fading.py",
+      "lines": 66,
+      "sha256": "793848757d43685a09cc56746233ce77108a6721943134b4bc1f6ddab7a3562a"
+    },
+    {
+      "path": "src/hf_tcm/repro/multipath_channel.py",
+      "lines": 36,
+      "sha256": "9cdb28799958c6d543c57c093ce3ddab33dc98443fd0a6c284c551fcb0ebecc6"
+    },
+    {
+      "path": "src/hf_tcm/repro/joint_receiver.py",
+      "lines": 389,
+      "sha256": "b3aaaa362301128244c43f4fcbb3be689856952e80535ff627384d0d8b7245c1"
+    },
+    {
+      "path": "src/hf_tcm/repro/survivor_channel_estimator.py",
+      "lines": 164,
+      "sha256": "6646e9e38f35203936b3c2ae235d6dbbc5d50271dd64a8112ce403471b349d65"
+    },
+    {
+      "path": "src/hf_tcm/repro/joint_viterbi.py",
+      "lines": 90,
+      "sha256": "e56252f835ec3d5d465ba7b4a1bc26cba36fb2b209942d3db03b0411b4090b87"
+    },
+    {
+      "path": "src/hf_tcm/repro/separate_receiver.py",
+      "lines": 274,
+      "sha256": "26ed08d8c963ed675672ffeffc4d8be8ab130ca7862359275444a84d50f3011a"
+    },
+    {
+      "path": "src/hf_tcm/repro/hard_8psk_demodulator.py",
+      "lines": 66,
+      "sha256": "fbe041c87e717a3f6e8cacb718d5b9dc05a474ca65eaf1d57b1b0f9eaef35d11"
+    },
+    {
+      "path": "src/hf_tcm/repro/hamming_metric.py",
+      "lines": 32,
+      "sha256": "35e06ffb762dbfc5b453d91644b145ae14d230a6ed46664f27ee6a61e8483f67"
+    },
+    {
+      "path": "src/hf_tcm/repro/hamming_viterbi.py",
+      "lines": 97,
+      "sha256": "73a585797f2c0e864bb4e87d025ddcacbb8b86a5f8c1b92bdc20546b0ba74299"
+    },
+    {
+      "path": "src/hf_tcm/repro/information_pair_metrics.py",
+      "lines": 59,
+      "sha256": "de1df24322465adc809cb4f08564b09f5874a5f456cd6b2764bdcfdc72c5ce87"
+    },
+    {
+      "path": "src/hf_tcm/repro/energy_experiment.py",
+      "lines": 450,
+      "sha256": "5f2f199751fdf0433a2f4a2f025abdf5b0bdba6948010075c3360f4d61836eae"
+    },
+    {
+      "path": "src/hf_tcm/repro/energy_gain.py",
+      "lines": 66,
+      "sha256": "c4a6868bef0475d147760284506b62287cd97009f4aa2a74afedc89c12e7725f"
+    },
+    {
+      "path": "src/hf_tcm/repro/energy_statistics.py",
+      "lines": 247,
+      "sha256": "115ee53b045525f134577434d1c51646fab8ccd1a4e44702b943808617292242"
+    },
+    {
+      "path": "src/hf_tcm/repro/paired_experiment.py",
+      "lines": 880,
+      "sha256": "8db749cd874841732dc2d1107e307c157edfa256e821809ee8480d32a1d872b3"
+    }
+  ]
+}

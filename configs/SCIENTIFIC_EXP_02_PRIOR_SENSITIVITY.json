@@ -1,0 +1,65 @@
+{
+  "schema": "scientific-exp02-prior-sensitivity-v1",
+  "experiment_id": "scientific-exp02-static-prior-sensitivity",
+  "source_experiment_id": "scientific-exp01b-independent-energy-gain-v1",
+  "source_protocol_sha256": "75b065c1d0a7f5c1f06af3bc290678a532e35d7c0062fb42f68f3914aaa6a5ab",
+  "scenario": "static",
+  "sweep": "amplitude",
+  "frame_symbols": 256,
+  "noise_complex_variance": 1.0,
+  "channel": {
+    "profile_id": "energy01_static",
+    "delays_samples": [0, 3],
+    "path_powers": [0.8, 0.2],
+    "public_nominal_coefficients": [
+      [0.8944271909999159, 0.0],
+      [0.3420478245655483, 0.2881029081942352]
+    ]
+  },
+  "energy_points_gamma_b_d_db": [2.0, 2.5, 4.0, 4.5, 7.5, 8.0],
+  "source_trial_indices_per_point": [0, 5, 10, 15, 20, 25, 30, 35],
+  "prior_variants": [
+    "exact",
+    "neutral",
+    "amplitude_minus_10pct",
+    "amplitude_plus_10pct",
+    "phase_minus_15deg",
+    "phase_plus_15deg"
+  ],
+  "variant_definition": {
+    "exact": "Use frozen public nominal complex path coefficients.",
+    "neutral": "Set every public initial complex mean to 0+0j.",
+    "amplitude_minus_10pct": "Multiply each public nominal coefficient by 0.9.",
+    "amplitude_plus_10pct": "Multiply each public nominal coefficient by 1.1.",
+    "phase_minus_15deg": "Rotate each public nominal coefficient by -15 degrees.",
+    "phase_plus_15deg": "Rotate each public nominal coefficient by +15 degrees."
+  },
+  "held_constant": [
+    "same saved received observation within each frame across all six variants",
+    "same receiver configuration except prior means",
+    "same prior variance 0.25",
+    "same amplitude, noise variance, trellis, metric, decoder and traceback depth",
+    "no new transmitter, channel or noise draws"
+  ],
+  "analysis": {
+    "unit_of_pairing_and_resampling": "independent saved frame",
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 20261111,
+    "confidence_level": 0.95,
+    "energy_gain_estimation": false,
+    "inferential_status": "exploratory prior sensitivity; not confirmatory energy-gain evidence"
+  },
+  "compute_budget": {
+    "total_wall_seconds": 2400,
+    "planned_saved_observations": 48,
+    "planned_joint_redecodes": 288,
+    "planning_runtime_basis": {
+      "selected_existing_joint_call_median_seconds": 3.690205099992454,
+      "selected_existing_joint_call_p90_seconds": 7.480375000042841,
+      "median_projected_seconds": 1062.0,
+      "p90_projected_seconds": 2154.0
+    },
+    "resume_policy": "immutable per-variant outputs; skip only when stored hashes and provenance verify"
+  },
+  "paper_exact": false
+}

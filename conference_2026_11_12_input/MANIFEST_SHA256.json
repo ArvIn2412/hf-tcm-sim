@@ -1,0 +1,65 @@
+{
+  "purpose": "Codex input archive for 2026-11-12 conference, 3 requested deliverables",
+  "files": [
+    {
+      "path": "CHECKLIST.md",
+      "size_bytes": 2529,
+      "sha256": "1d7f10a22c90db73656679886b533ddc93e719b6625ede8ae962f78a698a500e"
+    },
+    {
+      "path": "CODEX_PROMPT.md",
+      "size_bytes": 22466,
+      "sha256": "4194981047da8843c7339614d5a086ef36ba5f5cd8da0409d74e2706ab7a7e2f"
+    },
+    {
+      "path": "README_FIRST.md",
+      "size_bytes": 2776,
+      "sha256": "954da3fdd5d618757f273d0487c8f8995e87070ad4a8603f24fb450d1edf7794"
+    },
+    {
+      "path": "SOURCE_MAP.md",
+      "size_bytes": 5101,
+      "sha256": "eb14ac089ce3bbf95f847b735c55bd20b40a35a53ead8a8c2dfb4a6c7f023174"
+    },
+    {
+      "path": "examples/Горбач_доповідь_передзахист.pptx",
+      "size_bytes": 935207,
+      "sha256": "348d882815634b0df52cc16ea924b1db95a26cb361d0b2580b3f930e7ae9b081"
+    },
+    {
+      "path": "examples/Питання_та_відповіді.docx",
+      "size_bytes": 43586,
+      "sha256": "151c09521642dcddb37b7685f18f9dd5e1a9917738359baf31ec5f66771bf48a"
+    },
+    {
+      "path": "examples/Текст_доповіді.docx",
+      "size_bytes": 40905,
+      "sha256": "0c91adfbdc4176551cbcd24f4eb9480ecb0fe8e191fd6d89d992d5625ce582ec"
+    },
+    {
+      "path": "sources/Yakoviv_Hrynenko_UA v2(2).rtf",
+      "size_bytes": 916522,
+      "sha256": "4f37672a7426742883e3c8a08cf971a57b85d2e11d6fdb96c1907687fe7b38f0"
+    },
+    {
+      "path": "sources/preview/Yakoviv_Hrynenko_RTF_render.pdf",
+      "size_bytes": 167872,
+      "sha256": "38bbd6a9060a6f216d611335bcac94a83f36d074f12b0b7103faac0bd6140931"
+    },
+    {
+      "path": "sources/preview/original_equation_1.png",
+      "size_bytes": 26560,
+      "sha256": "1b782bf30537334dcfb02c1fb35c938399b2db13aa9ff44e903d9ce0b4c53c16"
+    },
+    {
+      "path": "sources/preview/original_equation_2.png",
+      "size_bytes": 44489,
+      "sha256": "00b9335cb9ffbfdbf5f6ec6f696b1ef7b291b38b06c9413d023eabe7336222a6"
+    },
+    {
+      "path": "sources/preview/original_figure_1.png",
+      "size_bytes": 46008,
+      "sha256": "9a67b21c8a46f964e85bea7f75180c3191bb1851ec397ff47aa246db2482a8bc"
+    }
+  ]
+}

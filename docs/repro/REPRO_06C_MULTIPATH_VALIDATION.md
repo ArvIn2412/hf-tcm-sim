@@ -1,0 +1,7 @@
+# REPRO-06C: multipath validation
+
+Підтверджені локальні результати: identity/noiseless F=32 відновив 64/64 бітів у adaptive та Hamming arms. Для зафіксованого static two-path public CSI 06B receiver і Hamming arm мали 0/64 помилок. Unknown-static F=32 з явно заданим nominal prior дав 0/64 помилок для цього одного контрольного кадру; slow Rician (ρ=0.995) і Rician AR(1)+AWGN (ρ=0.85) також дали 0/64 в adaptive arm. На тих самих observations Hamming arm мав відповідно 4/64 та 8/64 помилок у двох stochastic fixtures. Це одиничні deterministic seeded controls, не порівняльний статистичний доказ і не підтвердження переваги.
+
+Усі paired records зберігають спільний `ReceiverObservation.sha256`; output arrays, конфігурації та графіки знаходяться в `outputs/repro06c/paired_checks_f32/`. Metrics — squared Euclidean у цих профілях, а hard-Hamming лишається незмінним REPRO-04. Evaluation BER у runner обчислюється після завершення кожного приймача. Unknown-static номінальні початкові середні в paired runner задані без читання path gains: `1+0j` для першого шляху і `0.5+0j` для другого, із діагональною prior covariance `0.5`.
+
+Референсний REPRO-03 20,000-symbol Rician observation також оброблено в режимі η=20: 160,000 Tx samples, 160,003 Rx samples, 40,000 decoded bits і 17/68 trellis. Значення `D=3` формує 17/68 trellis; tail обробляється останнім кроком. Unknown-static результат залежить від prior; prior — частина експериментальної конфігурації, не приховані дані каналу. Це одна реалізаційна контрольна траса, не performance study.

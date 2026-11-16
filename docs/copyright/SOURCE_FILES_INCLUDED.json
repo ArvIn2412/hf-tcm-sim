@@ -1,0 +1,411 @@
+{
+  "files": [
+    {
+      "path": "src/hf_tcm/repro/scientific_studio.py",
+      "sha256": "39d7f9078913d0688c3d5800eaf70838841c8f96db9d27e4ac187c9a8e6aef33",
+      "size_bytes": 1130,
+      "line_count": 32,
+      "included_range": "1-32",
+      "transferred_lines": 32,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/studio/server.py",
+      "sha256": "cc52db8319d9d1b4345f4bd883e7467f2ce470a95677e39fd3d9216815d889ab",
+      "size_bytes": 28152,
+      "line_count": 585,
+      "included_range": "1-585",
+      "transferred_lines": 585,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/studio/scientific.py",
+      "sha256": "0c508ec9a6480c5376b4821861b2a693d20f56a4879886196336bc5e91a1c57a",
+      "size_bytes": 65002,
+      "line_count": 1390,
+      "included_range": "1-1390",
+      "transferred_lines": 1390,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/studio/energy.py",
+      "sha256": "41bc9c26412d3965684a5311d8c8974ed6cbd66b961301b06c63cd4b9c4346ae",
+      "size_bytes": 22219,
+      "line_count": 495,
+      "included_range": "1-495",
+      "transferred_lines": 495,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/studio/scientific_exp03b_results.py",
+      "sha256": "fcfc0b13617c9d5070d8146d49cb713eed2d87e87d81d74f176bcd72d2ddbf42",
+      "size_bytes": 6115,
+      "line_count": 120,
+      "included_range": "1-120",
+      "transferred_lines": 120,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/studio/static/scientific.html",
+      "sha256": "4705e5e885579b426570bc9fb969cc525db375e9e2935c27d40105a263385169",
+      "size_bytes": 30001,
+      "line_count": 121,
+      "included_range": "1-121",
+      "transferred_lines": 121,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/studio/static/scientific.js",
+      "sha256": "596532d38dee725256c93b9cad0b1f77bcf9aa434126ec53531d04e54e395b23",
+      "size_bytes": 106243,
+      "line_count": 1300,
+      "included_range": "1-1300",
+      "transferred_lines": 1300,
+      "complete_file": true,
+      "line_ending": "CRLF"
+    },
+    {
+      "path": "src/hf_tcm/repro/source_bits.py",
+      "sha256": "2cfd2a46d262d0852df4c039b7ecdfc85eda031bed3dcb6931c333711015c6e7",
+      "size_bytes": 3014,
+      "line_count": 82,
+      "included_range": "1-82",
+      "transferred_lines": 82,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/encoder.py",
+      "sha256": "5ee1bc65f19cb388862c4a94b6c60aba5f1626a6b036aeab26f7caf040c4f3d9",
+      "size_bytes": 5177,
+      "line_count": 136,
+      "included_range": "1-136",
+      "transferred_lines": 136,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/transmitter.py",
+      "sha256": "7c1573a45c990fb9db40ca6d137cff30107c2b36fd1517aaebad47dc3a7f23fb",
+      "size_bytes": 5710,
+      "line_count": 156,
+      "included_range": "1-156",
+      "transferred_lines": 156,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/modulator.py",
+      "sha256": "827519aedd75cf12efbaaae07d584891ea19e77ed08332f7149755cfa50be45e",
+      "size_bytes": 3078,
+      "line_count": 81,
+      "included_range": "1-81",
+      "transferred_lines": 81,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/channel_runner.py",
+      "sha256": "5f3d3ce660014e3477007ed44a885d5753c2304c0ec34c02c3db7ef3e666ab00",
+      "size_bytes": 6802,
+      "line_count": 148,
+      "included_range": "1-148",
+      "transferred_lines": 148,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/noise.py",
+      "sha256": "12b57c043ddafc2219cb7c84afbbc84517047565af61cd8f6848593e11c58b87",
+      "size_bytes": 1485,
+      "line_count": 37,
+      "included_range": "1-37",
+      "transferred_lines": 37,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/rician_fading.py",
+      "sha256": "793848757d43685a09cc56746233ce77108a6721943134b4bc1f6ddab7a3562a",
+      "size_bytes": 2533,
+      "line_count": 66,
+      "included_range": "1-66",
+      "transferred_lines": 66,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/multipath_channel.py",
+      "sha256": "9cdb28799958c6d543c57c093ce3ddab33dc98443fd0a6c284c551fcb0ebecc6",
+      "size_bytes": 1869,
+      "line_count": 36,
+      "included_range": "1-36",
+      "transferred_lines": 36,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/joint_receiver.py",
+      "sha256": "b3aaaa362301128244c43f4fcbb3be689856952e80535ff627384d0d8b7245c1",
+      "size_bytes": 18139,
+      "line_count": 389,
+      "included_range": "1-389",
+      "transferred_lines": 389,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/survivor_channel_estimator.py",
+      "sha256": "6646e9e38f35203936b3c2ae235d6dbbc5d50271dd64a8112ce403471b349d65",
+      "size_bytes": 7586,
+      "line_count": 164,
+      "included_range": "1-164",
+      "transferred_lines": 164,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/joint_viterbi.py",
+      "sha256": "e56252f835ec3d5d465ba7b4a1bc26cba36fb2b209942d3db03b0411b4090b87",
+      "size_bytes": 3712,
+      "line_count": 90,
+      "included_range": "1-90",
+      "transferred_lines": 90,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/separate_receiver.py",
+      "sha256": "26ed08d8c963ed675672ffeffc4d8be8ab130ca7862359275444a84d50f3011a",
+      "size_bytes": 13438,
+      "line_count": 274,
+      "included_range": "1-274",
+      "transferred_lines": 274,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/hard_8psk_demodulator.py",
+      "sha256": "fbe041c87e717a3f6e8cacb718d5b9dc05a474ca65eaf1d57b1b0f9eaef35d11",
+      "size_bytes": 2567,
+      "line_count": 66,
+      "included_range": "1-66",
+      "transferred_lines": 66,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/hamming_metric.py",
+      "sha256": "35e06ffb762dbfc5b453d91644b145ae14d230a6ed46664f27ee6a61e8483f67",
+      "size_bytes": 1255,
+      "line_count": 32,
+      "included_range": "1-32",
+      "transferred_lines": 32,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/hamming_viterbi.py",
+      "sha256": "73a585797f2c0e864bb4e87d025ddcacbb8b86a5f8c1b92bdc20546b0ba74299",
+      "size_bytes": 3986,
+      "line_count": 97,
+      "included_range": "1-97",
+      "transferred_lines": 97,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/information_pair_metrics.py",
+      "sha256": "de1df24322465adc809cb4f08564b09f5874a5f456cd6b2764bdcfdc72c5ce87",
+      "size_bytes": 2335,
+      "line_count": 59,
+      "included_range": "1-59",
+      "transferred_lines": 59,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/energy_experiment.py",
+      "sha256": "5f2f199751fdf0433a2f4a2f025abdf5b0bdba6948010075c3360f4d61836eae",
+      "size_bytes": 18493,
+      "line_count": 450,
+      "included_range": "1-450",
+      "transferred_lines": 450,
+      "complete_file": true,
+      "line_ending": "CRLF"
+    },
+    {
+      "path": "src/hf_tcm/repro/energy_gain.py",
+      "sha256": "c4a6868bef0475d147760284506b62287cd97009f4aa2a74afedc89c12e7725f",
+      "size_bytes": 2551,
+      "line_count": 66,
+      "included_range": "1-66",
+      "transferred_lines": 66,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/energy_statistics.py",
+      "sha256": "115ee53b045525f134577434d1c51646fab8ccd1a4e44702b943808617292242",
+      "size_bytes": 10836,
+      "line_count": 247,
+      "included_range": "1-247",
+      "transferred_lines": 247,
+      "complete_file": true,
+      "line_ending": "LF"
+    },
+    {
+      "path": "src/hf_tcm/repro/paired_experiment.py",
+      "sha256": "8db749cd874841732dc2d1107e307c157edfa256e821809ee8480d32a1d872b3",
+      "size_bytes": 40520,
+      "line_count": 880,
+      "included_range": "1-880",
+      "transferred_lines": 880,
+      "complete_file": true,
+      "line_ending": "LF"
+    }
+  ],
+  "verification": [
+    {
+      "path": "src/hf_tcm/repro/scientific_studio.py",
+      "lines_verified": 32,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/studio/server.py",
+      "lines_verified": 585,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/studio/scientific.py",
+      "lines_verified": 1390,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/studio/energy.py",
+      "lines_verified": 495,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/studio/scientific_exp03b_results.py",
+      "lines_verified": 120,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/studio/static/scientific.html",
+      "lines_verified": 121,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/studio/static/scientific.js",
+      "lines_verified": 1300,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/source_bits.py",
+      "lines_verified": 82,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/encoder.py",
+      "lines_verified": 136,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/transmitter.py",
+      "lines_verified": 156,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/modulator.py",
+      "lines_verified": 81,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/channel_runner.py",
+      "lines_verified": 148,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/noise.py",
+      "lines_verified": 37,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/rician_fading.py",
+      "lines_verified": 66,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/multipath_channel.py",
+      "lines_verified": 36,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/joint_receiver.py",
+      "lines_verified": 389,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/survivor_channel_estimator.py",
+      "lines_verified": 164,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/joint_viterbi.py",
+      "lines_verified": 90,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/separate_receiver.py",
+      "lines_verified": 274,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/hard_8psk_demodulator.py",
+      "lines_verified": 66,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/hamming_metric.py",
+      "lines_verified": 32,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/hamming_viterbi.py",
+      "lines_verified": 97,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/information_pair_metrics.py",
+      "lines_verified": 59,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/energy_experiment.py",
+      "lines_verified": 450,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/energy_gain.py",
+      "lines_verified": 66,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/energy_statistics.py",
+      "lines_verified": 247,
+      "sha256_match": true
+    },
+    {
+      "path": "src/hf_tcm/repro/paired_experiment.py",
+      "lines_verified": 880,
+      "sha256_match": true
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schema_version": "repro06b-multipath-joint-v1",
+  "expected_symbol_count": 20000,
+  "paths": [
+    {"delay_samples": 0, "gain": [1.0, 0.0]},
+    {"delay_samples": 3, "gain": [0.35, 0.15]}
+  ],
+  "initial_state": [0, 0],
+  "termination_policy": "none",
+  "metric_profile": "squared_euclidean",
+  "decoder_mode": "finite_depth",
+  "traceback_depth": 20,
+  "final_state_policy": "free",
+  "tie_break_policy": "canonical_first_edge_then_state_order",
+  "trace_output_mode": "compact",
+  "diagnostic_symbol_index": 10000,
+  "amplitude": 1.0,
+  "phase_offset_rad": 0.0,
+  "phase_increment_rad": 0.7853981633974483,
+  "samples_per_symbol": 8,
+  "timing_offset_samples": 0,
+  "channel_mode": "known_public_static",
+  "isi_mode": "augmented_trellis",
+  "estimator_profile": "known_static",
+  "encoder_id": "encoder_a_rate_2_3_repro01_v1",
+  "mapping_id": "adr002_assumed_natural_binary_c2_c1_c0_v1",
+  "profile_id": "repro06b_static_known_2path_eta20_project_v1"
+}

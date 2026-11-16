@@ -1,0 +1,26 @@
+﻿import fs from 'node:fs';
+const pages=await(await fetch('http://127.0.0.1:9240/json/list')).json();
+const page=pages.find(p=>p.type==='page'); const ws=new WebSocket(page.webSocketDebuggerUrl);await new Promise(r=>ws.addEventListener('open',r,{once:true}));let seq=0;const waiting=new Map();ws.onmessage=e=>{const m=JSON.parse(e.data);if(m.id){const f=waiting.get(m.id);waiting.delete(m.id);m.error?f.reject(m.error):f.resolve(m.result);}};
+const send=(method,params={})=>new Promise((resolve,reject)=>{const id=++seq;waiting.set(id,{resolve,reject});ws.send(JSON.stringify({id,method,params}));});
+const evalJS=async expression=>{const r=await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;};
+const wait=async(predicate)=>{for(let i=0;i<250;i++){if(await evalJS(predicate))return;await new Promise(r=>setTimeout(r,200));}throw Error('timed out');};
+await send('Page.enable');await send('Page.navigate',{url:'http://127.0.0.1:8765/scientific'});await new Promise(r=>setTimeout(r,1200));
+const outcomes={};
+await evalJS(`document.querySelector('#mx-frame').value=32;document.querySelector('#mx-scenario').value='awgn';document.querySelector('#mx-noise').value=0;document.querySelector('#article-sweep').checked=false;document.querySelector('#mx-id').value='ui-noiseless-'+Date.now();document.querySelector('#mx-run').click()`);
+await wait(`document.querySelector('#mx-status').textContent.includes('Демонстраційні кадри: 1')&&!!window.metricLiveTrace`);
+outcomes.noiseless=await evalJS(`(()=>{const t=window.metricLiveTrace.transmitter;return t.rx_i.every((v,i)=>v===t.tx_i[i])&&t.rx_q.every((v,i)=>v===t.tx_q[i]);})()`);if(!outcomes.noiseless)throw Error('noiseless failed');
+await evalJS(`document.querySelector('#article-mode').value='multiple';document.querySelector('#article-mode').dispatchEvent(new Event('change'));document.querySelector('#mx-trials').value=2;document.querySelector('#mx-scenario').value='rician';document.querySelector('#mx-noise').value=0.05;document.querySelector('#mx-id').value='ui-rician-'+Date.now();document.querySelector('#mx-run').click()`);
+await wait(`document.querySelector('#mx-status').textContent.includes('Демонстраційні кадри: 2')&&window.metricLiveTrace?.configuration.scenario==='rician'`);
+outcomes.monteCarlo=await evalJS(`document.querySelector('#mx-status').textContent`);
+outcomes.rician=await evalJS(`({pairing:window.metricLiveTrace.pairing_verified,replay:window.metricLiveTrace.replay_verified,frontend:window.metricLiveTrace.configuration.frontend_mode,received:window.metricLiveTrace.received.length})`);if(!outcomes.rician.pairing||!outcomes.rician.replay)throw Error('rician pairing failed');
+await evalJS(`document.querySelector('#extension-budget').value=10;document.querySelector('#approve-extension').click()`);
+await wait(`document.querySelector('#mx-status').textContent.includes('Нова адаптивна серія:')`);
+outcomes.extension=await evalJS(`({plan:document.querySelector('#extension-last-executed').textContent,status:document.querySelector('#mx-status').textContent})`);
+if(!outcomes.extension.plan.includes('Спроба 1/3'))throw Error('extension not executed');
+// Cancel a bounded pending sample job, including suppression of its later sweep.
+await evalJS(`document.querySelector('#mx-frame').value=256;document.querySelector('#mx-trials').value=20;document.querySelector('#article-sweep').checked=true;document.querySelector('#mx-id').value='ui-cancel-'+Date.now();document.querySelector('#mx-run').click()`);
+await wait(`!document.querySelector('#mx-stop').disabled`);await evalJS(`document.querySelector('#mx-stop').click()`);
+await wait(`document.querySelector('#mx-status').textContent.includes('Демонстраційні кадри:')`);
+outcomes.cancel=await evalJS(`document.querySelector('#mx-status').textContent`);if(!outcomes.cancel.includes('додаткові sweep-кадри: 0'))throw Error('cancel launched sweep');
+await evalJS(`document.querySelector('#approve-extension').click()`);await wait(`!document.querySelector('#mx-stop').disabled`);await evalJS(`document.querySelector('#mx-stop').click()`);await wait(`document.querySelector('#mx-status').textContent.includes('Нова адаптивна серія:')`);outcomes.extensionCancel=await evalJS(`document.querySelector('#mx-status').textContent`);if(!outcomes.extensionCancel.includes('incomplete'))throw Error('extension cancellation failed');
+fs.writeFileSync('outputs/ui_article_alignment/stage2-runtime-tests.json',JSON.stringify(outcomes,null,2));console.log(outcomes);ws.close();

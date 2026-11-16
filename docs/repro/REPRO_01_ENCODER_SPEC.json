@@ -1,0 +1,406 @@
+{
+  "spec_id": "REPRO-01-ENCODER-A-v1",
+  "status": "PROJECT_RECONSTRUCTION_WITH_ALGEBRAIC_SOURCE_SUPPORT",
+  "source": {
+    "id": "S1",
+    "path": "references/source_paper_2026.docx",
+    "printed_pages": [
+      5,
+      6
+    ],
+    "figures": [
+      2,
+      3
+    ],
+    "exact_v7_confirmed": false
+  },
+  "generator_matrix": [
+    [
+      "1",
+      "0",
+      "0"
+    ],
+    [
+      "0",
+      "D^2+1",
+      "D"
+    ]
+  ],
+  "convention": {
+    "input_order": [
+      "u0",
+      "u1"
+    ],
+    "output_order": [
+      "c2",
+      "c1",
+      "c0"
+    ],
+    "state_order": [
+      "u1[k-1]",
+      "u1[k-2]"
+    ],
+    "equations": [
+      "c2[k]=u0[k]",
+      "c1[k]=u1[k] XOR u1[k-2]",
+      "c0[k]=u1[k-1]"
+    ],
+    "next_state": [
+      "u1[k]",
+      "u1[k-1]"
+    ],
+    "initial_state": [
+      0,
+      0
+    ],
+    "initial_state_status": "PROJECT_RECONSTRUCTION",
+    "termination": "no_tail_bits_free_final_state",
+    "termination_status": "PROJECT_RECONSTRUCTION",
+    "phase_mapping": "ADR-002 natural-binary triple to 8PSK index",
+    "phase_mapping_status": "RECONSTRUCTED_NOT_AUTHOR_VERIFIED",
+    "delta_phi_rad": "pi/4"
+  },
+  "state_count": 4,
+  "transitions": [
+    {
+      "current_state": [
+        0,
+        0
+      ],
+      "input_bits": [
+        0,
+        0
+      ],
+      "output_bits": [
+        0,
+        0,
+        0
+      ],
+      "next_state": [
+        0,
+        0
+      ]
+    },
+    {
+      "current_state": [
+        0,
+        0
+      ],
+      "input_bits": [
+        0,
+        1
+      ],
+      "output_bits": [
+        0,
+        1,
+        0
+      ],
+      "next_state": [
+        1,
+        0
+      ]
+    },
+    {
+      "current_state": [
+        0,
+        0
+      ],
+      "input_bits": [
+        1,
+        0
+      ],
+      "output_bits": [
+        1,
+        0,
+        0
+      ],
+      "next_state": [
+        0,
+        0
+      ]
+    },
+    {
+      "current_state": [
+        0,
+        0
+      ],
+      "input_bits": [
+        1,
+        1
+      ],
+      "output_bits": [
+        1,
+        1,
+        0
+      ],
+      "next_state": [
+        1,
+        0
+      ]
+    },
+    {
+      "current_state": [
+        1,
+        0
+      ],
+      "input_bits": [
+        0,
+        0
+      ],
+      "output_bits": [
+        0,
+        0,
+        1
+      ],
+      "next_state": [
+        0,
+        1
+      ]
+    },
+    {
+      "current_state": [
+        1,
+        0
+      ],
+      "input_bits": [
+        0,
+        1
+      ],
+      "output_bits": [
+        0,
+        1,
+        1
+      ],
+      "next_state": [
+        1,
+        1
+      ]
+    },
+    {
+      "current_state": [
+        1,
+        0
+      ],
+      "input_bits": [
+        1,
+        0
+      ],
+      "output_bits": [
+        1,
+        0,
+        1
+      ],
+      "next_state": [
+        0,
+        1
+      ]
+    },
+    {
+      "current_state": [
+        1,
+        0
+      ],
+      "input_bits": [
+        1,
+        1
+      ],
+      "output_bits": [
+        1,
+        1,
+        1
+      ],
+      "next_state": [
+        1,
+        1
+      ]
+    },
+    {
+      "current_state": [
+        0,
+        1
+      ],
+      "input_bits": [
+        0,
+        0
+      ],
+      "output_bits": [
+        0,
+        1,
+        0
+      ],
+      "next_state": [
+        0,
+        0
+      ]
+    },
+    {
+      "current_state": [
+        0,
+        1
+      ],
+      "input_bits": [
+        0,
+        1
+      ],
+      "output_bits": [
+        0,
+        0,
+        0
+      ],
+      "next_state": [
+        1,
+        0
+      ]
+    },
+    {
+      "current_state": [
+        0,
+        1
+      ],
+      "input_bits": [
+        1,
+        0
+      ],
+      "output_bits": [
+        1,
+        1,
+        0
+      ],
+      "next_state": [
+        0,
+        0
+      ]
+    },
+    {
+      "current_state": [
+        0,
+        1
+      ],
+      "input_bits": [
+        1,
+        1
+      ],
+      "output_bits": [
+        1,
+        0,
+        0
+      ],
+      "next_state": [
+        1,
+        0
+      ]
+    },
+    {
+      "current_state": [
+        1,
+        1
+      ],
+      "input_bits": [
+        0,
+        0
+      ],
+      "output_bits": [
+        0,
+        1,
+        1
+      ],
+      "next_state": [
+        0,
+        1
+      ]
+    },
+    {
+      "current_state": [
+        1,
+        1
+      ],
+      "input_bits": [
+        0,
+        1
+      ],
+      "output_bits": [
+        0,
+        0,
+        1
+      ],
+      "next_state": [
+        1,
+        1
+      ]
+    },
+    {
+      "current_state": [
+        1,
+        1
+      ],
+      "input_bits": [
+        1,
+        0
+      ],
+      "output_bits": [
+        1,
+        1,
+        1
+      ],
+      "next_state": [
+        0,
+        1
+      ]
+    },
+    {
+      "current_state": [
+        1,
+        1
+      ],
+      "input_bits": [
+        1,
+        1
+      ],
+      "output_bits": [
+        1,
+        0,
+        1
+      ],
+      "next_state": [
+        1,
+        1
+      ]
+    }
+  ],
+  "state_order": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      1
+    ]
+  ],
+  "input_order": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      1,
+      1
+    ]
+  ]
+}

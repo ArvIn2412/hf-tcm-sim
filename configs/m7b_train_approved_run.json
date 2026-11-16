@@ -1,0 +1,2602 @@
+{
+  "schema_version": "m7a.policy-study.v1",
+  "study_id": "m7_reconstructed_estimator_policy_study_v1",
+  "classification": "preregistered independent policy-study design; not executed tuning; not optimized receiver; not new performance evidence",
+  "design_status": "approved_training",
+  "execution_authorized": true,
+  "execution_scope": "m7b_train_only",
+  "scientific_status": {
+    "paper_exact": false,
+    "receiver_enabled": false,
+    "accepted_adrs": [
+      "001",
+      "002",
+      "003",
+      "004",
+      "005",
+      "006",
+      "007",
+      "008",
+      "010",
+      "012",
+      "013",
+      "014",
+      "015"
+    ],
+    "proposed_adrs": [
+      "009",
+      "011"
+    ],
+    "open_science_questions": [
+      "SCI-02",
+      "SCI-03",
+      "SCI-METRIC-02"
+    ],
+    "author_mapping_status": "SOURCE_UNRESOLVED"
+  },
+  "profile": {
+    "model": "reconstructed_offline",
+    "channel_memory_L": 1,
+    "real_channel_gain": 0.75,
+    "delay_samples": 0,
+    "modulation": "normalized_8PSK",
+    "pulse_shape": "rectangular_ZOH",
+    "samples_per_symbol": 8,
+    "observed_iq_convention": "ADR-012",
+    "likelihood": "ADR-005 reconstructed pseudo-likelihood",
+    "decoder": "ADR-013 conditional full Viterbi",
+    "noise_profile": "ADR-015 independent circular complex AWGN",
+    "gamma_b_eff_db": 5.0,
+    "gamma_b_eff_linear": 3.1622776601683795,
+    "sigma_squared": 0.7115124735378853,
+    "sigma_squared_formula": "4*a*a / 10^(gamma_b_eff_db/10)",
+    "physical_hf_ebn0": false
+  },
+  "sequence_design": {
+    "symbols_per_run_F": 256,
+    "information_bits_per_run": 512,
+    "same_reference_sequence_for_all_policies_within_run": true,
+    "one_noise_realization_per_run_shared_by_all_policies": true,
+    "channel_truth_passed_to_receiver": false,
+    "decoder_calls_per_policy_sequence_target": 1
+  },
+  "shared_estimator": {
+    "initial_fluctuating_iq": [
+      0.42,
+      0.91
+    ],
+    "initial_full_iq": [
+      0.42,
+      0.91
+    ],
+    "mu0": [
+      0.0,
+      0.0
+    ],
+    "beta": 0.7
+  },
+  "clock_origins": {
+    "absolute_sample_origin": 0,
+    "absolute_symbol_origin": 0,
+    "estimator_time_index_origin": 0,
+    "no_resets_within_sequence": true
+  },
+  "policy_grid": {
+    "alpha_prime_values": [
+      1.0,
+      0.95,
+      0.85
+    ],
+    "k_scale_values": [
+      0.0,
+      0.5,
+      1.0
+    ],
+    "base_k_tilde": [
+      0.35,
+      -0.2
+    ],
+    "construction": "K_tilde = K_scale * base_k_tilde; Cartesian product in alpha-major, K_scale-minor order",
+    "candidate_policies": [
+      {
+        "candidate_id": "a100_k000",
+        "alpha_prime": 1.0,
+        "k_scale": 0.0,
+        "k_tilde": [
+          0.0,
+          0.0
+        ],
+        "role": "historical_frozen_B"
+      },
+      {
+        "candidate_id": "a100_k050",
+        "alpha_prime": 1.0,
+        "k_scale": 0.5,
+        "k_tilde": [
+          0.175,
+          -0.1
+        ],
+        "role": "proposed_policy"
+      },
+      {
+        "candidate_id": "a100_k100",
+        "alpha_prime": 1.0,
+        "k_scale": 1.0,
+        "k_tilde": [
+          0.35,
+          -0.2
+        ],
+        "role": "proposed_policy"
+      },
+      {
+        "candidate_id": "a095_k000",
+        "alpha_prime": 0.95,
+        "k_scale": 0.0,
+        "k_tilde": [
+          0.0,
+          0.0
+        ],
+        "role": "proposed_policy"
+      },
+      {
+        "candidate_id": "a095_k050",
+        "alpha_prime": 0.95,
+        "k_scale": 0.5,
+        "k_tilde": [
+          0.175,
+          -0.1
+        ],
+        "role": "proposed_policy"
+      },
+      {
+        "candidate_id": "a095_k100",
+        "alpha_prime": 0.95,
+        "k_scale": 1.0,
+        "k_tilde": [
+          0.35,
+          -0.2
+        ],
+        "role": "proposed_policy"
+      },
+      {
+        "candidate_id": "a085_k000",
+        "alpha_prime": 0.85,
+        "k_scale": 0.0,
+        "k_tilde": [
+          0.0,
+          0.0
+        ],
+        "role": "proposed_policy"
+      },
+      {
+        "candidate_id": "a085_k050",
+        "alpha_prime": 0.85,
+        "k_scale": 0.5,
+        "k_tilde": [
+          0.175,
+          -0.1
+        ],
+        "role": "proposed_policy"
+      },
+      {
+        "candidate_id": "a085_k100",
+        "alpha_prime": 0.85,
+        "k_scale": 1.0,
+        "k_tilde": [
+          0.35,
+          -0.2
+        ],
+        "role": "historical_C"
+      }
+    ],
+    "policies_are_source_author_receiver_modes": false
+  },
+  "pairing": {
+    "common_received_buffer_within_sequence": true,
+    "common_reference_bits_within_sequence": true,
+    "common_initial_state_beta_mu0_and_clocks": true,
+    "only_policy_update_coefficients_vary": true,
+    "received_hash_recorded_per_sequence": true
+  },
+  "partitions": {
+    "historical_data_excluded": [
+      "M5f",
+      "M5h",
+      "M5j",
+      "M6b",
+      "M6g",
+      "M6h"
+    ],
+    "training": {
+      "sequence_count": 40,
+      "symbols_per_sequence": 256,
+      "run_id_template": "{study_id}:train:run-{run_index:03d}",
+      "uses_new_seed_roots": true,
+      "seed_namespaces": {
+        "data": 2026120101,
+        "noise": 2026120102,
+        "bootstrap": 2026120103,
+        "experiment_metadata": 2026120104
+      },
+      "bootstrap_use": "namespace reserved; training winner intervals are descriptive and not confirmatory"
+    },
+    "validation": {
+      "sequence_count": 40,
+      "symbols_per_sequence": 256,
+      "run_id_template": "{study_id}:validation:run-{run_index:03d}",
+      "uses_new_seed_roots": true,
+      "policies": [
+        "historical_frozen_B",
+        "training_selected_policy"
+      ],
+      "historical_C": "optional descriptive only; cannot affect selection",
+      "seed_namespaces": {
+        "data": 2026120201,
+        "noise": 2026120202,
+        "bootstrap": 2026120203,
+        "experiment_metadata": 2026120204
+      },
+      "selection_repeated": false
+    },
+    "final": {
+      "sequence_count": 100,
+      "symbols_per_sequence": 256,
+      "run_id_template": "{study_id}:final:run-{run_index:03d}",
+      "uses_new_seed_roots": true,
+      "policies": [
+        "historical_frozen_B",
+        "separately_frozen_selected_policy"
+      ],
+      "historical_C": "optional descriptive only; cannot affect selection",
+      "seed_namespaces": {
+        "data": 2026120301,
+        "noise": 2026120302,
+        "bootstrap": 2026120303,
+        "experiment_metadata": 2026120304
+      },
+      "requires_separate_design_and_execution_approval": true,
+      "automatic_after_validation": false
+    }
+  },
+  "seed_derivation": {
+    "algorithm": "numpy.random.SeedSequence(master_seed, spawn_key=(protocol_version_word, partition_code, zero_based_run_index, stream_code)).generate_state(1, dtype=uint64)[0]; initialize numpy.random.PCG64 with derived seed",
+    "protocol_version_word": 1295337521,
+    "partition_codes": {
+      "training": 701,
+      "validation": 702,
+      "final": 703
+    },
+    "stream_codes": {
+      "data": 11,
+      "noise": 23,
+      "bootstrap": 37,
+      "experiment_metadata": 41
+    },
+    "displayed_run_index_origin": 1,
+    "spawned_run_index_origin": 0,
+    "streams_generated_in_M7a": false,
+    "historical_namespaces_reused": false
+  },
+  "selection": {
+    "training_only": true,
+    "estimand": "minimum pooled raw-count BER over all nine fixed candidates",
+    "candidate_eligible_only_if": "all 40 candidate outputs and the paired historical B outputs are valid and complete; no completed-only pooling",
+    "if_any_candidate_run_fails": "mark that candidate ineligible and retain every failure record; do not replace a seed; continue the predeclared remaining jobs if later authorized",
+    "if_historical_B_has_any_missing_or_invalid_output": "block selection requiring a complete paired B baseline; do not impute or drop the affected run",
+    "finite_high_error_trajectory": "retain and include if decoder output is valid",
+    "nonfinite_or_invalid_decoder_output": "failure record; candidate ineligible unless a separately approved missingness policy changes this contract",
+    "tie_break_order": [
+      "lower pooled raw-count BER",
+      "lower pooled raw-count SER",
+      "lower K_scale",
+      "alpha_prime closer to 1.0",
+      "lexicographically lower candidate_id"
+    ],
+    "frozen_B_may_win": true,
+    "coefficient_error_used_for_selection": false,
+    "training_inference": "selection-oriented descriptive statistics only; no confirmatory claim"
+  },
+  "validation_rule": {
+    "evaluate_only": [
+      "historical_frozen_B",
+      "one_training_selected_policy"
+    ],
+    "same_received_pairing": true,
+    "new_data_and_noise_roots": true,
+    "primary_contrast": "selected_policy BER minus frozen_B BER",
+    "secondary": [
+      "pooled SER",
+      "coefficient trajectory diagnostics after decoding only",
+      "numerical failure counts"
+    ],
+    "bootstrap": {
+      "cluster_unit": "one complete TCM sequence",
+      "paired_index_resampling": true,
+      "replicates": 2000,
+      "confidence_level": 0.95,
+      "interval": "two-sided percentile",
+      "quantile_method": "linear",
+      "pool_raw_counts_per_replicate": true,
+      "independent_bootstrap_namespace": true
+    },
+    "validation_does_not_select_a_second_policy": true,
+    "failed_or_missing_valid_output": "retain failure; block complete paired inference; no zero imputation or completed-only estimate"
+  },
+  "final_evaluation": {
+    "status": "future; not authorized by M7a",
+    "sample_count_candidate": 100,
+    "requires_separate_approval_of": [
+      "selected policy",
+      "sample size",
+      "primary estimand",
+      "target precision",
+      "stopping rule",
+      "failure handling",
+      "bootstrap settings",
+      "seed namespaces",
+      "resource budget",
+      "claims policy"
+    ],
+    "may_be_used_for_later_tuning": false,
+    "confirmatory_label_allowed_before_approval": false
+  },
+  "failure_policy": {
+    "retain_success_and_failure_records": true,
+    "record_raw_counts_when_valid": true,
+    "record_coefficient_diagnostics": true,
+    "retry_with_new_seed": false,
+    "zero_error_imputation": false,
+    "maximum_error_imputation": false,
+    "silent_exclusion": false,
+    "finite_high_BER_trajectory": "retain all observed errors",
+    "training_candidate_with_incomplete_40_run_pairing": "ineligible",
+    "validation_or_final_missing_valid_output": "block full paired inference",
+    "resume": "same planned IDs, original seeds, identical approved config/code fingerprint only"
+  },
+  "workload": {
+    "single_process": true,
+    "multiprocessing": false,
+    "atomic_checkpoint_per_sequence": true,
+    "training_sequences": 40,
+    "training_sequence_checkpoint_count": 40,
+    "training_policy_run_records": 360,
+    "training_unique_policy_decoder_passes_target": 360,
+    "training_policy_symbol_passes_target": 92160,
+    "training_received_samples_generated": 81920,
+    "training_information_bits_generated": 20480,
+    "validation_sequences": 40,
+    "validation_sequence_checkpoint_count": 40,
+    "validation_policy_run_records": 80,
+    "validation_decoder_passes": 80,
+    "validation_optional_historical_C_decoder_passes": 40,
+    "validation_policy_symbol_passes": 20480,
+    "validation_received_samples_generated": 81920,
+    "validation_information_bits_generated": 20480,
+    "final_sequences": 100,
+    "final_sequence_checkpoint_count": 100,
+    "final_policy_run_records": 200,
+    "final_decoder_passes": 200,
+    "final_optional_historical_C_decoder_passes": 100,
+    "final_policy_symbol_passes": 51200,
+    "final_received_samples_generated": 204800,
+    "final_information_bits_generated": 51200,
+    "current_paired_helper_decoder_passes_per_call": 2,
+    "training_current_public_helper_passes_if_called_once_per_non_B_candidate": 640,
+    "training_repeated_B_pass_overhead_under_that_wrapper": 280,
+    "runtime_or_rss_estimate": null
+  },
+  "workflow_gates": {
+    "train_to_validation_automatic": false,
+    "validation_to_final_automatic": false,
+    "validation_requires_frozen_training_selection": true,
+    "final_requires_separate_approval": true
+  },
+  "resource_policy": {
+    "single_process": true,
+    "multiprocessing": false,
+    "atomic_checkpoint_per_sequence": true,
+    "run_order": "partition order TRAIN, then separately authorized VALIDATION, then separately authorized FINAL; ascending run index within partition; candidate ID order within sequence",
+    "stop_on_resource_budget": "stop before next sequence; preserve completed atomic checkpoints and mark partition incomplete",
+    "budget": "actual wall-clock and memory limits are to be approved before any execution; M7a makes no runtime/RSS claim"
+  },
+  "scientific_limitations": [
+    "reconstructed_offline, not source-aligned or paper-exact",
+    "one fixed effective discrete gamma_b point; no physical HF Eb/N0 calibration",
+    "L=1 real channel gain a=0.75 and zero delay",
+    "independent ADR-015 sample-level complex AWGN",
+    "ADR-005 pseudo-likelihood and ADR-013 conditional full Viterbi",
+    "ADR-002 edge/phase mapping and ADR-012 observed-IQ remain reconstruction conventions",
+    "source questions SCI-02, SCI-03, SCI-METRIC-02 remain open",
+    "training minimum is selection-biased and not confirmatory",
+    "validation applies only to the single frozen selected policy and fixed profile"
+  ],
+  "authorization_provenance": {
+    "explicit_user_authorization": "explicit user authorization supplied through this Codex M7b instruction",
+    "partition_scope": "TRAIN only; VALIDATION and FINAL not authorized"
+  },
+  "execution_limits": {
+    "wall_clock_limit_seconds": 900,
+    "rss_monitoring_budget_bytes": 1610612736,
+    "rss_limit_semantics": "periodic process RSS monitoring, not a hard OS process limit",
+    "worker_processes": 1,
+    "multiprocessing": false,
+    "stop_before_next_sequence_on_budget": true,
+    "atomic_checkpoint_per_sequence": true
+  },
+  "runtime_provenance": {
+    "draft_sha256": "ecec26dae72a91ab48466191a97836ef492d06de95d51acf5db5fa4da916b9cb",
+    "draft_file_sha256": "6b5cffdd9c4f47241bf7d54ff5d58c93d65bc2759a35557e07e3a1f38dae841f",
+    "code_fingerprint": {
+      "src/hf_tcm/evaluation/m7a_policy_study_design.py": "a2cf0f1c981ab5280d52a0ec8757bbed922408cfdee811fd91ff693fc41fbeeb",
+      "src/hf_tcm/evaluation/m7b_train_runner.py": "f0a719bab35d78d63841116cf60ac28efe41cfad7e4a9bdae348039db7ff224f",
+      "src/hf_tcm/evaluation/m5i_confirmatory_design.py": "60b257c3d0792d5ec4b73abdea2879369bff4d6f7cfca35cc7de04a73c1f1b1e",
+      "src/hf_tcm/evaluation/m5h_pilot_runner.py": "48f532d146ddb4d85b8ff7f8aebfba3f7ce9bf9e802a892d187a9515a6dae208",
+      "src/hf_tcm/evaluation/reconstruction_adaptive_diagnostics.py": "a6d5ab6288114bc844fdbef4ed82fc6e4ea960614d9206a31de5b2768f68550a",
+      "src/hf_tcm/evaluation/error_metrics.py": "dd8b3e9335d0e776d531ee4d3154c1bce9d1e579352c0540d5cabb6b6d2264be",
+      "src/hf_tcm/evaluation/matched_m2_b5_experiment.py": "cf70b31ffece028382a2660b9f9bc752bfd967df8400be07ca04295db338737d",
+      "src/hf_tcm/receiver/reconstruction_posterior_estimator_sequence.py": "ff0c1dbfffccdd2957af5a25ccd903c0df378defd638a2bfd7f7fd1923bd566e",
+      "src/hf_tcm/receiver/reconstruction_posterior_estimator_step.py": "a8f8eb00d80d93cbd55d56c216cad374c8745fc14d2cf56e7477e21d8347a67b",
+      "src/hf_tcm/receiver/reconstruction_candidate_metrics.py": "22573b4a90ab8e6873b60b58965529665dedf911dfd0f6d520b3ca6bcb8fff5d",
+      "src/hf_tcm/receiver/reconstruction_posterior.py": "e9aac0eb6d77aa71c4cd3961afcf6bc476466d26c3c18bdecc85e6e8aa236337",
+      "src/hf_tcm/receiver/reconstruction_conditional_decode.py": "b3af5a48f0759740b816326d36eb0c0d03b4a2d90f6a5dd3f08862512961f9eb",
+      "src/hf_tcm/receiver/reconstruction_forward.py": "b3696b6977e23a936c48d89e5042603cb222c9ef583a2f0bd9655019a9c36273",
+      "src/hf_tcm/receiver/reconstruction_observation.py": "b82cb47bb9e9db010554dac86a6d0039c58ec6a09656f3f48fc87bb9d0a677b0",
+      "src/hf_tcm/receiver/iq_prediction.py": "0bc648f09fb095f5debbe1fe38e128c600c93065ab52954b28fa7abe6c037007",
+      "src/hf_tcm/receiver/paper_recursion.py": "ac5fddae1186254c6478eeff7a1f81173dba9f71d9d7bc75d9f7f49b2cb3582d",
+      "src/hf_tcm/receiver/reconstruction_labeling.py": "bbc5c5ecc646088c77677dd2ffc791429b2c102eb6950ea98eb1b579b7c1ddbb",
+      "src/hf_tcm/decoding/reconstruction_viterbi.py": "7773722fec05bad15cd596b6b69de75374002ddbba6f38b817f8447adcbaea4a",
+      "src/hf_tcm/coding/encoder.py": "6883e760a43903c1cbad6615cb7a70cb1193696d8243450da335111cd7c08405",
+      "src/hf_tcm/coding/hypotheses.py": "268219516615659479ef013a00177e82ecbc4f88ef24990f2391d6a3833ca2f2",
+      "src/hf_tcm/modulation/psk8.py": "7d2c83892ddb10a955e21c39cf0085e120f107dd0879407aea18c8b4ff52739a",
+      "src/hf_tcm/modulation/labeling.py": "8c635a12184f9753e63e944b079f485bf55df8233557601a2724233eac45460b",
+      "src/hf_tcm/receiver/iq.py": "d0d418d47fa1ece0b68a50acffe15b7109f2c66e66999d6bc59a46f84e2ce1be",
+      "src/hf_tcm/reconstruction_config.py": "0674cd572124a8269cb90583f9109fe713917fcad9bdc8cadfdebb72baf2e256"
+    },
+    "code_fingerprint_sha256": "b125014fb5e61bccf66162beaf41214d591369563f0bedcdaa784e700b40c909",
+    "git": {
+      "revision": null,
+      "status": "unavailable: workspace is not a Git worktree"
+    },
+    "python_version": "3.13.13",
+    "numpy_version": "2.3.3",
+    "prng": "numpy.random.PCG64",
+    "receiver_configuration_source": "configs/m5i_confirmatory_design_draft.json reconstruction_configuration; same accepted reconstructed profile",
+    "receiver_configuration_sha256": "e51cfbe3398bb823207d2c364bae5827c356c62bea9790567b43372c5f0dea2e",
+    "receiver_configuration": {
+      "assumption_provenance": {
+        "aggregate_observation_model": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "alpha_prime": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "beam_width": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "beta": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "candidate_count": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "candidate_index_space": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "decision_lag_symbols": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "estimator_time_index": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "estimator_time_rule": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "initial_estimates": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "initial_prior": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "initial_state": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "k_tilde": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "labeling": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "likelihood_type": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "mu0": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "path_count": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "path_delays_samples": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "prediction_combination": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "sample_rate_hz": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "samples_per_symbol": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "symbol_origin_sample": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "symbol_rate_hz": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "timebase": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "transition_model": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        }
+      },
+      "candidate_count": 16,
+      "candidate_index_space": "m4_1_hypothesis_id",
+      "estimator": {
+        "alpha_prime": 0.85,
+        "initial_estimates": {
+          "fluctuating_iq": [
+            [
+              0.42,
+              0.91
+            ]
+          ],
+          "full_iq": [
+            [
+              0.42,
+              0.91
+            ]
+          ]
+        },
+        "initial_time_index": 0,
+        "k_tilde": [
+          [
+            0.35,
+            -0.2
+          ]
+        ],
+        "mu0": [
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "time_rule": "one_recursion_step_i_to_i_plus_1"
+      },
+      "initial": {
+        "prior": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "state": [
+          0,
+          0
+        ]
+      },
+      "labeling": {
+        "bit_order": [
+          "c2",
+          "c1",
+          "c0"
+        ],
+        "name": "assumed_natural_binary",
+        "origin": "ADR-002 paired-control setting",
+        "output_to_b": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "phase_offset_rad": 0.0
+      },
+      "likelihood": {
+        "beta": 0.7,
+        "kind": "exp_negative_beta_project_reconstruction_metric"
+      },
+      "observation_model": {
+        "iq_rule": "(-Im(received), Re(received))",
+        "kind": "adr012_l1_real_mean8",
+        "prediction_combination": "explicit_project_prediction",
+        "sample_reduction": "arithmetic_mean_exactly_8",
+        "waveform_rule": "rectangular_zoh"
+      },
+      "paper_exact": false,
+      "profile": "reconstructed_offline",
+      "receiver_enabled": false,
+      "schema_version": 1,
+      "search": {
+        "beam_width": 1,
+        "decision_lag_symbols": 0
+      },
+      "timebase": {
+        "name": "approximate_rectangular_8sps",
+        "path_count": 1,
+        "path_delays_samples": [
+          0
+        ],
+        "sample_rate_hz": 8000.0,
+        "samples_per_symbol": 8,
+        "symbol_origin_sample": 0,
+        "symbol_rate_hz": 1000.0
+      },
+      "transition_model": {
+        "name": "adr003_uniform_allowed_edges",
+        "probabilities": [
+          [
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ]
+        ]
+      }
+    }
+  },
+  "output": {
+    "experiment_id": "m7_reconstructed_estimator_policy_study_v1",
+    "namespace": "outputs/m7b_train/m7_reconstructed_estimator_policy_study_v1",
+    "schema_version": "m7b.train.v1",
+    "checkpoint_policy": "atomic JSON checkpoint after each complete sequence"
+  },
+  "run_manifest": {
+    "partition": "TRAIN",
+    "partition_code": 701,
+    "run_index_origin": {
+      "displayed": 1,
+      "spawned": 0
+    },
+    "stream_codes": {
+      "data": 11,
+      "noise": 23,
+      "experiment_metadata": 41
+    },
+    "runs": [
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-001",
+        "run_index": 1,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              0,
+              11
+            ],
+            "derived_seed": 12302664592899398260,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              0,
+              23
+            ],
+            "derived_seed": 14041940661502521621,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              0,
+              41
+            ],
+            "derived_seed": 2136001072474950582,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-002",
+        "run_index": 2,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              1,
+              11
+            ],
+            "derived_seed": 11782082758947734878,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              1,
+              23
+            ],
+            "derived_seed": 16975374920515946797,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              1,
+              41
+            ],
+            "derived_seed": 325016490115200397,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-003",
+        "run_index": 3,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              2,
+              11
+            ],
+            "derived_seed": 13272650347770654810,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              2,
+              23
+            ],
+            "derived_seed": 905348902843846140,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              2,
+              41
+            ],
+            "derived_seed": 14533376233890379949,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-004",
+        "run_index": 4,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              3,
+              11
+            ],
+            "derived_seed": 1874051820788446171,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              3,
+              23
+            ],
+            "derived_seed": 15248385808924702745,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              3,
+              41
+            ],
+            "derived_seed": 10325535603442175891,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-005",
+        "run_index": 5,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              4,
+              11
+            ],
+            "derived_seed": 14758566730551223830,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              4,
+              23
+            ],
+            "derived_seed": 14318217905744742975,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              4,
+              41
+            ],
+            "derived_seed": 16016148469309301519,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-006",
+        "run_index": 6,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              5,
+              11
+            ],
+            "derived_seed": 227891726881445069,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              5,
+              23
+            ],
+            "derived_seed": 9191269209316666391,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              5,
+              41
+            ],
+            "derived_seed": 12035451467021030360,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-007",
+        "run_index": 7,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              6,
+              11
+            ],
+            "derived_seed": 8600124732777674281,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              6,
+              23
+            ],
+            "derived_seed": 11560487427733912112,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              6,
+              41
+            ],
+            "derived_seed": 13485560543868732085,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-008",
+        "run_index": 8,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              7,
+              11
+            ],
+            "derived_seed": 283319053087766407,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              7,
+              23
+            ],
+            "derived_seed": 4337547741405793067,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              7,
+              41
+            ],
+            "derived_seed": 3848902389836687066,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-009",
+        "run_index": 9,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              8,
+              11
+            ],
+            "derived_seed": 11318157358518455900,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              8,
+              23
+            ],
+            "derived_seed": 8941990160205392245,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              8,
+              41
+            ],
+            "derived_seed": 11018829628775204924,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-010",
+        "run_index": 10,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              9,
+              11
+            ],
+            "derived_seed": 17382043792154859165,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              9,
+              23
+            ],
+            "derived_seed": 14868687384527989917,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              9,
+              41
+            ],
+            "derived_seed": 5001675390635990801,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-011",
+        "run_index": 11,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              10,
+              11
+            ],
+            "derived_seed": 16686318728764772331,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              10,
+              23
+            ],
+            "derived_seed": 15961366008142973981,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              10,
+              41
+            ],
+            "derived_seed": 10332000657982486581,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-012",
+        "run_index": 12,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              11,
+              11
+            ],
+            "derived_seed": 5650144342095349222,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              11,
+              23
+            ],
+            "derived_seed": 10553491135774015777,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              11,
+              41
+            ],
+            "derived_seed": 5569729119031496395,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-013",
+        "run_index": 13,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              12,
+              11
+            ],
+            "derived_seed": 4395179461988801746,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              12,
+              23
+            ],
+            "derived_seed": 6167684775538459336,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              12,
+              41
+            ],
+            "derived_seed": 13594290744587382195,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-014",
+        "run_index": 14,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              13,
+              11
+            ],
+            "derived_seed": 7085369930996473731,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              13,
+              23
+            ],
+            "derived_seed": 7765092633203797432,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              13,
+              41
+            ],
+            "derived_seed": 7307730184951820752,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-015",
+        "run_index": 15,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              14,
+              11
+            ],
+            "derived_seed": 15022641978554120299,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              14,
+              23
+            ],
+            "derived_seed": 3024236193091255181,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              14,
+              41
+            ],
+            "derived_seed": 2143538669831184443,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-016",
+        "run_index": 16,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              15,
+              11
+            ],
+            "derived_seed": 13578481536552330544,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              15,
+              23
+            ],
+            "derived_seed": 13236844817168791627,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              15,
+              41
+            ],
+            "derived_seed": 14254346319880608481,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-017",
+        "run_index": 17,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              16,
+              11
+            ],
+            "derived_seed": 11947617043165645689,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              16,
+              23
+            ],
+            "derived_seed": 15466997002745282381,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              16,
+              41
+            ],
+            "derived_seed": 12038747633138809865,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-018",
+        "run_index": 18,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              17,
+              11
+            ],
+            "derived_seed": 15384689669029093709,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              17,
+              23
+            ],
+            "derived_seed": 7496013256093715002,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              17,
+              41
+            ],
+            "derived_seed": 15718943318016387026,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-019",
+        "run_index": 19,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              18,
+              11
+            ],
+            "derived_seed": 16140719099114185042,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              18,
+              23
+            ],
+            "derived_seed": 16398142517324592667,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              18,
+              41
+            ],
+            "derived_seed": 10385598108292882742,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-020",
+        "run_index": 20,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              19,
+              11
+            ],
+            "derived_seed": 10444896422883953542,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              19,
+              23
+            ],
+            "derived_seed": 369141069819987487,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              19,
+              41
+            ],
+            "derived_seed": 10694420862988566167,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-021",
+        "run_index": 21,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              20,
+              11
+            ],
+            "derived_seed": 519070358498585894,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              20,
+              23
+            ],
+            "derived_seed": 356654720534819413,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              20,
+              41
+            ],
+            "derived_seed": 14847342408781599637,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-022",
+        "run_index": 22,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              21,
+              11
+            ],
+            "derived_seed": 10594773225109748768,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              21,
+              23
+            ],
+            "derived_seed": 5928832618622466886,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              21,
+              41
+            ],
+            "derived_seed": 10732949978860547800,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-023",
+        "run_index": 23,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              22,
+              11
+            ],
+            "derived_seed": 2441509740504392371,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              22,
+              23
+            ],
+            "derived_seed": 9711373592074354896,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              22,
+              41
+            ],
+            "derived_seed": 16401715539928425474,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-024",
+        "run_index": 24,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              23,
+              11
+            ],
+            "derived_seed": 13724723282847996611,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              23,
+              23
+            ],
+            "derived_seed": 5599973138172050958,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              23,
+              41
+            ],
+            "derived_seed": 3387100237836130074,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-025",
+        "run_index": 25,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              24,
+              11
+            ],
+            "derived_seed": 8173031723848428558,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              24,
+              23
+            ],
+            "derived_seed": 8453862972869107124,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              24,
+              41
+            ],
+            "derived_seed": 9719657379447030663,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-026",
+        "run_index": 26,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              25,
+              11
+            ],
+            "derived_seed": 7565974737436064079,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              25,
+              23
+            ],
+            "derived_seed": 6168124752369354516,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              25,
+              41
+            ],
+            "derived_seed": 10697115926254914736,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-027",
+        "run_index": 27,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              26,
+              11
+            ],
+            "derived_seed": 12176216524637669918,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              26,
+              23
+            ],
+            "derived_seed": 10187939906328134588,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              26,
+              41
+            ],
+            "derived_seed": 4339700638459773944,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-028",
+        "run_index": 28,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              27,
+              11
+            ],
+            "derived_seed": 8207908892650905291,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              27,
+              23
+            ],
+            "derived_seed": 13798993634050742800,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              27,
+              41
+            ],
+            "derived_seed": 15960203911370331787,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-029",
+        "run_index": 29,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              28,
+              11
+            ],
+            "derived_seed": 5253601849788280949,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              28,
+              23
+            ],
+            "derived_seed": 1810067258862752212,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              28,
+              41
+            ],
+            "derived_seed": 8892510474289722116,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-030",
+        "run_index": 30,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              29,
+              11
+            ],
+            "derived_seed": 13291762172832257106,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              29,
+              23
+            ],
+            "derived_seed": 15051030238257955513,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              29,
+              41
+            ],
+            "derived_seed": 1384937766980645835,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-031",
+        "run_index": 31,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              30,
+              11
+            ],
+            "derived_seed": 4272144832655722818,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              30,
+              23
+            ],
+            "derived_seed": 1393476580152346913,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              30,
+              41
+            ],
+            "derived_seed": 8451286782856084927,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-032",
+        "run_index": 32,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              31,
+              11
+            ],
+            "derived_seed": 5147966405573445161,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              31,
+              23
+            ],
+            "derived_seed": 3559910464776585922,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              31,
+              41
+            ],
+            "derived_seed": 18256529745155319780,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-033",
+        "run_index": 33,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              32,
+              11
+            ],
+            "derived_seed": 9155309044347125686,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              32,
+              23
+            ],
+            "derived_seed": 15208926757959947692,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              32,
+              41
+            ],
+            "derived_seed": 11033171971786351151,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-034",
+        "run_index": 34,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              33,
+              11
+            ],
+            "derived_seed": 5739006753909499802,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              33,
+              23
+            ],
+            "derived_seed": 3682384607392339954,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              33,
+              41
+            ],
+            "derived_seed": 10101142304075345922,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-035",
+        "run_index": 35,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              34,
+              11
+            ],
+            "derived_seed": 13732581604434871003,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              34,
+              23
+            ],
+            "derived_seed": 13980554289682902493,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              34,
+              41
+            ],
+            "derived_seed": 11549706799541875778,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-036",
+        "run_index": 36,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              35,
+              11
+            ],
+            "derived_seed": 608147908041278938,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              35,
+              23
+            ],
+            "derived_seed": 12717268199196785486,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              35,
+              41
+            ],
+            "derived_seed": 14812516230106070579,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-037",
+        "run_index": 37,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              36,
+              11
+            ],
+            "derived_seed": 3502573817890147922,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              36,
+              23
+            ],
+            "derived_seed": 13150851097179796730,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              36,
+              41
+            ],
+            "derived_seed": 12744764016446553556,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-038",
+        "run_index": 38,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              37,
+              11
+            ],
+            "derived_seed": 1600720813113982077,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              37,
+              23
+            ],
+            "derived_seed": 6885979309572445267,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              37,
+              41
+            ],
+            "derived_seed": 7248398368247037723,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-039",
+        "run_index": 39,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              38,
+              11
+            ],
+            "derived_seed": 11410429047602928011,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              38,
+              23
+            ],
+            "derived_seed": 10661098799925463413,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              38,
+              41
+            ],
+            "derived_seed": 16827368935357483370,
+            "generator": "PCG64"
+          }
+        }
+      },
+      {
+        "run_id": "m7_reconstructed_estimator_policy_study_v1:train:run-040",
+        "run_index": 40,
+        "streams": {
+          "data": {
+            "master_seed": 2026120101,
+            "spawn_key": [
+              1295337521,
+              701,
+              39,
+              11
+            ],
+            "derived_seed": 13139610616655671898,
+            "generator": "PCG64"
+          },
+          "noise": {
+            "master_seed": 2026120102,
+            "spawn_key": [
+              1295337521,
+              701,
+              39,
+              23
+            ],
+            "derived_seed": 4554422900745728644,
+            "generator": "PCG64"
+          },
+          "experiment_metadata": {
+            "master_seed": 2026120104,
+            "spawn_key": [
+              1295337521,
+              701,
+              39,
+              41
+            ],
+            "derived_seed": 15618510048753312084,
+            "generator": "PCG64"
+          }
+        }
+      }
+    ]
+  },
+  "historical_integrity_baseline": {
+    "M5f": {
+      "file_count": 1,
+      "sha256": "98801572202a6c6c21199ef94257a9e1d9e99bb5d38273cf07b66f041b511d1a"
+    },
+    "M5h": {
+      "file_count": 128,
+      "sha256": "5689921ddf901790322a124abc52e0cbb34642385e6ef1ce5054a8b8e5f3cf2c"
+    },
+    "M5j": {
+      "file_count": 102,
+      "sha256": "b12c3171ab13d69895d89e00eb3113c7122a7e6756461761769dd4337454233b"
+    },
+    "M6b": {
+      "file_count": 26,
+      "sha256": "5cf8e11aa2f3e5e9d357344828afa1c7ebae8bf0a17040dee67e32f3de81ad5b"
+    },
+    "M6g": {
+      "file_count": 1,
+      "sha256": "76301b6965f77ac70302c4879158b77f9a9fc55e0cfdccf9725034279c25f1d2"
+    },
+    "M6h": {
+      "file_count": 1,
+      "sha256": "baca1959562833d004bd3f3cb6cca718f54ec3f7a583b7b1f0954515643ee069"
+    }
+  }
+}

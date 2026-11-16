@@ -1,0 +1,95 @@
+{
+  "png_count": 4,
+  "svg_count": 4,
+  "files": [
+    {
+      "path": "tmp\\gui-energy-01b-downloads\\2026-11-11T10-34-17-392Z\\hf-tcm-run-20261111-123417-0f830b13-energy-ber-k0.png",
+      "format": "PNG",
+      "width": 650,
+      "height": 250,
+      "nontransparent_pixels": 162500,
+      "visible_pixels": 12779,
+      "distinct_colors": 1361
+    },
+    {
+      "path": "tmp\\gui-energy-01b-downloads\\2026-11-11T10-34-17-392Z\\hf-tcm-run-20261111-123417-0f830b13-energy-efficiency-k0.png",
+      "format": "PNG",
+      "width": 650,
+      "height": 250,
+      "nontransparent_pixels": 162500,
+      "visible_pixels": 11747,
+      "distinct_colors": 863
+    },
+    {
+      "path": "tmp\\gui-energy-01b-downloads\\2026-11-11T10-34-17-392Z\\hf-tcm-run-20261111-123417-0f830b13-energy-gain-k0.png",
+      "format": "PNG",
+      "width": 650,
+      "height": 250,
+      "nontransparent_pixels": 162500,
+      "visible_pixels": 5820,
+      "distinct_colors": 274
+    },
+    {
+      "path": "tmp\\gui-energy-01b-downloads\\2026-11-11T10-34-17-392Z\\hf-tcm-run-20261111-123417-0f830b13-energy-ser-k0.png",
+      "format": "PNG",
+      "width": 650,
+      "height": 250,
+      "nontransparent_pixels": 162500,
+      "visible_pixels": 11508,
+      "distinct_colors": 1201
+    },
+    {
+      "path": "tmp\\gui-energy-01b-downloads\\2026-11-11T10-34-17-392Z\\hf-tcm-scientific-exp01-confirmatory-static-amplitude-ber005-energy-ber.svg",
+      "format": "SVG",
+      "width": "650",
+      "height": "250",
+      "embedded_render": {
+        "width": 650,
+        "height": 250,
+        "nontransparent_pixels": 162500,
+        "visible_pixels": 12779,
+        "distinct_colors": 1361
+      }
+    },
+    {
+      "path": "tmp\\gui-energy-01b-downloads\\2026-11-11T10-34-17-392Z\\hf-tcm-scientific-exp01-confirmatory-static-amplitude-ber005-energy-efficiency.svg",
+      "format": "SVG",
+      "width": "650",
+      "height": "250",
+      "embedded_render": {
+        "width": 650,
+        "height": 250,
+        "nontransparent_pixels": 162500,
+        "visible_pixels": 11747,
+        "distinct_colors": 863
+      }
+    },
+    {
+      "path": "tmp\\gui-energy-01b-downloads\\2026-11-11T10-34-17-392Z\\hf-tcm-scientific-exp01-confirmatory-static-amplitude-ber005-energy-gain.svg",
+      "format": "SVG",
+      "width": "650",
+      "height": "250",
+      "embedded_render": {
+        "width": 650,
+        "height": 250,
+        "nontransparent_pixels": 162500,
+        "visible_pixels": 5820,
+        "distinct_colors": 274
+      }
+    },
+    {
+      "path": "tmp\\gui-energy-01b-downloads\\2026-11-11T10-34-17-392Z\\hf-tcm-scientific-exp01-confirmatory-static-amplitude-ber005-energy-ser.svg",
+      "format": "SVG",
+      "width": "650",
+      "height": "250",
+      "embedded_render": {
+        "width": 650,
+        "height": 250,
+        "nontransparent_pixels": 162500,
+        "visible_pixels": 11508,
+        "distinct_colors": 1201
+      }
+    }
+  ],
+  "verification": "PASS"
+}

@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hf-tcm-sim"
+version = "0.1.0"
+description = "Reproducible offline academic TCM/8PSK simulation (M3 channel model core)"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{name = "HF-TCM-SIM research project"}]
+dependencies = ["numpy>=1.24"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+hf-tcm = "hf_tcm.cli:main"
+hf-tcm-repro07 = "hf_tcm.repro.paired_experiment_cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["statistical: slower randomized checks"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

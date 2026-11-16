@@ -1,0 +1,9 @@
+# REPRO-06C: survivor-specific processing
+
+Публічний entrypoint: `run_adaptive_multipath_receiver(ReceiverObservation, AdaptiveMultipathReceiverConfig)`. Він не приймає `ChannelResult` чи `EvaluationTruth`. Delay profile `[0,3]` повторно використовує REPRO-06B reachable trellis: 17 вузлів, 68 переходів; у кожного вузла збережено одну поточну survivor-оцінку channel coefficients і covariance.
+
+На кроці k усі candidate metrics формуються з pre-update survivor state predecessor і delayed phase history. Для кожного candidate edge будуються sample-level regressors `X_k`; прогноз використовує `X_k h⁻[n]` для всіх шляхів. Branch costs додаються до попередніх path metrics. У канонічному edge order для кожного destination береться перший мінімум (strict `<` tie policy). Тільки тоді копія predecessor filter обробляє фактичні спостережені samples цього переможного edge і стає destination filter. Отже competing edges не оновлюються спільним decoded path і post-update коефіцієнти не змінюють metric того самого переходу.
+
+Це survivor-path processing (PSP) approximation. На кожний trellis node лишається одна оцінка фільтра; альтернативні coefficient histories, що злилися у той самий node, відкидаються. Тому алгоритм не є точним глобальним ML joint optimization за невідомих коефіцієнтів. Branch rows передаються до наявного streaming finite-depth engine REPRO-06 з η=20; регулярне рішення для k=0 доступне після символу 19, а короткий хвіст завершується frame flush.
+
+Для compact output survivor ring обмежений 20 рядками; потрібні для manifest і графіків branch metrics та оцінки вузлів зберігаються як окремі diagnostic arrays лінійного розміру кадру. Межа кадру: receive samples `[0,8F+D)`; D tail samples додаються до score/update останнього TCM символу, не створюючи нового символу. D=3 означає останні індекси `8F..8F+2`.

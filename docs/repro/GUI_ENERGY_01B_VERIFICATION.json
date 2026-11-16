@@ -1,0 +1,22 @@
+{
+  "task": "GUI-ENERGY-01B",
+  "date": "2026-11-11",
+  "pytest": {"command": "python -m pytest -q", "passed": 1223, "failed": 0, "status": "PASS"},
+  "ruff_check": {"scope": ["src", "tests", "scripts/package_gui_energy_01b_audit.py"], "status": "PASS"},
+  "ruff_format_check": {"scope": ["src", "tests", "scripts/package_gui_energy_01b_audit.py"], "files_already_formatted": 270, "status": "PASS"},
+  "node": {"scientific_js": "PASS", "edge_qa_script": "PASS"},
+  "edge": {"browser": "Microsoft Edge via DevTools Protocol", "viewports": ["1366x768", "1920x1080"], "checks_passed": 8, "checks_failed": 0},
+  "historical_fingerprints": {"matched": 694, "expected": 694, "status": "PASS"},
+  "energy_exports": {"png": 4, "svg": 4, "content_validation": "PASS"},
+  "historical_gain_recomputation": {
+    "target_ber": 0.05,
+    "trials": 140,
+    "b0_gain_db": 6.767791470844502,
+    "b0_ci95_db": [6.209755937566691, 7.518165405257755],
+    "b1_gain_db": 2.9641483046268267,
+    "b1_ci95_db": [2.71559718117933, 3.2287690090798518],
+    "bootstrap_valid": 1000
+  },
+  "paper_exact": false,
+  "new_confirmatory_study_started": false
+}

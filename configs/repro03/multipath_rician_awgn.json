@@ -1,0 +1,18 @@
+{
+  "schema_version": "repro03-channel-v1",
+  "profile_id": "multipath_rician_awgn_project_v1",
+  "paths": [
+    {"delay_samples": 0, "average_power": 1.0, "k_factor": 4.0, "los_phase_rad": 0.0},
+    {"delay_samples": 3, "average_power": 0.25, "k_factor": 1.0, "los_phase_rad": 0.7}
+  ],
+  "fading_mode": "rician_ar1",
+  "noise_model": "complex_awgn_sample_domain",
+  "noise_complex_variance": 0.02,
+  "fading_seed": 3002,
+  "noise_seed": 4002,
+  "correlation": 0.98,
+  "boundary_policy": "zero_extension",
+  "output_length_policy": "tx_plus_max_delay",
+  "rng_algorithm": "numpy.PCG64",
+  "reveal_noise_variance": false
+}

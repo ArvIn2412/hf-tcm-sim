@@ -1,0 +1,221 @@
+{
+  "schema_version": "m7a.policy-study.v1",
+  "study_id": "m7_reconstructed_estimator_policy_study_v1",
+  "classification": "preregistered independent policy-study design; not executed tuning; not optimized receiver; not new performance evidence",
+  "design_status": "proposed",
+  "execution_authorized": false,
+  "execution_scope": "none",
+  "scientific_status": {
+    "paper_exact": false,
+    "receiver_enabled": false,
+    "accepted_adrs": ["001", "002", "003", "004", "005", "006", "007", "008", "010", "012", "013", "014", "015"],
+    "proposed_adrs": ["009", "011"],
+    "open_science_questions": ["SCI-02", "SCI-03", "SCI-METRIC-02"],
+    "author_mapping_status": "SOURCE_UNRESOLVED"
+  },
+  "profile": {
+    "model": "reconstructed_offline",
+    "channel_memory_L": 1,
+    "real_channel_gain": 0.75,
+    "delay_samples": 0,
+    "modulation": "normalized_8PSK",
+    "pulse_shape": "rectangular_ZOH",
+    "samples_per_symbol": 8,
+    "observed_iq_convention": "ADR-012",
+    "likelihood": "ADR-005 reconstructed pseudo-likelihood",
+    "decoder": "ADR-013 conditional full Viterbi",
+    "noise_profile": "ADR-015 independent circular complex AWGN",
+    "gamma_b_eff_db": 5.0,
+    "gamma_b_eff_linear": 3.1622776601683795,
+    "sigma_squared": 0.7115124735378853,
+    "sigma_squared_formula": "4*a*a / 10^(gamma_b_eff_db/10)",
+    "physical_hf_ebn0": false
+  },
+  "sequence_design": {
+    "symbols_per_run_F": 256,
+    "information_bits_per_run": 512,
+    "same_reference_sequence_for_all_policies_within_run": true,
+    "one_noise_realization_per_run_shared_by_all_policies": true,
+    "channel_truth_passed_to_receiver": false,
+    "decoder_calls_per_policy_sequence_target": 1
+  },
+  "shared_estimator": {
+    "initial_fluctuating_iq": [0.42, 0.91],
+    "initial_full_iq": [0.42, 0.91],
+    "mu0": [0.0, 0.0],
+    "beta": 0.7
+  },
+  "clock_origins": {
+    "absolute_sample_origin": 0,
+    "absolute_symbol_origin": 0,
+    "estimator_time_index_origin": 0,
+    "no_resets_within_sequence": true
+  },
+  "policy_grid": {
+    "alpha_prime_values": [1.0, 0.95, 0.85],
+    "k_scale_values": [0.0, 0.5, 1.0],
+    "base_k_tilde": [0.35, -0.2],
+    "construction": "K_tilde = K_scale * base_k_tilde; Cartesian product in alpha-major, K_scale-minor order",
+    "candidate_policies": [
+      {"candidate_id": "a100_k000", "alpha_prime": 1.0, "k_scale": 0.0, "k_tilde": [0.0, 0.0], "role": "historical_frozen_B"},
+      {"candidate_id": "a100_k050", "alpha_prime": 1.0, "k_scale": 0.5, "k_tilde": [0.175, -0.1], "role": "proposed_policy"},
+      {"candidate_id": "a100_k100", "alpha_prime": 1.0, "k_scale": 1.0, "k_tilde": [0.35, -0.2], "role": "proposed_policy"},
+      {"candidate_id": "a095_k000", "alpha_prime": 0.95, "k_scale": 0.0, "k_tilde": [0.0, 0.0], "role": "proposed_policy"},
+      {"candidate_id": "a095_k050", "alpha_prime": 0.95, "k_scale": 0.5, "k_tilde": [0.175, -0.1], "role": "proposed_policy"},
+      {"candidate_id": "a095_k100", "alpha_prime": 0.95, "k_scale": 1.0, "k_tilde": [0.35, -0.2], "role": "proposed_policy"},
+      {"candidate_id": "a085_k000", "alpha_prime": 0.85, "k_scale": 0.0, "k_tilde": [0.0, 0.0], "role": "proposed_policy"},
+      {"candidate_id": "a085_k050", "alpha_prime": 0.85, "k_scale": 0.5, "k_tilde": [0.175, -0.1], "role": "proposed_policy"},
+      {"candidate_id": "a085_k100", "alpha_prime": 0.85, "k_scale": 1.0, "k_tilde": [0.35, -0.2], "role": "historical_C"}
+    ],
+    "policies_are_source_author_receiver_modes": false
+  },
+  "pairing": {
+    "common_received_buffer_within_sequence": true,
+    "common_reference_bits_within_sequence": true,
+    "common_initial_state_beta_mu0_and_clocks": true,
+    "only_policy_update_coefficients_vary": true,
+    "received_hash_recorded_per_sequence": true
+  },
+  "partitions": {
+    "historical_data_excluded": ["M5f", "M5h", "M5j", "M6b", "M6g", "M6h"],
+    "training": {
+      "sequence_count": 40,
+      "symbols_per_sequence": 256,
+      "run_id_template": "{study_id}:train:run-{run_index:03d}",
+      "uses_new_seed_roots": true,
+      "seed_namespaces": {"data": 2026120101, "noise": 2026120102, "bootstrap": 2026120103, "experiment_metadata": 2026120104},
+      "bootstrap_use": "namespace reserved; training winner intervals are descriptive and not confirmatory"
+    },
+    "validation": {
+      "sequence_count": 40,
+      "symbols_per_sequence": 256,
+      "run_id_template": "{study_id}:validation:run-{run_index:03d}",
+      "uses_new_seed_roots": true,
+      "policies": ["historical_frozen_B", "training_selected_policy"],
+      "historical_C": "optional descriptive only; cannot affect selection",
+      "seed_namespaces": {"data": 2026120201, "noise": 2026120202, "bootstrap": 2026120203, "experiment_metadata": 2026120204},
+      "selection_repeated": false
+    },
+    "final": {
+      "sequence_count": 100,
+      "symbols_per_sequence": 256,
+      "run_id_template": "{study_id}:final:run-{run_index:03d}",
+      "uses_new_seed_roots": true,
+      "policies": ["historical_frozen_B", "separately_frozen_selected_policy"],
+      "historical_C": "optional descriptive only; cannot affect selection",
+      "seed_namespaces": {"data": 2026120301, "noise": 2026120302, "bootstrap": 2026120303, "experiment_metadata": 2026120304},
+      "requires_separate_design_and_execution_approval": true,
+      "automatic_after_validation": false
+    }
+  },
+  "seed_derivation": {
+    "algorithm": "numpy.random.SeedSequence(master_seed, spawn_key=(protocol_version_word, partition_code, zero_based_run_index, stream_code)).generate_state(1, dtype=uint64)[0]; initialize numpy.random.PCG64 with derived seed",
+    "protocol_version_word": 1295337521,
+    "partition_codes": {"training": 701, "validation": 702, "final": 703},
+    "stream_codes": {"data": 11, "noise": 23, "bootstrap": 37, "experiment_metadata": 41},
+    "displayed_run_index_origin": 1,
+    "spawned_run_index_origin": 0,
+    "streams_generated_in_M7a": false,
+    "historical_namespaces_reused": false
+  },
+  "selection": {
+    "training_only": true,
+    "estimand": "minimum pooled raw-count BER over all nine fixed candidates",
+    "candidate_eligible_only_if": "all 40 candidate outputs and the paired historical B outputs are valid and complete; no completed-only pooling",
+    "if_any_candidate_run_fails": "mark that candidate ineligible and retain every failure record; do not replace a seed; continue the predeclared remaining jobs if later authorized",
+    "if_historical_B_has_any_missing_or_invalid_output": "block selection requiring a complete paired B baseline; do not impute or drop the affected run",
+    "finite_high_error_trajectory": "retain and include if decoder output is valid",
+    "nonfinite_or_invalid_decoder_output": "failure record; candidate ineligible unless a separately approved missingness policy changes this contract",
+    "tie_break_order": ["lower pooled raw-count BER", "lower pooled raw-count SER", "lower K_scale", "alpha_prime closer to 1.0", "lexicographically lower candidate_id"],
+    "frozen_B_may_win": true,
+    "coefficient_error_used_for_selection": false,
+    "training_inference": "selection-oriented descriptive statistics only; no confirmatory claim"
+  },
+  "validation_rule": {
+    "evaluate_only": ["historical_frozen_B", "one_training_selected_policy"],
+    "same_received_pairing": true,
+    "new_data_and_noise_roots": true,
+    "primary_contrast": "selected_policy BER minus frozen_B BER",
+    "secondary": ["pooled SER", "coefficient trajectory diagnostics after decoding only", "numerical failure counts"],
+    "bootstrap": {"cluster_unit": "one complete TCM sequence", "paired_index_resampling": true, "replicates": 2000, "confidence_level": 0.95, "interval": "two-sided percentile", "quantile_method": "linear", "pool_raw_counts_per_replicate": true, "independent_bootstrap_namespace": true},
+    "validation_does_not_select_a_second_policy": true,
+    "failed_or_missing_valid_output": "retain failure; block complete paired inference; no zero imputation or completed-only estimate"
+  },
+  "final_evaluation": {
+    "status": "future; not authorized by M7a",
+    "sample_count_candidate": 100,
+    "requires_separate_approval_of": ["selected policy", "sample size", "primary estimand", "target precision", "stopping rule", "failure handling", "bootstrap settings", "seed namespaces", "resource budget", "claims policy"],
+    "may_be_used_for_later_tuning": false,
+    "confirmatory_label_allowed_before_approval": false
+  },
+  "failure_policy": {
+    "retain_success_and_failure_records": true,
+    "record_raw_counts_when_valid": true,
+    "record_coefficient_diagnostics": true,
+    "retry_with_new_seed": false,
+    "zero_error_imputation": false,
+    "maximum_error_imputation": false,
+    "silent_exclusion": false,
+    "finite_high_BER_trajectory": "retain all observed errors",
+    "training_candidate_with_incomplete_40_run_pairing": "ineligible",
+    "validation_or_final_missing_valid_output": "block full paired inference",
+    "resume": "same planned IDs, original seeds, identical approved config/code fingerprint only"
+  },
+  "workload": {
+    "single_process": true,
+    "multiprocessing": false,
+    "atomic_checkpoint_per_sequence": true,
+    "training_sequences": 40,
+    "training_sequence_checkpoint_count": 40,
+    "training_policy_run_records": 360,
+    "training_unique_policy_decoder_passes_target": 360,
+    "training_policy_symbol_passes_target": 92160,
+    "training_received_samples_generated": 81920,
+    "training_information_bits_generated": 20480,
+    "validation_sequences": 40,
+    "validation_sequence_checkpoint_count": 40,
+    "validation_policy_run_records": 80,
+    "validation_decoder_passes": 80,
+    "validation_optional_historical_C_decoder_passes": 40,
+    "validation_policy_symbol_passes": 20480,
+    "validation_received_samples_generated": 81920,
+    "validation_information_bits_generated": 20480,
+    "final_sequences": 100,
+    "final_sequence_checkpoint_count": 100,
+    "final_policy_run_records": 200,
+    "final_decoder_passes": 200,
+    "final_optional_historical_C_decoder_passes": 100,
+    "final_policy_symbol_passes": 51200,
+    "final_received_samples_generated": 204800,
+    "final_information_bits_generated": 51200,
+    "current_paired_helper_decoder_passes_per_call": 2,
+    "training_current_public_helper_passes_if_called_once_per_non_B_candidate": 640,
+    "training_repeated_B_pass_overhead_under_that_wrapper": 280,
+    "runtime_or_rss_estimate": null
+  },
+  "workflow_gates": {
+    "train_to_validation_automatic": false,
+    "validation_to_final_automatic": false,
+    "validation_requires_frozen_training_selection": true,
+    "final_requires_separate_approval": true
+  },
+  "resource_policy": {
+    "single_process": true,
+    "multiprocessing": false,
+    "atomic_checkpoint_per_sequence": true,
+    "run_order": "partition order TRAIN, then separately authorized VALIDATION, then separately authorized FINAL; ascending run index within partition; candidate ID order within sequence",
+    "stop_on_resource_budget": "stop before next sequence; preserve completed atomic checkpoints and mark partition incomplete",
+    "budget": "actual wall-clock and memory limits are to be approved before any execution; M7a makes no runtime/RSS claim"
+  },
+  "scientific_limitations": [
+    "reconstructed_offline, not source-aligned or paper-exact",
+    "one fixed effective discrete gamma_b point; no physical HF Eb/N0 calibration",
+    "L=1 real channel gain a=0.75 and zero delay",
+    "independent ADR-015 sample-level complex AWGN",
+    "ADR-005 pseudo-likelihood and ADR-013 conditional full Viterbi",
+    "ADR-002 edge/phase mapping and ADR-012 observed-IQ remain reconstruction conventions",
+    "source questions SCI-02, SCI-03, SCI-METRIC-02 remain open",
+    "training minimum is selection-biased and not confirmatory",
+    "validation applies only to the single frozen selected policy and fixed profile"
+  ]
+}

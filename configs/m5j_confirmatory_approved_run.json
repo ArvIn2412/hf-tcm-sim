@@ -1,0 +1,5745 @@
+{
+  "schema_version": 1,
+  "study_id": "M5j-confirmatory-paired-ber",
+  "design_id": "M5j-independent-confirmatory-evaluation",
+  "design_version": "M5j-1",
+  "design_status": "approved_confirmatory",
+  "execution_authorized": true,
+  "execution_scope": "m5j_confirmatory_only",
+  "authorization_provenance": {
+    "explicit_user_authorization": "explicit user authorization through the current M5j Codex execution instruction",
+    "approved_at_utc": "2026-10-29T19:04:21.462+00:00",
+    "source_design_version": "M5i-1",
+    "source_design_fingerprint": "6e42b5003e3804c89266cd78dcf3702d9d8159ed4ed46b81acf962bbff4db1e4",
+    "approved_parameter_snapshot": {
+      "authorization": {
+        "M5i_may_execute": false,
+        "future_M5j_requires_new_immutable_run_specific_config": true,
+        "future_scope_required": "m5j_confirmatory_only",
+        "future_status_required": "approved_for_confirmatory_evaluation",
+        "receiver_cli_activation": false,
+        "reuse_M5h_pilot_authorization": false
+      },
+      "bootstrap_contract": {
+        "adr": "ADR-014",
+        "confidence_level": 0.95,
+        "explicit_independent_bootstrap_seed": true,
+        "includes_zero_interpretation": "CI including zero is not evidence of receiver equivalence",
+        "independent_cluster": "one complete coded TCM sequence",
+        "interval": "two-sided percentile",
+        "metrics": [
+          "ber_b",
+          "ber_c",
+          "delta_ber",
+          "ser_b",
+          "ser_c",
+          "delta_ser"
+        ],
+        "paired_same_index_B_C_resampling": true,
+        "pooled_integer_counts": true,
+        "preserve_warning_flags": true,
+        "quantile_method": "numpy.quantile(method='linear')",
+        "replicates": 2000,
+        "zero_interval_interpretation": "CI=[0,0] is not proof of true zero BER"
+      },
+      "compute_workload": {
+        "decoder_passes_minimum": 200,
+        "independent_sequences": 100,
+        "information_bits": 51200,
+        "received_complex_samples": 204800,
+        "tcm_symbols": 25600
+      },
+      "design_id": "M5i-pilot-informed-confirmatory-design",
+      "design_status": "proposed_confirmatory",
+      "design_version": "M5i-1",
+      "execution_authorized": false,
+      "execution_scope": "none",
+      "future_execution_budget": {
+        "budget_status": "proposed for separate M5j approval; no benchmark run in M5i",
+        "checkpoint": "after each fully completed independent run; atomic replacement",
+        "multiprocessing": false,
+        "no_duplicate_run_ids": true,
+        "no_silent_resume_after_code_change": true,
+        "resume_requires_same_config_manifest_and_code_fingerprint": true,
+        "rss_budget_bytes": 1610612736,
+        "rss_enforcement": "monitor if supported; polling is not a hard OS limit",
+        "wall_clock_interruption": "stop before starting the next independent run; keep completed checkpoints and mark design incomplete",
+        "wall_clock_limit_seconds": 900,
+        "worker_processes": 1
+      },
+      "limitations": [
+        "pilot-informed design preparation only; not executed confirmatory evaluation or new performance evidence",
+        "M5f exploratory and M5h independent pilot records are historical and excluded from M5j",
+        "effective discrete gamma_b is not physical HF Eb/N0",
+        "reconstructed offline receiver is not paper-exact; paper_exact=false and receiver_enabled=false",
+        "one confirmatory point cannot establish general adaptive advantage or disadvantage",
+        "no claim of optimality, universal adaptation benefit, 1.5 dB reproduction, general HF channel performance, complex fading, multipath, or correlated AR(1)",
+        "sample-size target and R=100 are recommendations, not guarantees of CI precision"
+      ],
+      "numerical_failure_policy": {
+        "completed_only_pooled_metrics": "descriptive only and explicitly labeled with missing-output count",
+        "finite_unstable_trajectory": "retain valid decoded output and diagnostics",
+        "full_design_completeness_required": true,
+        "high_BER": "retain all observed errors",
+        "missing_valid_B_or_C_output": "retain failure; block full-design inference",
+        "receiver_parameter_change": false,
+        "resume": "same planned IDs, original seeds, identical config/code fingerprint only",
+        "retry_with_new_seed": false,
+        "silent_exclusion": false,
+        "zero_or_max_error_imputation": false
+      },
+      "output_contract": {
+        "partition": "evaluation",
+        "pilot_records_enter_confirmatory_sample": false,
+        "planned_manifest_contains_generated_data_or_noise": false,
+        "reference_bits_or_ChannelTruth_passed_to_decoder": false,
+        "retain_raw_integer_counts_and_failure_records": true
+      },
+      "pairing_contract": {
+        "identical_beta": true,
+        "identical_initial_estimator_state": true,
+        "identical_noisy_received_buffer": true,
+        "identical_reference_input_bits": true,
+        "identical_symbol_and_time_origins": true,
+        "only_difference": "estimator update policy",
+        "same_trellis_and_termination_rules": true
+      },
+      "phase_distinction": {
+        "M5f": "historical_exploratory; excluded from M5h and future M5j records",
+        "M5g": "proposed_design; not executed as confirmatory",
+        "M5h": "independent_planning_pilot; never pooled into M5j",
+        "M5i": "pilot_informed_confirmatory_design_preparation_only",
+        "M5j": "future_separately_authorized_independent_evaluation"
+      },
+      "pilot_evidence_provenance": {
+        "approved_run_config_sha256": "b072cd4f5cc7d4997df27827fe2195145f0e51bce03629a4f36428baf303fcf6",
+        "checkpoint_count": 120,
+        "execution_manifest_sha256": "082708177cf1dca9d94f414d35afa2b4db7c6faa43610a41ec9f2530b38ec65a",
+        "ordered_checkpoint_name_hash_pairs_sha256": "c479ffa5736286d158f82838ef326b4e1843a2626b017778f6f735d98aec73af",
+        "precision_diagnostic_sha256": "1df16fdcf6bdf28b1a2699fd666f33cbcbe42c28b4aba48121486a4fb5274da4",
+        "summary_sha256": "d5fa0d95a3e7a2fc9979c1021054f6805b7c41aa7f13bdd226e49e36f7a7e9b5"
+      },
+      "primary_condition": {
+        "gamma_b_eff_db": 5.0,
+        "gamma_b_eff_linear": 3.1622776601683795,
+        "role": "sole primary confirmatory stratum",
+        "sigma_squared": 0.7115124735378853,
+        "sigma_squared_formula": "4*a*a / 10^(gamma_b_eff_dB/10)"
+      },
+      "primary_estimand": {
+        "condition": "5 dB effective discrete gamma_b",
+        "definition": "pooled BER_C - pooled BER_B",
+        "name": "DeltaBER",
+        "precision_target_95pct_ci_half_width": 0.02,
+        "precision_target_role": "planning target only; not a stopping rule"
+      },
+      "purpose": "pilot-informed confirmatory design preparation, NOT executed confirmatory evaluation, NOT new performance evidence",
+      "receiver_policies": {
+        "B": {
+          "K_tilde": [
+            0.0,
+            0.0
+          ],
+          "alpha_prime": 1.0,
+          "mu0": [
+            0.0,
+            0.0
+          ],
+          "policy": "frozen"
+        },
+        "C": {
+          "K_tilde": [
+            0.35,
+            -0.2
+          ],
+          "alpha_prime": 0.85,
+          "mu0": [
+            0.0,
+            0.0
+          ],
+          "policy": "adaptive"
+        },
+        "only_difference": "estimator update policy",
+        "shared": {
+          "beta": 0.7,
+          "initial_fluctuating_iq": [
+            0.42,
+            0.91
+          ],
+          "initial_full_iq": [
+            0.42,
+            0.91
+          ],
+          "mu0": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "reconstruction_configuration": {
+        "assumption_provenance": {
+          "aggregate_observation_model": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "alpha_prime": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "beam_width": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "beta": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "candidate_count": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "candidate_index_space": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "decision_lag_symbols": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "estimator_time_index": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "estimator_time_rule": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "initial_estimates": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "initial_prior": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "initial_state": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "k_tilde": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "labeling": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "likelihood_type": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "mu0": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "path_count": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "path_delays_samples": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "prediction_combination": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "sample_rate_hz": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "samples_per_symbol": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "symbol_origin_sample": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "symbol_rate_hz": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "timebase": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          },
+          "transition_model": {
+            "note": "value is run configuration, not inferred from article",
+            "source": "explicit M5d paired control",
+            "status": "accepted_project_setting"
+          }
+        },
+        "candidate_count": 16,
+        "candidate_index_space": "m4_1_hypothesis_id",
+        "estimator": {
+          "alpha_prime": 0.85,
+          "initial_estimates": {
+            "fluctuating_iq": [
+              [
+                0.42,
+                0.91
+              ]
+            ],
+            "full_iq": [
+              [
+                0.42,
+                0.91
+              ]
+            ]
+          },
+          "initial_time_index": 0,
+          "k_tilde": [
+            [
+              0.35,
+              -0.2
+            ]
+          ],
+          "mu0": [
+            [
+              0.0,
+              0.0
+            ]
+          ],
+          "time_rule": "one_recursion_step_i_to_i_plus_1"
+        },
+        "initial": {
+          "prior": [
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "state": [
+            0,
+            0
+          ]
+        },
+        "labeling": {
+          "bit_order": [
+            "c2",
+            "c1",
+            "c0"
+          ],
+          "name": "assumed_natural_binary",
+          "origin": "ADR-002 paired-control setting",
+          "output_to_b": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "phase_offset_rad": 0.0
+        },
+        "likelihood": {
+          "beta": 0.7,
+          "kind": "exp_negative_beta_project_reconstruction_metric"
+        },
+        "observation_model": {
+          "iq_rule": "(-Im(received), Re(received))",
+          "kind": "adr012_l1_real_mean8",
+          "prediction_combination": "explicit_project_prediction",
+          "sample_reduction": "arithmetic_mean_exactly_8",
+          "waveform_rule": "rectangular_zoh"
+        },
+        "paper_exact": false,
+        "profile": "reconstructed_offline",
+        "receiver_enabled": false,
+        "schema_version": 1,
+        "search": {
+          "beam_width": 1,
+          "decision_lag_symbols": 0
+        },
+        "timebase": {
+          "name": "approximate_rectangular_8sps",
+          "path_count": 1,
+          "path_delays_samples": [
+            0
+          ],
+          "sample_rate_hz": 8000.0,
+          "samples_per_symbol": 8,
+          "symbol_origin_sample": 0,
+          "symbol_rate_hz": 1000.0
+        },
+        "transition_model": {
+          "name": "adr003_uniform_allowed_edges",
+          "probabilities": [
+            [
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.25,
+              0.25,
+              0.25,
+              0.25
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.25,
+              0.25,
+              0.25,
+              0.25
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.25,
+              0.25,
+              0.25,
+              0.25
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.25,
+              0.25,
+              0.25,
+              0.25,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.25,
+              0.25,
+              0.25,
+              0.25
+            ]
+          ]
+        }
+      },
+      "run_design": {
+        "independent_cluster": "one complete coded TCM sequence",
+        "minimum_B_C_decoder_passes": 200,
+        "planned_run_id_count": 100,
+        "run_count": 100,
+        "strata_count": 1,
+        "symbols_per_run_F": 256,
+        "total_independent_sequences": 100,
+        "total_information_bits": 51200,
+        "total_received_complex_samples": 204800,
+        "total_tcm_symbols": 25600
+      },
+      "sample_origins": {
+        "absolute_sample_origin": 0,
+        "absolute_symbol_origin": 0,
+        "initial_estimator_time_index": 0,
+        "samples_per_symbol": 8
+      },
+      "sample_size_basis": {
+        "R_change_after_confirmatory_outcomes": false,
+        "R_is_precision_guarantee": false,
+        "linear_workload_reference_seconds_for_100_runs": 209.21891991667508,
+        "pilot_R_approx": 28,
+        "pilot_R_approx_formula": "ceil((1.96*s_d/epsilon)^2), epsilon=0.02",
+        "pilot_runs": 30,
+        "pilot_s_d": 0.053093594133490844,
+        "pilot_study_id": "M5h-independent-pilot-candidate",
+        "pilot_wall_clock_seconds_for_120_runs": 251.0627039000101,
+        "primary_gamma_b_eff_db": 5.0,
+        "rationale": [
+          "operationally conservative relative to the pilot approximation R=28",
+          "substantially exceeds pilot R_approx",
+          "allows margin for uncertainty in pilot standard deviation",
+          "workload fits within a bounded budget based on the completed pilot workload"
+        ],
+        "recommended_confirmatory_R": 100,
+        "reference_is_runtime_guarantee": false
+      },
+      "schema_version": 1,
+      "scientific_claim_boundary": {
+        "1_5_dB_reproduction_claim": false,
+        "AR1_claim": false,
+        "complex_fading_or_multipath_claim": false,
+        "general_HF_claim": false,
+        "optimality_claim": false,
+        "paper_exact_joint_receiver_claim": false,
+        "permitted_future_claim": "performance difference between specified frozen and adaptive reconstructed receivers under the fixed ADR-015 single-path discrete-AWGN experimental profile",
+        "physical_EbN0_gain_claim": false,
+        "universal_adaptation_claim": false
+      },
+      "scientific_profile": {
+        "accepted_adr": [
+          "ADR-001",
+          "ADR-002",
+          "ADR-003",
+          "ADR-004",
+          "ADR-005",
+          "ADR-006",
+          "ADR-007",
+          "ADR-008",
+          "ADR-010",
+          "ADR-012",
+          "ADR-013",
+          "ADR-014",
+          "ADR-015"
+        ],
+        "adr": [
+          "ADR-012",
+          "ADR-013",
+          "ADR-014",
+          "ADR-015"
+        ],
+        "modulation": "normalized_8PSK",
+        "noise_axis_label": "effective discrete gamma_b; not physical HF Eb/N0",
+        "noise_model": "ADR-015 independent circular complex AWGN",
+        "open_science_questions": [
+          "SCI-02",
+          "SCI-03",
+          "SCI-METRIC-02"
+        ],
+        "paper_exact": false,
+        "path_count": 1,
+        "path_delays_samples": [
+          0
+        ],
+        "profile": "reconstructed_offline",
+        "proposed_adr": [
+          "ADR-009",
+          "ADR-011"
+        ],
+        "real_channel_gain_a": 0.75,
+        "receiver_enabled": false,
+        "samples_per_symbol": 8,
+        "waveform": "rectangular_ZOH"
+      },
+      "secondary_analyses": {
+        "general_adaptive_advantage_claim": false,
+        "historical_gamma_diagnostics_db": [
+          0,
+          10,
+          15
+        ],
+        "metrics": [
+          "DeltaSER",
+          "BER_B",
+          "BER_C",
+          "SER_B",
+          "SER_C",
+          "raw_errors",
+          "denominators",
+          "numerical_failures",
+          "coefficient_trajectory_diagnostics"
+        ],
+        "run_secondary_gamma_strata_in_M5j": false,
+        "simultaneous_four_point_inference": false
+      },
+      "seed_derivation": {
+        "algorithm": "NumPy SeedSequence(master_seed, spawn_key=(protocol_version_word, partition_code, stratum_index, run_index, stream_code)); generate_state(1,dtype=uint64); initialize PCG64 with derived seed",
+        "data_noise_bootstrap_domain_separated": true,
+        "manifest_path": "configs/m5i_confirmatory_run_manifest_draft.json",
+        "master_seeds": {
+          "bootstrap": 2026110103,
+          "data": 2026110101,
+          "noise": 2026110102
+        },
+        "partition": "evaluation",
+        "partition_code": 211,
+        "pilot_evaluation_streams_disjoint": true,
+        "pilot_namespaces_used": false,
+        "planned_run_id_template": "{study_id}:evaluation:gamma-5dB:run-{run_index:03d}",
+        "planned_run_index_origin": 1,
+        "prng": "numpy.random.PCG64",
+        "protocol": "M5h accepted domain-separated derivation",
+        "protocol_version_word": 1295337521,
+        "seed_bits": 64,
+        "stratum_index_for_primary_5db": 1,
+        "stream_codes": {
+          "bootstrap": 37,
+          "data": 11,
+          "noise": 23
+        }
+      },
+      "stopping_rule": {
+        "automatic_run_count_increase": false,
+        "complete_every_planned_run": true,
+        "early_stop_on_DeltaBER_or_CI": false,
+        "extend_R_after_outcome_review": false,
+        "planned_run_count": 100,
+        "precision_target_is_stopping_rule": false,
+        "result_dependent_early_stop": false,
+        "technical_interruption": "checkpoint completed runs; resume only with matching manifest/config/code and original seeds; incomplete otherwise"
+      },
+      "study_id": "M5j-confirmatory-paired-ber",
+      "tuning_policy": {
+        "automatic_tuning": false,
+        "change_R_after_confirmatory_outcome_review": false,
+        "parameters_frozen": true,
+        "select_parameters_using_M5f_or_M5h_outcomes": false
+      }
+    }
+  },
+  "m5i_design_path": "C:\\Users\\grine\\OneDrive\\Desktop\\Diplom_M\\hf-tcm-sim\\configs\\m5i_confirmatory_design_draft.json",
+  "m5i_design_file_sha256": "bb402f26d0f3f6fde0e8d4b473273f6075e4b19585af7ae13de8e8ba98cca218",
+  "design_snapshot_fingerprint": "6e42b5003e3804c89266cd78dcf3702d9d8159ed4ed46b81acf962bbff4db1e4",
+  "approved_design_fingerprint": "6e42b5003e3804c89266cd78dcf3702d9d8159ed4ed46b81acf962bbff4db1e4",
+  "design_snapshot": {
+    "authorization": {
+      "M5i_may_execute": false,
+      "future_M5j_requires_new_immutable_run_specific_config": true,
+      "future_scope_required": "m5j_confirmatory_only",
+      "future_status_required": "approved_for_confirmatory_evaluation",
+      "receiver_cli_activation": false,
+      "reuse_M5h_pilot_authorization": false
+    },
+    "bootstrap_contract": {
+      "adr": "ADR-014",
+      "confidence_level": 0.95,
+      "explicit_independent_bootstrap_seed": true,
+      "includes_zero_interpretation": "CI including zero is not evidence of receiver equivalence",
+      "independent_cluster": "one complete coded TCM sequence",
+      "interval": "two-sided percentile",
+      "metrics": [
+        "ber_b",
+        "ber_c",
+        "delta_ber",
+        "ser_b",
+        "ser_c",
+        "delta_ser"
+      ],
+      "paired_same_index_B_C_resampling": true,
+      "pooled_integer_counts": true,
+      "preserve_warning_flags": true,
+      "quantile_method": "numpy.quantile(method='linear')",
+      "replicates": 2000,
+      "zero_interval_interpretation": "CI=[0,0] is not proof of true zero BER"
+    },
+    "compute_workload": {
+      "decoder_passes_minimum": 200,
+      "independent_sequences": 100,
+      "information_bits": 51200,
+      "received_complex_samples": 204800,
+      "tcm_symbols": 25600
+    },
+    "design_id": "M5i-pilot-informed-confirmatory-design",
+    "design_status": "proposed_confirmatory",
+    "design_version": "M5i-1",
+    "execution_authorized": false,
+    "execution_scope": "none",
+    "future_execution_budget": {
+      "budget_status": "proposed for separate M5j approval; no benchmark run in M5i",
+      "checkpoint": "after each fully completed independent run; atomic replacement",
+      "multiprocessing": false,
+      "no_duplicate_run_ids": true,
+      "no_silent_resume_after_code_change": true,
+      "resume_requires_same_config_manifest_and_code_fingerprint": true,
+      "rss_budget_bytes": 1610612736,
+      "rss_enforcement": "monitor if supported; polling is not a hard OS limit",
+      "wall_clock_interruption": "stop before starting the next independent run; keep completed checkpoints and mark design incomplete",
+      "wall_clock_limit_seconds": 900,
+      "worker_processes": 1
+    },
+    "limitations": [
+      "pilot-informed design preparation only; not executed confirmatory evaluation or new performance evidence",
+      "M5f exploratory and M5h independent pilot records are historical and excluded from M5j",
+      "effective discrete gamma_b is not physical HF Eb/N0",
+      "reconstructed offline receiver is not paper-exact; paper_exact=false and receiver_enabled=false",
+      "one confirmatory point cannot establish general adaptive advantage or disadvantage",
+      "no claim of optimality, universal adaptation benefit, 1.5 dB reproduction, general HF channel performance, complex fading, multipath, or correlated AR(1)",
+      "sample-size target and R=100 are recommendations, not guarantees of CI precision"
+    ],
+    "numerical_failure_policy": {
+      "completed_only_pooled_metrics": "descriptive only and explicitly labeled with missing-output count",
+      "finite_unstable_trajectory": "retain valid decoded output and diagnostics",
+      "full_design_completeness_required": true,
+      "high_BER": "retain all observed errors",
+      "missing_valid_B_or_C_output": "retain failure; block full-design inference",
+      "receiver_parameter_change": false,
+      "resume": "same planned IDs, original seeds, identical config/code fingerprint only",
+      "retry_with_new_seed": false,
+      "silent_exclusion": false,
+      "zero_or_max_error_imputation": false
+    },
+    "output_contract": {
+      "partition": "evaluation",
+      "pilot_records_enter_confirmatory_sample": false,
+      "planned_manifest_contains_generated_data_or_noise": false,
+      "reference_bits_or_ChannelTruth_passed_to_decoder": false,
+      "retain_raw_integer_counts_and_failure_records": true
+    },
+    "pairing_contract": {
+      "identical_beta": true,
+      "identical_initial_estimator_state": true,
+      "identical_noisy_received_buffer": true,
+      "identical_reference_input_bits": true,
+      "identical_symbol_and_time_origins": true,
+      "only_difference": "estimator update policy",
+      "same_trellis_and_termination_rules": true
+    },
+    "phase_distinction": {
+      "M5f": "historical_exploratory; excluded from M5h and future M5j records",
+      "M5g": "proposed_design; not executed as confirmatory",
+      "M5h": "independent_planning_pilot; never pooled into M5j",
+      "M5i": "pilot_informed_confirmatory_design_preparation_only",
+      "M5j": "future_separately_authorized_independent_evaluation"
+    },
+    "pilot_evidence_provenance": {
+      "approved_run_config_sha256": "b072cd4f5cc7d4997df27827fe2195145f0e51bce03629a4f36428baf303fcf6",
+      "checkpoint_count": 120,
+      "execution_manifest_sha256": "082708177cf1dca9d94f414d35afa2b4db7c6faa43610a41ec9f2530b38ec65a",
+      "ordered_checkpoint_name_hash_pairs_sha256": "c479ffa5736286d158f82838ef326b4e1843a2626b017778f6f735d98aec73af",
+      "precision_diagnostic_sha256": "1df16fdcf6bdf28b1a2699fd666f33cbcbe42c28b4aba48121486a4fb5274da4",
+      "summary_sha256": "d5fa0d95a3e7a2fc9979c1021054f6805b7c41aa7f13bdd226e49e36f7a7e9b5"
+    },
+    "primary_condition": {
+      "gamma_b_eff_db": 5.0,
+      "gamma_b_eff_linear": 3.1622776601683795,
+      "role": "sole primary confirmatory stratum",
+      "sigma_squared": 0.7115124735378853,
+      "sigma_squared_formula": "4*a*a / 10^(gamma_b_eff_dB/10)"
+    },
+    "primary_estimand": {
+      "condition": "5 dB effective discrete gamma_b",
+      "definition": "pooled BER_C - pooled BER_B",
+      "name": "DeltaBER",
+      "precision_target_95pct_ci_half_width": 0.02,
+      "precision_target_role": "planning target only; not a stopping rule"
+    },
+    "purpose": "pilot-informed confirmatory design preparation, NOT executed confirmatory evaluation, NOT new performance evidence",
+    "receiver_policies": {
+      "B": {
+        "K_tilde": [
+          0.0,
+          0.0
+        ],
+        "alpha_prime": 1.0,
+        "mu0": [
+          0.0,
+          0.0
+        ],
+        "policy": "frozen"
+      },
+      "C": {
+        "K_tilde": [
+          0.35,
+          -0.2
+        ],
+        "alpha_prime": 0.85,
+        "mu0": [
+          0.0,
+          0.0
+        ],
+        "policy": "adaptive"
+      },
+      "only_difference": "estimator update policy",
+      "shared": {
+        "beta": 0.7,
+        "initial_fluctuating_iq": [
+          0.42,
+          0.91
+        ],
+        "initial_full_iq": [
+          0.42,
+          0.91
+        ],
+        "mu0": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "reconstruction_configuration": {
+      "assumption_provenance": {
+        "aggregate_observation_model": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "alpha_prime": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "beam_width": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "beta": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "candidate_count": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "candidate_index_space": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "decision_lag_symbols": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "estimator_time_index": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "estimator_time_rule": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "initial_estimates": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "initial_prior": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "initial_state": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "k_tilde": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "labeling": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "likelihood_type": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "mu0": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "path_count": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "path_delays_samples": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "prediction_combination": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "sample_rate_hz": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "samples_per_symbol": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "symbol_origin_sample": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "symbol_rate_hz": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "timebase": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        },
+        "transition_model": {
+          "note": "value is run configuration, not inferred from article",
+          "source": "explicit M5d paired control",
+          "status": "accepted_project_setting"
+        }
+      },
+      "candidate_count": 16,
+      "candidate_index_space": "m4_1_hypothesis_id",
+      "estimator": {
+        "alpha_prime": 0.85,
+        "initial_estimates": {
+          "fluctuating_iq": [
+            [
+              0.42,
+              0.91
+            ]
+          ],
+          "full_iq": [
+            [
+              0.42,
+              0.91
+            ]
+          ]
+        },
+        "initial_time_index": 0,
+        "k_tilde": [
+          [
+            0.35,
+            -0.2
+          ]
+        ],
+        "mu0": [
+          [
+            0.0,
+            0.0
+          ]
+        ],
+        "time_rule": "one_recursion_step_i_to_i_plus_1"
+      },
+      "initial": {
+        "prior": [
+          0.25,
+          0.25,
+          0.25,
+          0.25,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "state": [
+          0,
+          0
+        ]
+      },
+      "labeling": {
+        "bit_order": [
+          "c2",
+          "c1",
+          "c0"
+        ],
+        "name": "assumed_natural_binary",
+        "origin": "ADR-002 paired-control setting",
+        "output_to_b": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "phase_offset_rad": 0.0
+      },
+      "likelihood": {
+        "beta": 0.7,
+        "kind": "exp_negative_beta_project_reconstruction_metric"
+      },
+      "observation_model": {
+        "iq_rule": "(-Im(received), Re(received))",
+        "kind": "adr012_l1_real_mean8",
+        "prediction_combination": "explicit_project_prediction",
+        "sample_reduction": "arithmetic_mean_exactly_8",
+        "waveform_rule": "rectangular_zoh"
+      },
+      "paper_exact": false,
+      "profile": "reconstructed_offline",
+      "receiver_enabled": false,
+      "schema_version": 1,
+      "search": {
+        "beam_width": 1,
+        "decision_lag_symbols": 0
+      },
+      "timebase": {
+        "name": "approximate_rectangular_8sps",
+        "path_count": 1,
+        "path_delays_samples": [
+          0
+        ],
+        "sample_rate_hz": 8000.0,
+        "samples_per_symbol": 8,
+        "symbol_origin_sample": 0,
+        "symbol_rate_hz": 1000.0
+      },
+      "transition_model": {
+        "name": "adr003_uniform_allowed_edges",
+        "probabilities": [
+          [
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.25,
+            0.25,
+            0.25,
+            0.25
+          ]
+        ]
+      }
+    },
+    "run_design": {
+      "independent_cluster": "one complete coded TCM sequence",
+      "minimum_B_C_decoder_passes": 200,
+      "planned_run_id_count": 100,
+      "run_count": 100,
+      "strata_count": 1,
+      "symbols_per_run_F": 256,
+      "total_independent_sequences": 100,
+      "total_information_bits": 51200,
+      "total_received_complex_samples": 204800,
+      "total_tcm_symbols": 25600
+    },
+    "sample_origins": {
+      "absolute_sample_origin": 0,
+      "absolute_symbol_origin": 0,
+      "initial_estimator_time_index": 0,
+      "samples_per_symbol": 8
+    },
+    "sample_size_basis": {
+      "R_change_after_confirmatory_outcomes": false,
+      "R_is_precision_guarantee": false,
+      "linear_workload_reference_seconds_for_100_runs": 209.21891991667508,
+      "pilot_R_approx": 28,
+      "pilot_R_approx_formula": "ceil((1.96*s_d/epsilon)^2), epsilon=0.02",
+      "pilot_runs": 30,
+      "pilot_s_d": 0.053093594133490844,
+      "pilot_study_id": "M5h-independent-pilot-candidate",
+      "pilot_wall_clock_seconds_for_120_runs": 251.0627039000101,
+      "primary_gamma_b_eff_db": 5.0,
+      "rationale": [
+        "operationally conservative relative to the pilot approximation R=28",
+        "substantially exceeds pilot R_approx",
+        "allows margin for uncertainty in pilot standard deviation",
+        "workload fits within a bounded budget based on the completed pilot workload"
+      ],
+      "recommended_confirmatory_R": 100,
+      "reference_is_runtime_guarantee": false
+    },
+    "schema_version": 1,
+    "scientific_claim_boundary": {
+      "1_5_dB_reproduction_claim": false,
+      "AR1_claim": false,
+      "complex_fading_or_multipath_claim": false,
+      "general_HF_claim": false,
+      "optimality_claim": false,
+      "paper_exact_joint_receiver_claim": false,
+      "permitted_future_claim": "performance difference between specified frozen and adaptive reconstructed receivers under the fixed ADR-015 single-path discrete-AWGN experimental profile",
+      "physical_EbN0_gain_claim": false,
+      "universal_adaptation_claim": false
+    },
+    "scientific_profile": {
+      "accepted_adr": [
+        "ADR-001",
+        "ADR-002",
+        "ADR-003",
+        "ADR-004",
+        "ADR-005",
+        "ADR-006",
+        "ADR-007",
+        "ADR-008",
+        "ADR-010",
+        "ADR-012",
+        "ADR-013",
+        "ADR-014",
+        "ADR-015"
+      ],
+      "adr": [
+        "ADR-012",
+        "ADR-013",
+        "ADR-014",
+        "ADR-015"
+      ],
+      "modulation": "normalized_8PSK",
+      "noise_axis_label": "effective discrete gamma_b; not physical HF Eb/N0",
+      "noise_model": "ADR-015 independent circular complex AWGN",
+      "open_science_questions": [
+        "SCI-02",
+        "SCI-03",
+        "SCI-METRIC-02"
+      ],
+      "paper_exact": false,
+      "path_count": 1,
+      "path_delays_samples": [
+        0
+      ],
+      "profile": "reconstructed_offline",
+      "proposed_adr": [
+        "ADR-009",
+        "ADR-011"
+      ],
+      "real_channel_gain_a": 0.75,
+      "receiver_enabled": false,
+      "samples_per_symbol": 8,
+      "waveform": "rectangular_ZOH"
+    },
+    "secondary_analyses": {
+      "general_adaptive_advantage_claim": false,
+      "historical_gamma_diagnostics_db": [
+        0,
+        10,
+        15
+      ],
+      "metrics": [
+        "DeltaSER",
+        "BER_B",
+        "BER_C",
+        "SER_B",
+        "SER_C",
+        "raw_errors",
+        "denominators",
+        "numerical_failures",
+        "coefficient_trajectory_diagnostics"
+      ],
+      "run_secondary_gamma_strata_in_M5j": false,
+      "simultaneous_four_point_inference": false
+    },
+    "seed_derivation": {
+      "algorithm": "NumPy SeedSequence(master_seed, spawn_key=(protocol_version_word, partition_code, stratum_index, run_index, stream_code)); generate_state(1,dtype=uint64); initialize PCG64 with derived seed",
+      "data_noise_bootstrap_domain_separated": true,
+      "manifest_path": "configs/m5i_confirmatory_run_manifest_draft.json",
+      "master_seeds": {
+        "bootstrap": 2026110103,
+        "data": 2026110101,
+        "noise": 2026110102
+      },
+      "partition": "evaluation",
+      "partition_code": 211,
+      "pilot_evaluation_streams_disjoint": true,
+      "pilot_namespaces_used": false,
+      "planned_run_id_template": "{study_id}:evaluation:gamma-5dB:run-{run_index:03d}",
+      "planned_run_index_origin": 1,
+      "prng": "numpy.random.PCG64",
+      "protocol": "M5h accepted domain-separated derivation",
+      "protocol_version_word": 1295337521,
+      "seed_bits": 64,
+      "stratum_index_for_primary_5db": 1,
+      "stream_codes": {
+        "bootstrap": 37,
+        "data": 11,
+        "noise": 23
+      }
+    },
+    "stopping_rule": {
+      "automatic_run_count_increase": false,
+      "complete_every_planned_run": true,
+      "early_stop_on_DeltaBER_or_CI": false,
+      "extend_R_after_outcome_review": false,
+      "planned_run_count": 100,
+      "precision_target_is_stopping_rule": false,
+      "result_dependent_early_stop": false,
+      "technical_interruption": "checkpoint completed runs; resume only with matching manifest/config/code and original seeds; incomplete otherwise"
+    },
+    "study_id": "M5j-confirmatory-paired-ber",
+    "tuning_policy": {
+      "automatic_tuning": false,
+      "change_R_after_confirmatory_outcome_review": false,
+      "parameters_frozen": true,
+      "select_parameters_using_M5f_or_M5h_outcomes": false
+    }
+  },
+  "planned_manifest_path": "C:\\Users\\grine\\OneDrive\\Desktop\\Diplom_M\\hf-tcm-sim\\configs\\m5i_confirmatory_run_manifest_draft.json",
+  "planned_manifest_sha256": "6b63e12f6463680af603944a43e576afa15e08b1b84155273fbbbc42c4fb5b15",
+  "planned_manifest_fingerprint": "cc087344314e80593f1e5260253f73855435e946c1b7eb8702fa974faf8f75ec",
+  "planned_manifest_snapshot": {
+    "study_id": "M5j-confirmatory-paired-ber",
+    "design_id": "M5i-pilot-informed-confirmatory-design",
+    "design_version": "M5i-1",
+    "design_fingerprint": "6e42b5003e3804c89266cd78dcf3702d9d8159ed4ed46b81acf962bbff4db1e4",
+    "partition": "evaluation",
+    "primary_condition": {
+      "stratum_id": "gamma-5dB",
+      "stratum_index": 1,
+      "gamma_b_eff_db": 5.0,
+      "sigma_squared": 0.7115124735378853
+    },
+    "run_count": 100,
+    "seed_namespace_master_seeds": {
+      "bootstrap": 2026110103,
+      "data": 2026110101,
+      "noise": 2026110102
+    },
+    "seed_derivation": {
+      "algorithm": "numpy.random.SeedSequence(master_seed, spawn_key).generate_state(1, dtype=uint64)[0]",
+      "spawn_key_fields": [
+        "protocol_version_word",
+        "partition_code",
+        "stratum_index",
+        "zero_based_run_index",
+        "stream_code"
+      ],
+      "protocol_version_word": 1295337521,
+      "partition_code": 211,
+      "stream_codes": {
+        "data": 11,
+        "noise": 23,
+        "bootstrap": 37
+      },
+      "seed_bits": 64
+    },
+    "prng": "numpy.random.PCG64",
+    "python_version": "3.13.13",
+    "numpy_version": "2.3.3",
+    "code_revision_identifier": null,
+    "code_revision_status": "unavailable: workspace is not a Git worktree",
+    "source_fingerprint": {
+      "src/hf_tcm/evaluation/m5i_confirmatory_design.py": "60b257c3d0792d5ec4b73abdea2879369bff4d6f7cfca35cc7de04a73c1f1b1e",
+      "src/hf_tcm/evaluation/m5h_pilot_protocol.py": "8ca47106ef4199bafbd8fcc7d1124f94e8cad9168d9efd4d0c63885ec2b667fe",
+      "src/hf_tcm/evaluation/m5h_pilot_runner.py": "48f532d146ddb4d85b8ff7f8aebfba3f7ce9bf9e802a892d187a9515a6dae208",
+      "src/hf_tcm/evaluation/reconstruction_paired_monte_carlo.py": "6bbfea0a73173ad063bf15808504deb49a6aba8f6b9c3f51b428b944b6707b12",
+      "src/hf_tcm/evaluation/reconstruction_adaptive_diagnostics.py": "a6d5ab6288114bc844fdbef4ed82fc6e4ea960614d9206a31de5b2768f68550a",
+      "src/hf_tcm/evaluation/paired_cluster_bootstrap.py": "bad6b0f1784f27e7c9944b04b266e9df791e5511658d14fa20f959444a42f4a3",
+      "src/hf_tcm/evaluation/error_metrics.py": "dd8b3e9335d0e776d531ee4d3154c1bce9d1e579352c0540d5cabb6b6d2264be",
+      "src/hf_tcm/reconstruction_config.py": "0674cd572124a8269cb90583f9109fe713917fcad9bdc8cadfdebb72baf2e256",
+      "src/hf_tcm/receiver/reconstruction_forward.py": "b3696b6977e23a936c48d89e5042603cb222c9ef583a2f0bd9655019a9c36273"
+    },
+    "bootstrap": {
+      "namespace": "evaluation.bootstrap",
+      "master_seed": 2026110103,
+      "spawn_key": [
+        1295337521,
+        211,
+        1,
+        0,
+        37
+      ],
+      "derived_seed": 3940591365597190145,
+      "bit_generator": "PCG64"
+    },
+    "planned_runs": [
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-001",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 0,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            0,
+            11
+          ],
+          "derived_seed": 15270590806557684728,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            0,
+            23
+          ],
+          "derived_seed": 15312060443930872781,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-002",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 1,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            1,
+            11
+          ],
+          "derived_seed": 5493346222456517730,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            1,
+            23
+          ],
+          "derived_seed": 386199435296728399,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-003",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 2,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            2,
+            11
+          ],
+          "derived_seed": 3532382643402833167,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            2,
+            23
+          ],
+          "derived_seed": 17646761615712962192,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-004",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 3,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            3,
+            11
+          ],
+          "derived_seed": 10925578325953304762,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            3,
+            23
+          ],
+          "derived_seed": 17867623272918991543,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-005",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 4,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            4,
+            11
+          ],
+          "derived_seed": 13747208278508646916,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            4,
+            23
+          ],
+          "derived_seed": 9963760505328481176,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-006",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 5,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            5,
+            11
+          ],
+          "derived_seed": 16764428630536175500,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            5,
+            23
+          ],
+          "derived_seed": 9743330842684104439,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-007",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 6,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            6,
+            11
+          ],
+          "derived_seed": 5327526492682408936,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            6,
+            23
+          ],
+          "derived_seed": 9656172457305650000,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-008",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 7,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            7,
+            11
+          ],
+          "derived_seed": 16693177363864877391,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            7,
+            23
+          ],
+          "derived_seed": 3388471936138126354,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-009",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 8,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            8,
+            11
+          ],
+          "derived_seed": 5402324357424136583,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            8,
+            23
+          ],
+          "derived_seed": 12760831404426459995,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-010",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 9,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            9,
+            11
+          ],
+          "derived_seed": 2369300815801781202,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            9,
+            23
+          ],
+          "derived_seed": 2660893968525783418,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-011",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 10,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            10,
+            11
+          ],
+          "derived_seed": 16348081380194927489,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            10,
+            23
+          ],
+          "derived_seed": 3510593272968431361,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-012",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 11,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            11,
+            11
+          ],
+          "derived_seed": 7012566351334912864,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            11,
+            23
+          ],
+          "derived_seed": 12531592449287883416,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-013",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 12,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            12,
+            11
+          ],
+          "derived_seed": 5783494433361264786,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            12,
+            23
+          ],
+          "derived_seed": 6056249702823323714,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-014",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 13,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            13,
+            11
+          ],
+          "derived_seed": 17802388369314444683,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            13,
+            23
+          ],
+          "derived_seed": 10959313096122791616,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-015",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 14,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            14,
+            11
+          ],
+          "derived_seed": 10739239157548838330,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            14,
+            23
+          ],
+          "derived_seed": 9065101398219376812,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-016",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 15,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            15,
+            11
+          ],
+          "derived_seed": 8664065796349886772,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            15,
+            23
+          ],
+          "derived_seed": 17686259175583906062,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-017",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 16,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            16,
+            11
+          ],
+          "derived_seed": 1965266059391192737,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            16,
+            23
+          ],
+          "derived_seed": 6199008133656146028,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-018",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 17,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            17,
+            11
+          ],
+          "derived_seed": 14846383311576743846,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            17,
+            23
+          ],
+          "derived_seed": 1280681041341325961,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-019",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 18,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            18,
+            11
+          ],
+          "derived_seed": 87622203935631605,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            18,
+            23
+          ],
+          "derived_seed": 7597196609985037650,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-020",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 19,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            19,
+            11
+          ],
+          "derived_seed": 17339169172074005419,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            19,
+            23
+          ],
+          "derived_seed": 18158667065612223654,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-021",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 20,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            20,
+            11
+          ],
+          "derived_seed": 13736796554703491483,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            20,
+            23
+          ],
+          "derived_seed": 12458958833451260550,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-022",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 21,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            21,
+            11
+          ],
+          "derived_seed": 17038765446785142366,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            21,
+            23
+          ],
+          "derived_seed": 7330616275857860447,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-023",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 22,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            22,
+            11
+          ],
+          "derived_seed": 8944735538429075369,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            22,
+            23
+          ],
+          "derived_seed": 7232723924481587077,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-024",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 23,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            23,
+            11
+          ],
+          "derived_seed": 15533272561653734141,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            23,
+            23
+          ],
+          "derived_seed": 17292085748882467351,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-025",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 24,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            24,
+            11
+          ],
+          "derived_seed": 1291913718312821373,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            24,
+            23
+          ],
+          "derived_seed": 15036801344205781049,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-026",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 25,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            25,
+            11
+          ],
+          "derived_seed": 7480582559357199507,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            25,
+            23
+          ],
+          "derived_seed": 9166562207040430183,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-027",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 26,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            26,
+            11
+          ],
+          "derived_seed": 16012381745094366731,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            26,
+            23
+          ],
+          "derived_seed": 16744045823707084789,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-028",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 27,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            27,
+            11
+          ],
+          "derived_seed": 9242463972099877949,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            27,
+            23
+          ],
+          "derived_seed": 2709578648432462707,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-029",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 28,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            28,
+            11
+          ],
+          "derived_seed": 16802057889287306885,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            28,
+            23
+          ],
+          "derived_seed": 4035937532288262928,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-030",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 29,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            29,
+            11
+          ],
+          "derived_seed": 10692250229746345680,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            29,
+            23
+          ],
+          "derived_seed": 18381265546881720299,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-031",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 30,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            30,
+            11
+          ],
+          "derived_seed": 4847246473797041813,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            30,
+            23
+          ],
+          "derived_seed": 7607389102988886290,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-032",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 31,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            31,
+            11
+          ],
+          "derived_seed": 5272486045250215989,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            31,
+            23
+          ],
+          "derived_seed": 2828273577182019788,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-033",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 32,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            32,
+            11
+          ],
+          "derived_seed": 436894531752716860,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            32,
+            23
+          ],
+          "derived_seed": 18335129805588886046,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-034",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 33,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            33,
+            11
+          ],
+          "derived_seed": 17408814091256934255,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            33,
+            23
+          ],
+          "derived_seed": 4371090320583645123,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-035",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 34,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            34,
+            11
+          ],
+          "derived_seed": 1070595763138036192,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            34,
+            23
+          ],
+          "derived_seed": 12259563197335503762,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-036",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 35,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            35,
+            11
+          ],
+          "derived_seed": 12221032795328241880,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            35,
+            23
+          ],
+          "derived_seed": 14363726351465966142,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-037",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 36,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            36,
+            11
+          ],
+          "derived_seed": 17358434201837886539,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            36,
+            23
+          ],
+          "derived_seed": 5458987824777119717,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-038",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 37,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            37,
+            11
+          ],
+          "derived_seed": 18032303672893244207,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            37,
+            23
+          ],
+          "derived_seed": 14525392395005067513,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-039",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 38,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            38,
+            11
+          ],
+          "derived_seed": 8552342623631871050,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            38,
+            23
+          ],
+          "derived_seed": 17397534435874751483,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-040",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 39,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            39,
+            11
+          ],
+          "derived_seed": 10601979637782902454,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            39,
+            23
+          ],
+          "derived_seed": 22194810589361800,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-041",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 40,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            40,
+            11
+          ],
+          "derived_seed": 8569826966971719676,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            40,
+            23
+          ],
+          "derived_seed": 13081343858661392948,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-042",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 41,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            41,
+            11
+          ],
+          "derived_seed": 12630980756289423544,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            41,
+            23
+          ],
+          "derived_seed": 10823965101553915219,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-043",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 42,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            42,
+            11
+          ],
+          "derived_seed": 9723449284323723285,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            42,
+            23
+          ],
+          "derived_seed": 5863233074920383391,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-044",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 43,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            43,
+            11
+          ],
+          "derived_seed": 1875953844310365775,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            43,
+            23
+          ],
+          "derived_seed": 14534473611453317429,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-045",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 44,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            44,
+            11
+          ],
+          "derived_seed": 12079123553846963379,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            44,
+            23
+          ],
+          "derived_seed": 11068774024123525731,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-046",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 45,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            45,
+            11
+          ],
+          "derived_seed": 13374802674567707363,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            45,
+            23
+          ],
+          "derived_seed": 13360730066345033799,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-047",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 46,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            46,
+            11
+          ],
+          "derived_seed": 6847363761639770700,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            46,
+            23
+          ],
+          "derived_seed": 3140438095319552083,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-048",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 47,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            47,
+            11
+          ],
+          "derived_seed": 12209462367672479573,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            47,
+            23
+          ],
+          "derived_seed": 6219111456393382898,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-049",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 48,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            48,
+            11
+          ],
+          "derived_seed": 2061640316572778725,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            48,
+            23
+          ],
+          "derived_seed": 5829923160711124089,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-050",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 49,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            49,
+            11
+          ],
+          "derived_seed": 1976460413286427236,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            49,
+            23
+          ],
+          "derived_seed": 10133754024324141023,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-051",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 50,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            50,
+            11
+          ],
+          "derived_seed": 4861470984938155912,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            50,
+            23
+          ],
+          "derived_seed": 14187186649462513501,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-052",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 51,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            51,
+            11
+          ],
+          "derived_seed": 17250488935245894114,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            51,
+            23
+          ],
+          "derived_seed": 2665243746893812879,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-053",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 52,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            52,
+            11
+          ],
+          "derived_seed": 5686413646790928867,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            52,
+            23
+          ],
+          "derived_seed": 13843022741607863478,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-054",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 53,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            53,
+            11
+          ],
+          "derived_seed": 5307091037568926593,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            53,
+            23
+          ],
+          "derived_seed": 2416384431678630786,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-055",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 54,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            54,
+            11
+          ],
+          "derived_seed": 9644417477152257268,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            54,
+            23
+          ],
+          "derived_seed": 9240746901932391401,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-056",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 55,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            55,
+            11
+          ],
+          "derived_seed": 8787452559577386070,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            55,
+            23
+          ],
+          "derived_seed": 16936630355501803394,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-057",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 56,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            56,
+            11
+          ],
+          "derived_seed": 11186043629139696359,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            56,
+            23
+          ],
+          "derived_seed": 17467268715489732455,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-058",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 57,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            57,
+            11
+          ],
+          "derived_seed": 10216680104749635988,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            57,
+            23
+          ],
+          "derived_seed": 14856789293258439018,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-059",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 58,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            58,
+            11
+          ],
+          "derived_seed": 12798750625086262556,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            58,
+            23
+          ],
+          "derived_seed": 11243705636525789485,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-060",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 59,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            59,
+            11
+          ],
+          "derived_seed": 14833389570585185618,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            59,
+            23
+          ],
+          "derived_seed": 14016073446623376941,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-061",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 60,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            60,
+            11
+          ],
+          "derived_seed": 7855975196103745052,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            60,
+            23
+          ],
+          "derived_seed": 844301661759481772,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-062",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 61,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            61,
+            11
+          ],
+          "derived_seed": 3215784250692932527,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            61,
+            23
+          ],
+          "derived_seed": 9195870818078052097,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-063",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 62,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            62,
+            11
+          ],
+          "derived_seed": 16250160002585135596,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            62,
+            23
+          ],
+          "derived_seed": 12248266493775768784,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-064",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 63,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            63,
+            11
+          ],
+          "derived_seed": 3038149670572451372,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            63,
+            23
+          ],
+          "derived_seed": 9475705284173633118,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-065",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 64,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            64,
+            11
+          ],
+          "derived_seed": 16695146865478830238,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            64,
+            23
+          ],
+          "derived_seed": 7243156569942408641,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-066",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 65,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            65,
+            11
+          ],
+          "derived_seed": 6107186590975485582,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            65,
+            23
+          ],
+          "derived_seed": 16438410997150287398,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-067",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 66,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            66,
+            11
+          ],
+          "derived_seed": 330027846849349123,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            66,
+            23
+          ],
+          "derived_seed": 4817185525710016808,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-068",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 67,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            67,
+            11
+          ],
+          "derived_seed": 14923392337058897618,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            67,
+            23
+          ],
+          "derived_seed": 13223020879790949566,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-069",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 68,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            68,
+            11
+          ],
+          "derived_seed": 5173506585860254263,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            68,
+            23
+          ],
+          "derived_seed": 9907714891453599041,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-070",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 69,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            69,
+            11
+          ],
+          "derived_seed": 749430591724287958,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            69,
+            23
+          ],
+          "derived_seed": 17084039729986059894,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-071",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 70,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            70,
+            11
+          ],
+          "derived_seed": 5494807164793093346,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            70,
+            23
+          ],
+          "derived_seed": 16607630823567405292,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-072",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 71,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            71,
+            11
+          ],
+          "derived_seed": 8059721601502376689,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            71,
+            23
+          ],
+          "derived_seed": 12410287032996673365,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-073",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 72,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            72,
+            11
+          ],
+          "derived_seed": 1463146226720412693,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            72,
+            23
+          ],
+          "derived_seed": 8439040078433367913,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-074",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 73,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            73,
+            11
+          ],
+          "derived_seed": 7536470225169565734,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            73,
+            23
+          ],
+          "derived_seed": 8424412009310971787,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-075",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 74,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            74,
+            11
+          ],
+          "derived_seed": 8402668895299033345,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            74,
+            23
+          ],
+          "derived_seed": 11897613782236947067,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-076",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 75,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            75,
+            11
+          ],
+          "derived_seed": 18136017317037885712,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            75,
+            23
+          ],
+          "derived_seed": 1381631989956344023,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-077",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 76,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            76,
+            11
+          ],
+          "derived_seed": 8545110900480817094,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            76,
+            23
+          ],
+          "derived_seed": 8443409197911267163,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-078",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 77,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            77,
+            11
+          ],
+          "derived_seed": 2501776247285414105,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            77,
+            23
+          ],
+          "derived_seed": 7953509273101455983,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-079",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 78,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            78,
+            11
+          ],
+          "derived_seed": 2659219192726601260,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            78,
+            23
+          ],
+          "derived_seed": 14359429199821846103,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-080",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 79,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            79,
+            11
+          ],
+          "derived_seed": 7427196892877652072,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            79,
+            23
+          ],
+          "derived_seed": 7905363565361294482,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-081",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 80,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            80,
+            11
+          ],
+          "derived_seed": 8746963747250969453,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            80,
+            23
+          ],
+          "derived_seed": 1457805611154677714,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-082",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 81,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            81,
+            11
+          ],
+          "derived_seed": 5583823546748558409,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            81,
+            23
+          ],
+          "derived_seed": 7628069759927742051,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-083",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 82,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            82,
+            11
+          ],
+          "derived_seed": 14355810923010924849,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            82,
+            23
+          ],
+          "derived_seed": 14991176485798346646,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-084",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 83,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            83,
+            11
+          ],
+          "derived_seed": 16254665266588610511,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            83,
+            23
+          ],
+          "derived_seed": 15092405249526510251,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-085",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 84,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            84,
+            11
+          ],
+          "derived_seed": 2395574925811336819,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            84,
+            23
+          ],
+          "derived_seed": 8156447375256308762,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-086",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 85,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            85,
+            11
+          ],
+          "derived_seed": 9171046415654406842,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            85,
+            23
+          ],
+          "derived_seed": 10700679710272320218,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-087",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 86,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            86,
+            11
+          ],
+          "derived_seed": 7124472528319735503,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            86,
+            23
+          ],
+          "derived_seed": 7943118073477493959,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-088",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 87,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            87,
+            11
+          ],
+          "derived_seed": 4645570926397155173,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            87,
+            23
+          ],
+          "derived_seed": 14048913682551574972,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-089",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 88,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            88,
+            11
+          ],
+          "derived_seed": 11559687372004074727,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            88,
+            23
+          ],
+          "derived_seed": 7514795007529549430,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-090",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 89,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            89,
+            11
+          ],
+          "derived_seed": 9080457443778050769,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            89,
+            23
+          ],
+          "derived_seed": 2910803445783729029,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-091",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 90,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            90,
+            11
+          ],
+          "derived_seed": 5659350903195282763,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            90,
+            23
+          ],
+          "derived_seed": 3423345087296715866,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-092",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 91,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            91,
+            11
+          ],
+          "derived_seed": 1958720692065130482,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            91,
+            23
+          ],
+          "derived_seed": 8840958770785929006,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-093",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 92,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            92,
+            11
+          ],
+          "derived_seed": 17839122443856165005,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            92,
+            23
+          ],
+          "derived_seed": 9804688450878495680,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-094",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 93,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            93,
+            11
+          ],
+          "derived_seed": 17649359385636562444,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            93,
+            23
+          ],
+          "derived_seed": 11877072789598530604,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-095",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 94,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            94,
+            11
+          ],
+          "derived_seed": 10707231879399883736,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            94,
+            23
+          ],
+          "derived_seed": 12200590324382638863,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-096",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 95,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            95,
+            11
+          ],
+          "derived_seed": 14562580378314348295,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            95,
+            23
+          ],
+          "derived_seed": 17281774397070963200,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-097",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 96,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            96,
+            11
+          ],
+          "derived_seed": 13121375854747511904,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            96,
+            23
+          ],
+          "derived_seed": 2493813596639140538,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-098",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 97,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            97,
+            11
+          ],
+          "derived_seed": 1600423718145350697,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            97,
+            23
+          ],
+          "derived_seed": 2940701916941350971,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-099",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 98,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            98,
+            11
+          ],
+          "derived_seed": 15277907941740138941,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            98,
+            23
+          ],
+          "derived_seed": 16487374451230415174,
+          "bit_generator": "PCG64"
+        }
+      },
+      {
+        "run_id": "M5j-confirmatory-paired-ber:evaluation:gamma-5dB:run-100",
+        "partition": "evaluation",
+        "stratum_id": "gamma-5dB",
+        "stratum_index": 1,
+        "run_index": 99,
+        "F": 256,
+        "gamma_b_eff_db": 5.0,
+        "sigma_squared": 0.7115124735378853,
+        "origins": {
+          "sample": 0,
+          "symbol": 0,
+          "estimator_time": 0
+        },
+        "data": {
+          "master_seed": 2026110101,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            99,
+            11
+          ],
+          "derived_seed": 6449376970496014950,
+          "bit_generator": "PCG64"
+        },
+        "noise": {
+          "master_seed": 2026110102,
+          "spawn_key": [
+            1295337521,
+            211,
+            1,
+            99,
+            23
+          ],
+          "derived_seed": 4951010934263390614,
+          "bit_generator": "PCG64"
+        }
+      }
+    ],
+    "manifest_status": "planned IDs and seed provenance only; no data/noise generated"
+  },
+  "planned_run_count": 100,
+  "execution_limits": {
+    "wall_clock_limit_seconds": 900.0,
+    "rss_limit_bytes": 1610612736,
+    "rss_monitoring_available_at_approval": true,
+    "rss_semantics": "periodic parent-process sampling; not a hard OS RSS cap",
+    "monitor_interval_seconds": 0.25,
+    "worker_processes": 1,
+    "multiprocessing": false,
+    "available_memory_before_bytes": 5494489088,
+    "checkpoint_after_each_full_run": true,
+    "atomic_checkpoints": true
+  },
+  "code_fingerprint": {
+    "src/hf_tcm/evaluation/m5i_confirmatory_design.py": "60b257c3d0792d5ec4b73abdea2879369bff4d6f7cfca35cc7de04a73c1f1b1e",
+    "src/hf_tcm/evaluation/m5h_pilot_protocol.py": "8ca47106ef4199bafbd8fcc7d1124f94e8cad9168d9efd4d0c63885ec2b667fe",
+    "src/hf_tcm/evaluation/m5h_pilot_runner.py": "48f532d146ddb4d85b8ff7f8aebfba3f7ce9bf9e802a892d187a9515a6dae208",
+    "src/hf_tcm/evaluation/m5j_confirmatory_runner.py": "ebb588d63c73e80372b568ef8ea10df95882fba3f8f13d4da6fcd0e9e6f2e930",
+    "src/hf_tcm/evaluation/reconstruction_paired_monte_carlo.py": "6bbfea0a73173ad063bf15808504deb49a6aba8f6b9c3f51b428b944b6707b12",
+    "src/hf_tcm/evaluation/reconstruction_adaptive_diagnostics.py": "a6d5ab6288114bc844fdbef4ed82fc6e4ea960614d9206a31de5b2768f68550a",
+    "src/hf_tcm/evaluation/paired_cluster_bootstrap.py": "bad6b0f1784f27e7c9944b04b266e9df791e5511658d14fa20f959444a42f4a3",
+    "src/hf_tcm/evaluation/error_metrics.py": "dd8b3e9335d0e776d531ee4d3154c1bce9d1e579352c0540d5cabb6b6d2264be",
+    "src/hf_tcm/reconstruction_config.py": "0674cd572124a8269cb90583f9109fe713917fcad9bdc8cadfdebb72baf2e256",
+    "src/hf_tcm/receiver/reconstruction_forward.py": "b3696b6977e23a936c48d89e5042603cb222c9ef583a2f0bd9655019a9c36273",
+    "src/hf_tcm/receiver/reconstruction_estimator_state.py": "4fa9bb51b83a78da81aef4bb454a7fb85e72265f2011ebd6cc6ac0e6af061f78",
+    "src/hf_tcm/receiver/reconstruction_causal_step.py": "493b746a75b6a3d896657f881cc9850219cb8934f4cf9421a080be47036769c6",
+    "src/hf_tcm/receiver/reconstruction_candidate_metrics.py": "22573b4a90ab8e6873b60b58965529665dedf911dfd0f6d520b3ca6bcb8fff5d",
+    "src/hf_tcm/receiver/reconstruction_labeling.py": "bbc5c5ecc646088c77677dd2ffc791429b2c102eb6950ea98eb1b579b7c1ddbb",
+    "src/hf_tcm/receiver/reconstruction_observation.py": "b82cb47bb9e9db010554dac86a6d0039c58ec6a09656f3f48fc87bb9d0a677b0",
+    "src/hf_tcm/receiver/reconstruction_posterior.py": "e9aac0eb6d77aa71c4cd3961afcf6bc476466d26c3c18bdecc85e6e8aa236337",
+    "src/hf_tcm/receiver/reconstruction_posterior_estimator_sequence.py": "ff0c1dbfffccdd2957af5a25ccd903c0df378defd638a2bfd7f7fd1923bd566e",
+    "src/hf_tcm/receiver/reconstruction_posterior_estimator_step.py": "a8f8eb00d80d93cbd55d56c216cad374c8745fc14d2cf56e7477e21d8347a67b",
+    "src/hf_tcm/receiver/iq.py": "d0d418d47fa1ece0b68a50acffe15b7109f2c66e66999d6bc59a46f84e2ce1be",
+    "src/hf_tcm/coding/encoder.py": "6883e760a43903c1cbad6615cb7a70cb1193696d8243450da335111cd7c08405",
+    "src/hf_tcm/coding/hypotheses.py": "268219516615659479ef013a00177e82ecbc4f88ef24990f2391d6a3833ca2f2",
+    "src/hf_tcm/coding/hypothesis_path.py": "805e01ba703d58e27838b5682baa1a74feddc945ae6bedf743a62ea34a54def1",
+    "src/hf_tcm/decoding/reconstruction_viterbi.py": "7773722fec05bad15cd596b6b69de75374002ddbba6f38b817f8447adcbaea4a",
+    "src/hf_tcm/modulation/labeling.py": "8c635a12184f9753e63e944b079f485bf55df8233557601a2724233eac45460b",
+    "src/hf_tcm/modulation/psk8.py": "7d2c83892ddb10a955e21c39cf0085e120f107dd0879407aea18c8b4ff52739a"
+  },
+  "code_revision_identifier": null,
+  "code_revision_status": "unavailable: workspace is not a Git worktree",
+  "python_version": "3.13.13",
+  "numpy_version": "2.3.3",
+  "prng": "numpy.random.PCG64",
+  "approval_boundary": "m5j_confirmatory_only; never reuse m5h_pilot_only authorization"
+}

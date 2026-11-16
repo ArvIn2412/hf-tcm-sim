@@ -1,0 +1,79 @@
+{
+  "schema": "scientific-exp01b-frozen-protocol-v1",
+  "experiment_id": "scientific-exp01b-independent-energy-gain-v1",
+  "phase": "confirmatory",
+  "frame_symbols": 256,
+  "information_bits_per_symbol": 2,
+  "complex_samples_per_symbol": 8,
+  "sweep": "amplitude",
+  "fixed_complex_noise_variance": 1.0,
+  "energy_convention": {
+    "tx_energy": "sum(abs(tx_samples[n])**2)",
+    "discrete_energy_per_information_bit": "E_b,d = E_tx,d / (2*F) = 4*A**2",
+    "gamma_db": "10*log10(E_b,d / sigma_c_squared)",
+    "physical_eb_n0_claim": false
+  },
+  "target_ber": [0.01, 0.05],
+  "trials_per_point": 40,
+  "bootstrap": {
+    "replicates": 5000,
+    "confidence_level": 0.95,
+    "resampling_unit": "whole paired independent frame within each energy point",
+    "primary_interpolation": "linear log10(BER) versus gamma_dB, measured adjacent bracket only, no pseudocount or extrapolation",
+    "sensitivity_interpolation": "linear BER versus gamma_dB, measured adjacent bracket only, no extrapolation",
+    "minimum_valid_crossing_fraction": 0.95,
+    "seed_static": 96101,
+    "seed_rician": 96102
+  },
+  "seed_policy": {
+    "root_seed": 94101,
+    "generator": "NumPy SeedSequence + PCG64",
+    "domain": "[root_seed, confirmatory_phase=2, scenario_id, amplitude_sweep=1, point_index, trial_index, stream_index]",
+    "scenario_ids": {"static": 2, "rician": 3},
+    "stream_ids": {"bits": 0, "fading": 1, "noise": 2},
+    "historical_seed_overlap_allowed": false
+  },
+  "scenarios": {
+    "static": {
+      "channel_profile": "static two-path REPRO-01 energy profile",
+      "delays_samples": [0, 3],
+      "path_powers": [0.8, 0.2],
+      "path_coefficients": [[0.8944271909999159, 0.0], [0.3420478245655483, 0.2881029081942352]],
+      "gamma_db_grid": [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5, 11.0, 11.5, 12.0, 12.5, 13.0, 13.5, 14.0],
+      "receiver_arms": ["joint", "b0", "b1"]
+    },
+    "rician": {
+      "channel_profile": "Rician AR(1) two-path REPRO-01 energy profile",
+      "delays_samples": [0, 3],
+      "path_powers": [0.8, 0.2],
+      "rician_k_factors": [4.0, 1.0],
+      "los_phases_rad": [0.0, 0.7],
+      "fading_correlation_per_complex_sample": 0.98,
+      "independent_stationary_path_streams": true,
+      "gamma_db_grid": [0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21.0, 22.0, 23.0, 24.0],
+      "receiver_arms": ["joint", "b0"],
+      "b1_available": false
+    }
+  },
+  "runtime_plan": {
+    "historical_static_f256_pair_elapsed_seconds": {"n": 140, "median": 2.8512592000188306, "mean": 2.9578560114297683, "p90": 3.840098990022671, "max": 5.271611400065012},
+    "historical_rician_f256_pair_elapsed_seconds": {"n": 15, "median": 3.843282200046815, "mean": 3.994847480005895, "p90": 5.114748640032485, "max": 7.027683099964634},
+    "planned_static_pairs": 1160,
+    "planned_rician_pairs": 1000,
+    "projected_p90_static_seconds": 4454.5,
+    "projected_p90_rician_seconds": 5114.8,
+    "static_runtime_budget_seconds": 5200,
+    "rician_runtime_budget_seconds": 5600,
+    "total_runtime_budget_seconds": 10800,
+    "disk_budget_bytes": 419430400,
+    "stop_policy": "soft sum of measured run_energy_trial elapsed_seconds, checked between complete paired frames; resumable immutable frame manifests"
+  },
+  "statistical_interpretation": {
+    "historical_pilot_used_for_grid_design_only": true,
+    "historical_records_in_confirmatory_estimates": false,
+    "target_001_if_errors_insufficient": "report insufficient evidence; do not promote conditional gain to final",
+    "error_floor": "describe only as observed high-energy plateau over frozen measured range; do not claim asymptotic proof",
+    "energy_gain_label": "model discrete energy gain, not physical Eb/N0"
+  },
+  "paper_exact": false
+}

@@ -1,0 +1,2707 @@
+{
+  "schema_version": "m8a.anchored-study.v1",
+  "study_id": "m8_anchored_reconstructed_adaptation_v1",
+  "classification": "proposed reconstructed research design; not executed; not optimized; not performance evidence; not source-faithful",
+  "design_status": "approved_training",
+  "execution_authorized": true,
+  "execution_scope": "m8b_train_only",
+  "scientific_status": {
+    "paper_exact": false,
+    "receiver_enabled": false,
+    "accepted_adrs": [
+      "001",
+      "002",
+      "003",
+      "004",
+      "005",
+      "006",
+      "007",
+      "008",
+      "010",
+      "012",
+      "013",
+      "014",
+      "015"
+    ],
+    "proposed_adrs": [
+      "009",
+      "011"
+    ],
+    "open_science_questions": [
+      "SCI-02",
+      "SCI-03",
+      "SCI-METRIC-02"
+    ],
+    "author_mapping_status": "SOURCE_UNRESOLVED"
+  },
+  "profile": {
+    "model": "anchored_reconstructed_offline",
+    "parent_reconstruction_profile": "reconstructed_offline",
+    "channel_memory_L": 1,
+    "real_channel_gain": 0.75,
+    "delay_samples": 0,
+    "modulation": "normalized_8PSK",
+    "pulse_shape": "rectangular_ZOH",
+    "samples_per_symbol": 8,
+    "observed_iq_convention": "ADR-012",
+    "likelihood": "ADR-005 reconstructed pseudo-likelihood",
+    "decoder": "ADR-013 conditional full Viterbi",
+    "noise_profile": "ADR-015 independent circular complex AWGN",
+    "gamma_b_eff_db": 5.0,
+    "gamma_b_eff_linear": 3.1622776601683795,
+    "sigma_squared": 0.7115124735378853,
+    "sigma_squared_formula": "4*a*a / 10^(gamma_b_eff_db/10)",
+    "physical_hf_ebn0": false,
+    "source_alignment_claim": false
+  },
+  "anchored_profile": {
+    "nominal_prior_anchor_mu0": [
+      0.42,
+      0.91
+    ],
+    "initial_fluctuating_iq": [
+      0.0,
+      0.0
+    ],
+    "initial_full_iq": [
+      0.42,
+      0.91
+    ],
+    "initial_full_equals_fluctuating_plus_anchor": true,
+    "anchor_is_channel_truth_or_oracle_csi": false,
+    "historical_zero_anchor_profile": {
+      "mu0": [
+        0.0,
+        0.0
+      ],
+      "initial_fluctuating_iq": [
+        0.42,
+        0.91
+      ],
+      "initial_full_iq": [
+        0.42,
+        0.91
+      ]
+    },
+    "shared_beta": 0.7,
+    "same_initial_predictions_expected": true
+  },
+  "sequence_design": {
+    "symbols_per_run_F": 256,
+    "information_bits_per_run": 512,
+    "same_reference_sequence_across_all_arms_within_run": true,
+    "one_noise_realization_per_run_shared_by_all_arms": true,
+    "channel_truth_passed_to_receiver": false,
+    "decoder_calls_per_arm_sequence_target": 1
+  },
+  "policy_grid": {
+    "base_k_tilde": [
+      0.35,
+      -0.2
+    ],
+    "anchored_alpha_values": [
+      1.0,
+      0.95,
+      0.85
+    ],
+    "anchored_k_scales": [
+      0.25,
+      0.5
+    ],
+    "construction": "K_tilde = K_scale * base_k_tilde; alpha-major, scale-minor order",
+    "candidate_policies": [
+      {
+        "candidate_id": "anch_a100_k025",
+        "role": "new_anchored_candidate",
+        "alpha_prime": 1.0,
+        "k_scale": 0.25,
+        "k_tilde": [
+          0.0875,
+          -0.05
+        ],
+        "mu0": [
+          0.42,
+          0.91
+        ],
+        "initial_fluctuating_iq": [
+          0.0,
+          0.0
+        ],
+        "initial_full_iq": [
+          0.42,
+          0.91
+        ]
+      },
+      {
+        "candidate_id": "anch_a100_k050",
+        "role": "new_anchored_candidate",
+        "alpha_prime": 1.0,
+        "k_scale": 0.5,
+        "k_tilde": [
+          0.175,
+          -0.1
+        ],
+        "mu0": [
+          0.42,
+          0.91
+        ],
+        "initial_fluctuating_iq": [
+          0.0,
+          0.0
+        ],
+        "initial_full_iq": [
+          0.42,
+          0.91
+        ]
+      },
+      {
+        "candidate_id": "anch_a095_k025",
+        "role": "new_anchored_candidate",
+        "alpha_prime": 0.95,
+        "k_scale": 0.25,
+        "k_tilde": [
+          0.0875,
+          -0.05
+        ],
+        "mu0": [
+          0.42,
+          0.91
+        ],
+        "initial_fluctuating_iq": [
+          0.0,
+          0.0
+        ],
+        "initial_full_iq": [
+          0.42,
+          0.91
+        ]
+      },
+      {
+        "candidate_id": "anch_a095_k050",
+        "role": "new_anchored_candidate",
+        "alpha_prime": 0.95,
+        "k_scale": 0.5,
+        "k_tilde": [
+          0.175,
+          -0.1
+        ],
+        "mu0": [
+          0.42,
+          0.91
+        ],
+        "initial_fluctuating_iq": [
+          0.0,
+          0.0
+        ],
+        "initial_full_iq": [
+          0.42,
+          0.91
+        ]
+      },
+      {
+        "candidate_id": "anch_a085_k025",
+        "role": "new_anchored_candidate",
+        "alpha_prime": 0.85,
+        "k_scale": 0.25,
+        "k_tilde": [
+          0.0875,
+          -0.05
+        ],
+        "mu0": [
+          0.42,
+          0.91
+        ],
+        "initial_fluctuating_iq": [
+          0.0,
+          0.0
+        ],
+        "initial_full_iq": [
+          0.42,
+          0.91
+        ]
+      },
+      {
+        "candidate_id": "anch_a085_k050",
+        "role": "new_anchored_candidate",
+        "alpha_prime": 0.85,
+        "k_scale": 0.5,
+        "k_tilde": [
+          0.175,
+          -0.1
+        ],
+        "mu0": [
+          0.42,
+          0.91
+        ],
+        "initial_fluctuating_iq": [
+          0.0,
+          0.0
+        ],
+        "initial_full_iq": [
+          0.42,
+          0.91
+        ]
+      },
+      {
+        "candidate_id": "historical_frozen_B",
+        "role": "historical_control",
+        "alpha_prime": 1.0,
+        "k_scale": 0.0,
+        "k_tilde": [
+          0.0,
+          0.0
+        ],
+        "mu0": [
+          0.0,
+          0.0
+        ],
+        "initial_fluctuating_iq": [
+          0.42,
+          0.91
+        ],
+        "initial_full_iq": [
+          0.42,
+          0.91
+        ]
+      },
+      {
+        "candidate_id": "historical_combined_C",
+        "role": "historical_control",
+        "alpha_prime": 0.85,
+        "k_scale": 1.0,
+        "k_tilde": [
+          0.35,
+          -0.2
+        ],
+        "mu0": [
+          0.0,
+          0.0
+        ],
+        "initial_fluctuating_iq": [
+          0.42,
+          0.91
+        ],
+        "initial_full_iq": [
+          0.42,
+          0.91
+        ]
+      }
+    ],
+    "candidate_count": 8,
+    "candidate_policies_are_author_algorithms": false,
+    "historical_B_and_C_parameters_unchanged": true,
+    "parameter_search_in_prep": false
+  },
+  "selection": {
+    "training_only": true,
+    "eligibility": "40 complete valid records for candidate; no completed-only pooling",
+    "primary": "minimum pooled raw integer-count BER among eligible arms",
+    "tie_break_order": [
+      "lower pooled raw-count SER",
+      "lower absolute K_scale",
+      "alpha_prime closest to 1.0",
+      "lexicographically lower candidate_id"
+    ],
+    "frozen_B_may_win": true,
+    "if_frozen_B_wins": "end negative exploratory result; do not promote runner-up or run same-policy adaptive validation",
+    "training_statistics": "exploratory selection only; not confirmatory"
+  },
+  "failure_policy": {
+    "retain_success_and_failure_records": true,
+    "invalid_or_incomplete_candidate": "ineligible",
+    "finite_high_error_trajectory": "retain all observed errors",
+    "zero_error_imputation": false,
+    "maximum_error_imputation": false,
+    "silent_exclusion": false,
+    "seed_replacement": false,
+    "incomplete_frozen_B": "block paired winner selection"
+  },
+  "partitions": {
+    "historical_inputs_excluded": [
+      "M5f",
+      "M5h",
+      "M5j",
+      "M6b",
+      "M6g",
+      "M6h",
+      "M7b"
+    ],
+    "training": {
+      "sequence_count": 40,
+      "symbols_per_sequence_F": 256,
+      "run_id_template": "{study_id}:train:run-{run_index:03d}",
+      "seed_namespaces": {
+        "data": 2027011001,
+        "noise": 2027011002,
+        "bootstrap": 2027011003,
+        "experiment_metadata": 2027011004
+      }
+    },
+    "validation": {
+      "sequence_count": 40,
+      "symbols_per_sequence_F": 256,
+      "run_id_template": "{study_id}:validation:run-{run_index:03d}",
+      "policies": [
+        "historical_frozen_B",
+        "one_training_selected_anchored_policy"
+      ],
+      "new_independent_partition": true,
+      "seed_namespaces": {
+        "data": 2027012001,
+        "noise": 2027012002,
+        "bootstrap": 2027012003,
+        "experiment_metadata": 2027012004
+      },
+      "selection_repeated": false,
+      "if_training_winner_is_B": "do not execute validation; close negative exploratory result"
+    },
+    "future_final": {
+      "sequence_count": null,
+      "design_status": "requires separate future design and explicit authorization",
+      "run_id_template": "{study_id}:final:run-{run_index:03d}",
+      "seed_namespaces": {
+        "data": 2027013001,
+        "noise": 2027013002,
+        "bootstrap": 2027013003,
+        "experiment_metadata": 2027013004
+      },
+      "automatic_after_validation": false
+    },
+    "seed_roots_are_proposed_not_generated": true,
+    "historical_seed_roots_reused": false
+  },
+  "seed_derivation": {
+    "algorithm": "numpy.random.SeedSequence(master_seed, spawn_key=(1295337521, partition_code, zero_based_run_index, stream_code)).generate_state(1, dtype=uint64)[0]; initialize PCG64 with the derived seed",
+    "protocol_version_word": 1295337521,
+    "partition_codes": {
+      "training": 801,
+      "validation": 802,
+      "future_final": 803
+    },
+    "stream_codes": {
+      "data": 11,
+      "noise": 23,
+      "bootstrap": 37,
+      "experiment_metadata": 41
+    },
+    "displayed_run_index_origin": 1,
+    "spawned_run_index_origin": 0,
+    "streams_generated_in_M8a": false
+  },
+  "diagnostics": {
+    "raw_integer_ber_ser": true,
+    "coefficient_finite_flags": true,
+    "coefficient_error_evaluation_only_after_receiver": true,
+    "initial_final_coefficient_norms": true,
+    "increment_norms": true,
+    "received_hashes": true,
+    "candidate_eligibility_and_failure_records": true,
+    "coefficient_error_is_selection_criterion": false,
+    "true_gain_access_in_receiver": false
+  },
+  "workload": {
+    "training_sequences": 40,
+    "training_arms_per_sequence": 8,
+    "training_decoder_passes": 320,
+    "training_policy_symbol_passes": 81920,
+    "training_unique_received_samples": 81920,
+    "validation_sequences": 40,
+    "validation_arms_per_sequence": 2,
+    "validation_decoder_passes": 80,
+    "validation_policy_symbol_passes": 20480,
+    "validation_unique_received_samples": 81920,
+    "single_process": true,
+    "multiprocessing": false,
+    "atomic_checkpoint_per_sequence": true,
+    "runtime_or_rss_estimate": null,
+    "actual_budget_requires_separate_approval": true
+  },
+  "authorization_gates": {
+    "M8a_execution_allowed": false,
+    "M8b_requires_separate_run_specific_approval": true,
+    "training_to_validation_automatic": false,
+    "validation_to_final_automatic": false,
+    "approved_config_created_in_M8a": false
+  },
+  "scientific_limitations": [
+    "M7b TRAIN outcomes informed this subsequent hypothesis-generating direction",
+    "M7b records are not M8 training observations and cannot select M8 policies",
+    "M5j is not independent validation of M8",
+    "anchored_reconstructed_offline is a proposed project variant, not an author-defined mu0 convention",
+    "author edge-to-phase mapping, quadrature and source innovation semantics remain unresolved",
+    "single effective discrete gamma_b point; not physical HF Eb/N0",
+    "L=1 real channel and zero delay; no multipath, AR(1), or complex fading",
+    "no adaptive gain or source-paper fidelity claim is authorized"
+  ],
+  "authorization_provenance": {
+    "explicit_user_authorization": "explicit user authorization through this M8b TRAIN Codex instruction",
+    "authorized_partition": "TRAIN only; VALIDATION and FINAL not authorized"
+  },
+  "execution_limits": {
+    "wall_clock_limit_seconds": 900,
+    "rss_monitoring_budget_bytes": 1610612736,
+    "rss_limit_semantics": "periodic process RSS monitoring, not a hard OS process limit",
+    "worker_processes": 1,
+    "multiprocessing": false,
+    "stop_at_sequence_boundary_on_budget": true,
+    "atomic_checkpoint_per_sequence": true
+  },
+  "runtime_provenance": {
+    "m8a_draft_file_sha256": "0740500746cfc340207d3b30a9e9cc62209e620c6a108926b1623cd7e46d960c",
+    "m8a_draft_sidecar_sha256": "0740500746cfc340207d3b30a9e9cc62209e620c6a108926b1623cd7e46d960c",
+    "code_fingerprint": {
+      "src/hf_tcm/evaluation/m8a_anchored_study_design.py": "c857bc031f7261fdf768be03a5e368b9843cdbf0f70bba3e99ed7f969b0df7cb",
+      "src/hf_tcm/evaluation/m8b_train_runner.py": "e93786aa7fb36cdbc60c9e1cfc787bfd12efb5f97518ec5b2aa276c61c706f5f",
+      "configs/m5i_confirmatory_design_draft.json": "bb402f26d0f3f6fde0e8d4b473273f6075e4b19585af7ae13de8e8ba98cca218",
+      "src/hf_tcm/evaluation/m7b_train_runner.py": "f0a719bab35d78d63841116cf60ac28efe41cfad7e4a9bdae348039db7ff224f",
+      "src/hf_tcm/evaluation/reconstruction_adaptive_diagnostics.py": "a6d5ab6288114bc844fdbef4ed82fc6e4ea960614d9206a31de5b2768f68550a",
+      "src/hf_tcm/evaluation/error_metrics.py": "dd8b3e9335d0e776d531ee4d3154c1bce9d1e579352c0540d5cabb6b6d2264be",
+      "src/hf_tcm/evaluation/matched_m2_b5_experiment.py": "cf70b31ffece028382a2660b9f9bc752bfd967df8400be07ca04295db338737d",
+      "src/hf_tcm/receiver/reconstruction_posterior_estimator_sequence.py": "ff0c1dbfffccdd2957af5a25ccd903c0df378defd638a2bfd7f7fd1923bd566e",
+      "src/hf_tcm/receiver/reconstruction_posterior_estimator_step.py": "a8f8eb00d80d93cbd55d56c216cad374c8745fc14d2cf56e7477e21d8347a67b",
+      "src/hf_tcm/receiver/reconstruction_candidate_metrics.py": "22573b4a90ab8e6873b60b58965529665dedf911dfd0f6d520b3ca6bcb8fff5d",
+      "src/hf_tcm/receiver/reconstruction_posterior.py": "e9aac0eb6d77aa71c4cd3961afcf6bc476466d26c3c18bdecc85e6e8aa236337",
+      "src/hf_tcm/receiver/reconstruction_conditional_decode.py": "b3af5a48f0759740b816326d36eb0c0d03b4a2d90f6a5dd3f08862512961f9eb",
+      "src/hf_tcm/receiver/reconstruction_forward.py": "b3696b6977e23a936c48d89e5042603cb222c9ef583a2f0bd9655019a9c36273",
+      "src/hf_tcm/receiver/reconstruction_observation.py": "b82cb47bb9e9db010554dac86a6d0039c58ec6a09656f3f48fc87bb9d0a677b0",
+      "src/hf_tcm/receiver/iq_prediction.py": "0bc648f09fb095f5debbe1fe38e128c600c93065ab52954b28fa7abe6c037007",
+      "src/hf_tcm/receiver/paper_recursion.py": "ac5fddae1186254c6478eeff7a1f81173dba9f71d9d7bc75d9f7f49b2cb3582d",
+      "src/hf_tcm/receiver/reconstruction_labeling.py": "bbc5c5ecc646088c77677dd2ffc791429b2c102eb6950ea98eb1b579b7c1ddbb",
+      "src/hf_tcm/decoding/reconstruction_viterbi.py": "7773722fec05bad15cd596b6b69de75374002ddbba6f38b817f8447adcbaea4a",
+      "src/hf_tcm/coding/encoder.py": "6883e760a43903c1cbad6615cb7a70cb1193696d8243450da335111cd7c08405",
+      "src/hf_tcm/coding/hypotheses.py": "268219516615659479ef013a00177e82ecbc4f88ef24990f2391d6a3833ca2f2",
+      "src/hf_tcm/modulation/psk8.py": "7d2c83892ddb10a955e21c39cf0085e120f107dd0879407aea18c8b4ff52739a",
+      "src/hf_tcm/modulation/labeling.py": "8c635a12184f9753e63e944b079f485bf55df8233557601a2724233eac45460b",
+      "src/hf_tcm/receiver/iq.py": "d0d418d47fa1ece0b68a50acffe15b7109f2c66e66999d6bc59a46f84e2ce1be",
+      "src/hf_tcm/reconstruction_config.py": "0674cd572124a8269cb90583f9109fe713917fcad9bdc8cadfdebb72baf2e256"
+    },
+    "code_fingerprint_sha256": "a88db99ca90814ec610f135446a1bd03c6f5473f327c010337675a14979a9475",
+    "git": {
+      "revision": null,
+      "status": "unavailable: workspace is not a Git worktree"
+    },
+    "python_version": "3.13.13",
+    "numpy_version": "2.3.3",
+    "prng": "numpy.random.PCG64",
+    "receiver_configuration_source": "configs/m5i_confirmatory_design_draft.json accepted reconstructed receiver configuration"
+  },
+  "output": {
+    "experiment_id": "m8_anchored_reconstructed_adaptation_v1",
+    "namespace": "outputs/m8b_train/m8_anchored_reconstructed_adaptation_v1",
+    "schema_version": "m8b.train.v1",
+    "checkpoint_policy": "atomic JSON checkpoint after each complete sequence"
+  },
+  "run_manifest": {
+    "partition": "TRAIN",
+    "partition_code": 801,
+    "run_index_origin": {
+      "displayed": 1,
+      "spawned": 0
+    },
+    "generator": "PCG64",
+    "runs": [
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-001",
+        "run_index": 1,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              0,
+              11
+            ],
+            "derived_seed": 12240546964663076592,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              0,
+              23
+            ],
+            "derived_seed": 16049805712403515131,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              0,
+              37
+            ],
+            "derived_seed": 2614375181444654812,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              0,
+              41
+            ],
+            "derived_seed": 4624639774831659670,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-002",
+        "run_index": 2,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              1,
+              11
+            ],
+            "derived_seed": 8246556984978517630,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              1,
+              23
+            ],
+            "derived_seed": 1945028959605831016,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              1,
+              37
+            ],
+            "derived_seed": 32364031408496665,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              1,
+              41
+            ],
+            "derived_seed": 11692249046172225701,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-003",
+        "run_index": 3,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              2,
+              11
+            ],
+            "derived_seed": 8971547542087034617,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              2,
+              23
+            ],
+            "derived_seed": 5709138528177011070,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              2,
+              37
+            ],
+            "derived_seed": 12429670932730941826,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              2,
+              41
+            ],
+            "derived_seed": 2552108804315530108,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-004",
+        "run_index": 4,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              3,
+              11
+            ],
+            "derived_seed": 4363566899605159404,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              3,
+              23
+            ],
+            "derived_seed": 9360144129277624457,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              3,
+              37
+            ],
+            "derived_seed": 6721171534715776751,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              3,
+              41
+            ],
+            "derived_seed": 757084649815868493,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-005",
+        "run_index": 5,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              4,
+              11
+            ],
+            "derived_seed": 7988673200304971939,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              4,
+              23
+            ],
+            "derived_seed": 7760435788905226059,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              4,
+              37
+            ],
+            "derived_seed": 16418006035297117429,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              4,
+              41
+            ],
+            "derived_seed": 4781140524325229252,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-006",
+        "run_index": 6,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              5,
+              11
+            ],
+            "derived_seed": 7214068807543018458,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              5,
+              23
+            ],
+            "derived_seed": 3818055893756503813,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              5,
+              37
+            ],
+            "derived_seed": 7328238268735245209,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              5,
+              41
+            ],
+            "derived_seed": 10655595522352256579,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-007",
+        "run_index": 7,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              6,
+              11
+            ],
+            "derived_seed": 8041826283135507256,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              6,
+              23
+            ],
+            "derived_seed": 4468715054147827917,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              6,
+              37
+            ],
+            "derived_seed": 14945525418296103311,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              6,
+              41
+            ],
+            "derived_seed": 5762164868811077753,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-008",
+        "run_index": 8,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              7,
+              11
+            ],
+            "derived_seed": 13620745291957687475,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              7,
+              23
+            ],
+            "derived_seed": 7493426052255238501,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              7,
+              37
+            ],
+            "derived_seed": 12559701927528370539,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              7,
+              41
+            ],
+            "derived_seed": 6480952714842737750,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-009",
+        "run_index": 9,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              8,
+              11
+            ],
+            "derived_seed": 1884196144843303165,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              8,
+              23
+            ],
+            "derived_seed": 14331652819813327641,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              8,
+              37
+            ],
+            "derived_seed": 11772153474649752216,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              8,
+              41
+            ],
+            "derived_seed": 8556753126439646337,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-010",
+        "run_index": 10,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              9,
+              11
+            ],
+            "derived_seed": 14916241097127958702,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              9,
+              23
+            ],
+            "derived_seed": 2775080401176659514,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              9,
+              37
+            ],
+            "derived_seed": 3991204689006092061,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              9,
+              41
+            ],
+            "derived_seed": 9987266647683941539,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-011",
+        "run_index": 11,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              10,
+              11
+            ],
+            "derived_seed": 8026361845841863017,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              10,
+              23
+            ],
+            "derived_seed": 6469675315937983047,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              10,
+              37
+            ],
+            "derived_seed": 12934090913815950539,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              10,
+              41
+            ],
+            "derived_seed": 13664168719047380657,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-012",
+        "run_index": 12,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              11,
+              11
+            ],
+            "derived_seed": 3499462346486695931,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              11,
+              23
+            ],
+            "derived_seed": 3769957935805115520,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              11,
+              37
+            ],
+            "derived_seed": 9519576289166747332,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              11,
+              41
+            ],
+            "derived_seed": 14231433921823643718,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-013",
+        "run_index": 13,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              12,
+              11
+            ],
+            "derived_seed": 17623107069514190258,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              12,
+              23
+            ],
+            "derived_seed": 12045730020053490239,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              12,
+              37
+            ],
+            "derived_seed": 8528899994743207538,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              12,
+              41
+            ],
+            "derived_seed": 6880297631732083647,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-014",
+        "run_index": 14,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              13,
+              11
+            ],
+            "derived_seed": 8550639772153244427,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              13,
+              23
+            ],
+            "derived_seed": 18429667262632692210,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              13,
+              37
+            ],
+            "derived_seed": 15830088392195613819,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              13,
+              41
+            ],
+            "derived_seed": 2828072464255982678,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-015",
+        "run_index": 15,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              14,
+              11
+            ],
+            "derived_seed": 8320601719663818873,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              14,
+              23
+            ],
+            "derived_seed": 17869238076749547576,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              14,
+              37
+            ],
+            "derived_seed": 11527205560815849592,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              14,
+              41
+            ],
+            "derived_seed": 7347563288392759268,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-016",
+        "run_index": 16,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              15,
+              11
+            ],
+            "derived_seed": 7337313182240919452,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              15,
+              23
+            ],
+            "derived_seed": 5503618972681813995,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              15,
+              37
+            ],
+            "derived_seed": 16943477376474463154,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              15,
+              41
+            ],
+            "derived_seed": 1689294004310642662,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-017",
+        "run_index": 17,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              16,
+              11
+            ],
+            "derived_seed": 16567020619113885198,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              16,
+              23
+            ],
+            "derived_seed": 9044962554671501092,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              16,
+              37
+            ],
+            "derived_seed": 14702307555461553438,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              16,
+              41
+            ],
+            "derived_seed": 8143500258766309958,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-018",
+        "run_index": 18,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              17,
+              11
+            ],
+            "derived_seed": 13837976309817033299,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              17,
+              23
+            ],
+            "derived_seed": 13582817028508388158,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              17,
+              37
+            ],
+            "derived_seed": 5405523792734598272,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              17,
+              41
+            ],
+            "derived_seed": 5826500524879918476,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-019",
+        "run_index": 19,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              18,
+              11
+            ],
+            "derived_seed": 4650595244866888322,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              18,
+              23
+            ],
+            "derived_seed": 2405245118941027157,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              18,
+              37
+            ],
+            "derived_seed": 13601032849878717286,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              18,
+              41
+            ],
+            "derived_seed": 4118230965960873252,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-020",
+        "run_index": 20,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              19,
+              11
+            ],
+            "derived_seed": 10653318626230358413,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              19,
+              23
+            ],
+            "derived_seed": 13290312065739701367,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              19,
+              37
+            ],
+            "derived_seed": 13547409422271587331,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              19,
+              41
+            ],
+            "derived_seed": 15113199809664676092,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-021",
+        "run_index": 21,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              20,
+              11
+            ],
+            "derived_seed": 1987025189754174290,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              20,
+              23
+            ],
+            "derived_seed": 2793287632290234398,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              20,
+              37
+            ],
+            "derived_seed": 17046127644972478749,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              20,
+              41
+            ],
+            "derived_seed": 7645827732888673358,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-022",
+        "run_index": 22,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              21,
+              11
+            ],
+            "derived_seed": 1115541106961697508,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              21,
+              23
+            ],
+            "derived_seed": 363388397977481172,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              21,
+              37
+            ],
+            "derived_seed": 7124982547530971239,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              21,
+              41
+            ],
+            "derived_seed": 8393564381585560027,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-023",
+        "run_index": 23,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              22,
+              11
+            ],
+            "derived_seed": 14767084577146059643,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              22,
+              23
+            ],
+            "derived_seed": 17321024135050659243,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              22,
+              37
+            ],
+            "derived_seed": 8573157014142564069,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              22,
+              41
+            ],
+            "derived_seed": 441051845012066045,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-024",
+        "run_index": 24,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              23,
+              11
+            ],
+            "derived_seed": 12661634523068890089,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              23,
+              23
+            ],
+            "derived_seed": 11985087558176592558,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              23,
+              37
+            ],
+            "derived_seed": 7324555243652407587,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              23,
+              41
+            ],
+            "derived_seed": 14709720636446800464,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-025",
+        "run_index": 25,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              24,
+              11
+            ],
+            "derived_seed": 10052512585761264665,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              24,
+              23
+            ],
+            "derived_seed": 11407350821663493044,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              24,
+              37
+            ],
+            "derived_seed": 8511124488820403929,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              24,
+              41
+            ],
+            "derived_seed": 4867796277925830972,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-026",
+        "run_index": 26,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              25,
+              11
+            ],
+            "derived_seed": 91437325425896660,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              25,
+              23
+            ],
+            "derived_seed": 15728828652298817691,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              25,
+              37
+            ],
+            "derived_seed": 2939365506960519743,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              25,
+              41
+            ],
+            "derived_seed": 10888980774197319335,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-027",
+        "run_index": 27,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              26,
+              11
+            ],
+            "derived_seed": 10195175874813296279,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              26,
+              23
+            ],
+            "derived_seed": 7914283594943792559,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              26,
+              37
+            ],
+            "derived_seed": 318294364954761522,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              26,
+              41
+            ],
+            "derived_seed": 14965096191698023413,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-028",
+        "run_index": 28,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              27,
+              11
+            ],
+            "derived_seed": 16862741630345139625,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              27,
+              23
+            ],
+            "derived_seed": 4557805727152928012,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              27,
+              37
+            ],
+            "derived_seed": 6346034159353539653,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              27,
+              41
+            ],
+            "derived_seed": 16387517573627116462,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-029",
+        "run_index": 29,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              28,
+              11
+            ],
+            "derived_seed": 10056083316616694990,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              28,
+              23
+            ],
+            "derived_seed": 7460764354783965962,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              28,
+              37
+            ],
+            "derived_seed": 17329782932698589653,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              28,
+              41
+            ],
+            "derived_seed": 18099991982721408753,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-030",
+        "run_index": 30,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              29,
+              11
+            ],
+            "derived_seed": 2316495508144946467,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              29,
+              23
+            ],
+            "derived_seed": 7560219667931074714,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              29,
+              37
+            ],
+            "derived_seed": 9097865297556174750,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              29,
+              41
+            ],
+            "derived_seed": 2566314346679235061,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-031",
+        "run_index": 31,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              30,
+              11
+            ],
+            "derived_seed": 12848837735975009122,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              30,
+              23
+            ],
+            "derived_seed": 13304983905440168827,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              30,
+              37
+            ],
+            "derived_seed": 6468229734283464531,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              30,
+              41
+            ],
+            "derived_seed": 8770281432898157223,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-032",
+        "run_index": 32,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              31,
+              11
+            ],
+            "derived_seed": 2362671865871644113,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              31,
+              23
+            ],
+            "derived_seed": 16628364296345182890,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              31,
+              37
+            ],
+            "derived_seed": 11768311807209092919,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              31,
+              41
+            ],
+            "derived_seed": 712034130159812045,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-033",
+        "run_index": 33,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              32,
+              11
+            ],
+            "derived_seed": 5325547869002975080,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              32,
+              23
+            ],
+            "derived_seed": 2105813964919068833,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              32,
+              37
+            ],
+            "derived_seed": 9373500610086214988,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              32,
+              41
+            ],
+            "derived_seed": 13160289674452990399,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-034",
+        "run_index": 34,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              33,
+              11
+            ],
+            "derived_seed": 16461970622124097971,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              33,
+              23
+            ],
+            "derived_seed": 17962929150642530639,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              33,
+              37
+            ],
+            "derived_seed": 9767583880661830264,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              33,
+              41
+            ],
+            "derived_seed": 6463935584106927642,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-035",
+        "run_index": 35,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              34,
+              11
+            ],
+            "derived_seed": 6212267168677444756,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              34,
+              23
+            ],
+            "derived_seed": 5885033737616793942,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              34,
+              37
+            ],
+            "derived_seed": 6607783795342634433,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              34,
+              41
+            ],
+            "derived_seed": 12593479467767673745,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-036",
+        "run_index": 36,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              35,
+              11
+            ],
+            "derived_seed": 3788828097109992011,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              35,
+              23
+            ],
+            "derived_seed": 1810349892041333617,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              35,
+              37
+            ],
+            "derived_seed": 6471775003341931396,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              35,
+              41
+            ],
+            "derived_seed": 139744935123022307,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-037",
+        "run_index": 37,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              36,
+              11
+            ],
+            "derived_seed": 6711020559056102232,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              36,
+              23
+            ],
+            "derived_seed": 4244044263010728315,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              36,
+              37
+            ],
+            "derived_seed": 16269134778993557086,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              36,
+              41
+            ],
+            "derived_seed": 8027932260447694827,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-038",
+        "run_index": 38,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              37,
+              11
+            ],
+            "derived_seed": 6778699110381659772,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              37,
+              23
+            ],
+            "derived_seed": 8342806564062272909,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              37,
+              37
+            ],
+            "derived_seed": 826899322655192175,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              37,
+              41
+            ],
+            "derived_seed": 1911007467688696816,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-039",
+        "run_index": 39,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              38,
+              11
+            ],
+            "derived_seed": 8607904658418904984,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              38,
+              23
+            ],
+            "derived_seed": 16524608142316288261,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              38,
+              37
+            ],
+            "derived_seed": 9892291094714382772,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              38,
+              41
+            ],
+            "derived_seed": 3044638038384173359,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      },
+      {
+        "run_id": "m8_anchored_reconstructed_adaptation_v1:train:run-040",
+        "run_index": 40,
+        "streams": {
+          "data": {
+            "master_seed": 2027011001,
+            "spawn_key": [
+              1295337521,
+              801,
+              39,
+              11
+            ],
+            "derived_seed": 12590401800855788141,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "noise": {
+            "master_seed": 2027011002,
+            "spawn_key": [
+              1295337521,
+              801,
+              39,
+              23
+            ],
+            "derived_seed": 16742856063285950048,
+            "generator": "PCG64",
+            "instantiated": true
+          },
+          "bootstrap": {
+            "master_seed": 2027011003,
+            "spawn_key": [
+              1295337521,
+              801,
+              39,
+              37
+            ],
+            "derived_seed": 5337820867102165413,
+            "generator": "PCG64",
+            "instantiated": false
+          },
+          "experiment_metadata": {
+            "master_seed": 2027011004,
+            "spawn_key": [
+              1295337521,
+              801,
+              39,
+              41
+            ],
+            "derived_seed": 7836924868803800493,
+            "generator": "PCG64",
+            "instantiated": false
+          }
+        }
+      }
+    ],
+    "reserved_streams_not_instantiated": [
+      "bootstrap"
+    ],
+    "validation_and_final_seeds_derived": false
+  },
+  "historical_integrity_baseline": {
+    "M5f": {
+      "file_count": 1,
+      "sha256": "98801572202a6c6c21199ef94257a9e1d9e99bb5d38273cf07b66f041b511d1a"
+    },
+    "M5h": {
+      "file_count": 128,
+      "sha256": "5689921ddf901790322a124abc52e0cbb34642385e6ef1ce5054a8b8e5f3cf2c"
+    },
+    "M5j": {
+      "file_count": 102,
+      "sha256": "b12c3171ab13d69895d89e00eb3113c7122a7e6756461761769dd4337454233b"
+    },
+    "M6b": {
+      "file_count": 26,
+      "sha256": "5cf8e11aa2f3e5e9d357344828afa1c7ebae8bf0a17040dee67e32f3de81ad5b"
+    },
+    "M6g": {
+      "file_count": 1,
+      "sha256": "76301b6965f77ac70302c4879158b77f9a9fc55e0cfdccf9725034279c25f1d2"
+    },
+    "M6h": {
+      "file_count": 1,
+      "sha256": "baca1959562833d004bd3f3cb6cca718f54ec3f7a583b7b1f0954515643ee069"
+    },
+    "M7b": {
+      "file_count": 47,
+      "sha256": "afae59cea09703b19073a953010cbcab37a8b8957b245e25733e21eb89b7ec1b"
+    },
+    "M8a_draft": {
+      "file_count": 1,
+      "sha256": "0740500746cfc340207d3b30a9e9cc62209e620c6a108926b1623cd7e46d960c"
+    },
+    "M8a_sidecar": {
+      "file_count": 1,
+      "sha256": "2c71da121fe1f09d1e1a1856f279adf637f25528a699fbd8c64b7553dd27686c"
+    }
+  }
+}

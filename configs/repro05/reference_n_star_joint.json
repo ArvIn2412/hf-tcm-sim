@@ -1,0 +1,22 @@
+{
+  "schema_version": "repro05-joint-receiver-v1",
+  "expected_symbol_count": 20000,
+  "initial_state": [0, 0],
+  "termination_policy": "none",
+  "timing_offset_samples": 0,
+  "metric_profile": "squared_euclidean",
+  "estimator_policy": "frozen",
+  "initial_state_value": [0.0, 0.0],
+  "mu0": [1.0, 0.0],
+  "alpha_prime": 1.0,
+  "k_tilde": 0.0,
+  "beta": 1.0,
+  "amplitude": 1.0,
+  "phase_offset_rad": 0.0,
+  "phase_increment_rad": 0.7853981633974483,
+  "channel_mode": "nominal",
+  "known_static_gain": [1.0, 0.0],
+  "encoder_id": "encoder_a_rate_2_3_repro01_v1",
+  "mapping_id": "adr002_assumed_natural_binary_c2_c1_c0_v1",
+  "tie_policy": "canonical_first_edge_then_state_order"
+}
