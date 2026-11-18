@@ -87,3 +87,22 @@ test('long metric frames keep full arrays only for frame 0 of each point', () =>
   assert.throws(() => buildMetricConfig(input({frameSymbols: 100001}), build), /100/);
   assert.throws(() => buildMetricConfig(input({comparisonMode: 'series', awgn: false, variance: 0}), build), /шум/);
 });
+
+test('default Eb/N0 grid follows the channel type', () => {
+  const {defaultGrid, GRID_AWGN, GRID_FADING} = require('../src/hf_tcm/studio/static/metric_mode.js');
+  assert.equal(defaultGrid('none'), GRID_AWGN);
+  assert.equal(defaultGrid('rician'), GRID_FADING);
+  assert.equal(defaultGrid('rayleigh'), GRID_FADING);
+  assert.equal(GRID_FADING.split(',').map(Number).at(-1), 40);
+});
+
+test('clean samples left to the combiner by the path delays', () => {
+  const {cleanSamples} = require('../src/hf_tcm/studio/static/metric_mode.js');
+  // the user's run: delays 0,3,6 -> 2 of 8 samples, 6 dB lost
+  const three = cleanSamples(['0', '3', '6'], 3);
+  assert.equal(three.clean, 2);
+  assert.ok(Math.abs(three.lossDb - 6.0206) < 1e-3);
+  assert.equal(cleanSamples(['0', '3', '6'], 2).clean, 5);   // only the first two rays used
+  assert.equal(cleanSamples(['0'], 1).lossDb, 0);
+  assert.equal(cleanSamples(['0', '8'], 2).clean, 0);
+});

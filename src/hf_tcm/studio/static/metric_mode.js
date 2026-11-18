@@ -96,8 +96,19 @@
     const half = z * Math.sqrt(p * (1 - p) / trials + z2 / (4 * trials * trials)) / denom;
     return [Math.max(0, centre - half), Math.min(1, centre + half)];
   }
+  /* Default Eb/N0 grid: AWGN/static curves fall within ~10 dB, fading needs ~40 dB. */
+  const GRID_AWGN = '0, 2, 4, 6, 8, 10';
+  const GRID_FADING = '0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40';
+  const defaultGrid = fading => (fading && fading !== 'none' ? GRID_FADING : GRID_AWGN);
+  /* Clean-tail combiner: only the 8 - max(delay) samples free of the previous symbol are used. */
+  function cleanSamples(delays, rays) {
+    const used = delays.slice(0, Math.max(1, rays)).map(Number).filter(Number.isFinite);
+    const maxDelay = used.length ? Math.max(0, ...used) : 0;
+    const clean = 8 - maxDelay;
+    return {maxDelay, clean, lossDb: clean > 0 ? 10 * Math.log10(8 / clean) : Infinity};
+  }
   const MAX_FRAME_SYMBOLS = 100000;
-  const api = {buildMetricConfig, scenarioFor, qFunction, qpskReferenceBer, dopplerSummary, ITU_PRESETS, payloadSymbols, referenceEbN0Db, wilsonInterval, MAX_FRAME_SYMBOLS};
+  const api = {buildMetricConfig, scenarioFor, qFunction, qpskReferenceBer, dopplerSummary, ITU_PRESETS, payloadSymbols, referenceEbN0Db, wilsonInterval, defaultGrid, cleanSamples, GRID_AWGN, GRID_FADING, MAX_FRAME_SYMBOLS};
   if (typeof module !== 'undefined') module.exports = api;
   if (typeof document === 'undefined') return;
   root.metricMode = api;
@@ -193,6 +204,34 @@
       }
     }
 
+    // Data line under the form: clean samples left to the combiner by the path delays.
+    const cleanLine = document.createElement('p');
+    cleanLine.className = 'clean-samples';
+    cleanLine.setAttribute('role', 'status');
+    primary.after(cleanLine);
+    function syncClean() {
+      const isMetric = contrast.input.value === 'metric';
+      const delays = String($('exp-delays')?.value || '0').split(',');
+      const {maxDelay, clean, lossDb} = cleanSamples(delays, Number($('exp-rays')?.value || 1));
+      cleanLine.hidden = !isMetric || maxDelay === 0;
+      cleanLine.classList.toggle('warn', clean <= 4);
+      cleanLine.textContent = clean > 0
+        ? `Чистих відліків на елемент: ${clean} з 8 (затримка ${maxDelay}); втрата енергії в комбайнері ${lossDb.toFixed(1).replace('.', ',')} дБ відносно осі Eb/N0`
+        : `Затримка ${maxDelay} відліків не залишає чистих відліків: зменште затримки до 7 і менше`;
+    }
+    // Eb/N0 grid follows the channel type until the user edits it.
+    const gridInput = $('es-grid');
+    let gridEdited = gridInput && ![GRID_AWGN, GRID_FADING].includes(gridInput.value.trim());
+    gridInput?.addEventListener('input', () => { gridEdited = ![GRID_AWGN, GRID_FADING].includes(gridInput.value.trim()); });
+    function syncGrid() {
+      if (!gridInput || gridEdited) return;
+      gridInput.value = defaultGrid($('exp-fading').value);
+    }
+    for (const id of ['exp-delays', 'exp-rays']) for (const type of ['input', 'change']) $(id)?.addEventListener(type, syncClean);
+    $('exp-fading').addEventListener('change', syncGrid);
+    itu.input.addEventListener('change', () => { syncGrid(); syncClean(); });
+    contrast.input.addEventListener('change', syncClean);
+
     function syncVisibility() {
       const isMetric = contrast.input.value === 'metric';
       tract.label.hidden = metric.label.hidden = !isMetric;
@@ -203,6 +242,8 @@
     }
     contrast.input.addEventListener('change', syncVisibility);
     syncVisibility();
+    syncClean();
+    syncGrid();
 
     const value = id => $(id)?.value;
     const numbers = id => String(value(id)).split(',').map(Number);

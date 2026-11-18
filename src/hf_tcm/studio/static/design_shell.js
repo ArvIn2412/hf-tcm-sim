@@ -114,7 +114,7 @@
     card.append(el('h2', {}, 'Параметри моделювання'));
     form.prepend(card);
     if (primary) card.append(primary);
-    form.querySelectorAll(':scope > .metric-mode-hint').forEach(p => card.append(p));
+    form.querySelectorAll(':scope > .metric-mode-hint, :scope > .clean-samples').forEach(p => card.append(p));
     const bar = el('div', {class: 'ds-run-bar'});
     const run = $('run-button'), progress = $('es-progress');
     if (run) bar.append(run);
