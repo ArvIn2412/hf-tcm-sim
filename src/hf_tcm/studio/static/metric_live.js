@@ -1,7 +1,7 @@
 /* Presentation of verified stored observations and maintained decoder replay. */
 (() => {
   'use strict';
-  const $ = s => document.querySelector(s);
+  const $ = s => document.querySelector(s) || window.signalArchive?.querySelector(s);
   let trace=null, summary=null, timer=null, request=0, abortController=null;
   const names={hamming:'Хемінг',euclidean:'Евклід'};
   const sourceBanner=document.createElement('p');sourceBanner.className='card';sourceBanner.id='metric-active-source';sourceBanner.style.overflowWrap='anywhere';sourceBanner.textContent='Результати ще не завантажено. Форма задає наступний запуск.';document.querySelector('main').prepend(sourceBanner);
@@ -24,7 +24,7 @@
   const controls=document.createElement('div');controls.className='live-controls';controls.innerHTML='<label>Масштаб (z_IQ), ×<input id="cloud-zoom" type="number" min="0.1" max="10" step="0.1" value="1"></label><label>Ліміт точок (N_vis), відліки<input id="cloud-limit" type="number" min="8" max="4000" value="1000"></label><label><input id="cloud-vectors" type="checkbox" checked> Вектори зміщення (ΔI, ΔQ)</label><button type="button" id="cloud-refresh">Оновити</button>';cloud.insertBefore(controls,$('#received-cloud'));
   const decisions=document.createElement('div');decisions.className='article-pair';decisions.id='cloud-decisions';cloud.append(decisions);
   const c=$('#received-cloud');let drawn=[];
-  function drawCloud(){
+  function drawCloud(){if(window.stage4)return;
     const ctx=c.getContext('2d');ctx.clearRect(0,0,700,500);ctx.fillStyle='white';ctx.fillRect(0,0,700,500);
     const mode=$('#cloud-mode').value,A=trace?.amplitude||1;
     const points=mode==='processed'?trace?.processed:trace?.received;
@@ -58,7 +58,7 @@
       $('#live-metrics-'+arm).innerHTML='<table><thead><tr><th>Перехід</th><th>Біти</th><th>Branch metric</th><th>Survivor</th></tr></thead><tbody>'+trace.edges.map(([id,s,p,o,t])=>`<tr><td>${s.join('')} → ${t.join('')}</td><td>${p.join('')}</td><td>${fmt(a.branch_metrics[row][id])}</td><td>${a.survivors[row].includes(id)?'✓':''}</td></tr>`).join('')+'</tbody></table>';
     }
   }
-  function renderTransmitter(){if(!trace?.transmitter)return;const t=trace.transmitter,c=$('#live-wave'),ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);const range=Math.max(1,...[...t.tx_i,...t.tx_q,...t.rx_i,...t.rx_q].map(Math.abs));for(const [key,color] of [['tx_i','#126d86'],['tx_q','#3a945c'],['rx_i','#c04c51'],['rx_q','#9658a5']]){ctx.strokeStyle=color;ctx.beginPath();t[key].forEach((v,i)=>{const x=30+i*1040/Math.max(1,t[key].length-1),y=120-v*90/range;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.fillStyle=color;ctx.fillText(key,30+['tx_i','tx_q','rx_i','rx_q'].indexOf(key)*150,20);}
+  function renderTransmitter(){if(window.stage4)return;if(!trace?.transmitter)return;const t=trace.transmitter,c=$('#live-wave'),ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);const range=Math.max(1,...[...t.tx_i,...t.tx_q,...t.rx_i,...t.rx_q].map(Math.abs));for(const [key,color] of [['tx_i','#126d86'],['tx_q','#3a945c'],['rx_i','#c04c51'],['rx_q','#9658a5']]){ctx.strokeStyle=color;ctx.beginPath();t[key].forEach((v,i)=>{const x=30+i*1040/Math.max(1,t[key].length-1),y=120-v*90/range;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.fillStyle=color;ctx.fillText(key,30+['tx_i','tx_q','rx_i','rx_q'].indexOf(key)*150,20);}
     $('#live-source').innerHTML='<table><thead><tr><th>Символ k</th><th>Вхідні біти</th><th>Кодова трійка</th><th>Стан до → після</th><th>Фаза</th></tr></thead><tbody>'+t.input_pairs.map((p,i)=>`<tr><td>${trace.start+i}</td><td>${p.join('')}</td><td>${t.coded_triples[i].join('')}</td><td>${t.pre_states[i].join('')} → ${t.post_states[i].join('')}</td><td>${trace.tx_phases[i]}π/4</td></tr>`).join('')+'</tbody></table>';
   }
   async function load(){if(!summary)return;const version=++request;const start=Number($('#live-start').value),end=Number($('#live-end').value);if(!Number.isInteger(start)||!Number.isInteger(end)||end<start||end-start>=80){$('#live-provenance').textContent='Інтервал: 1–80 символів, кінець ≥ початку.';return;}
@@ -68,9 +68,9 @@
       $('#live-provenance').textContent=`Спільні вхідні дані: ${data.study_id}; observation SHA-256 ${data.observation_sha256}; frontend SHA-256 ${data.frontend_sha256}; replay=${data.replay_verified}; pairing=${data.pairing_verified}.`;
       compare.innerHTML=Object.entries(names).map(([arm,name])=>{const s=data.arms[arm].statistics;return `<article class="card"><h2>${name}</h2><p>Показники вибраного кадру ${data.trial_id}. Зведення серії наведено у таблиці та енергетичних кривих.</p><p>BER — ${name}: ${fmt(s.ber)}</p><p>SER — ${name}: ${fmt(s.ser_information_pairs)}</p><p>FER — ${name}: ${s.fer}</p><p>Час — ${name}: ${fmt(s.runtime_seconds)} с</p></article>`;}).join('');drawCloud();renderTrellis();renderTransmitter();
     }catch(e){if(e.name!=='AbortError')$('#live-provenance').textContent=e.message;}finally{if(version===request){window.metricTracePending=false;section.setAttribute('aria-busy','false');}}}
-  window.addEventListener('metric-summary',e=>{if(summary&&e.detail.trace_preserve_existing){sourceBanner.textContent+=` Статистична sweep-серія: ${e.detail.configuration.experiment_id}; ${e.detail.completed_trials}/${e.detail.planned_trials} кадрів.`;return;}const changed=summary?.configuration.experiment_id!==e.detail.configuration.experiment_id;if(changed){window.dispatchEvent(new CustomEvent('metric-context-cleared',{detail:{kind:'metric',id:e.detail.configuration.experiment_id}}));$('#live-start').value=0;$('#live-end').value=19;$('#live-k').value=0;}summary=e.detail;load();});
+  window.addEventListener('metric-summary',e=>{if(e.detail.confirmed_archive){window.dispatchEvent(new CustomEvent('metric-context-cleared',{detail:{kind:'archive',id:''}}));return;}if(summary&&e.detail.trace_preserve_existing){sourceBanner.textContent+=` Статистична sweep-серія: ${e.detail.configuration.experiment_id}; ${e.detail.completed_trials}/${e.detail.planned_trials} кадрів.`;return;}const changed=summary?.configuration.experiment_id!==e.detail.configuration.experiment_id;if(changed){window.dispatchEvent(new CustomEvent('metric-context-cleared',{detail:{kind:'metric',id:e.detail.configuration.experiment_id}}));$('#live-start').value=0;$('#live-end').value=19;$('#live-k').value=0;}summary=e.detail;load();});
   window.addEventListener('metric-context-cleared',e=>{++request;abortController?.abort();clearInterval(timer);timer=null;trace=null;summary=null;window.metricLiveTrace=null;window.metricTracePending=false;sourceBanner.textContent=`Відкрито сумісний архів ${e.detail.id}. Його дані показано окремим архівним loader; попередній metric-run очищено.`;compare.replaceChildren();live.hidden=true;txPanel.hidden=true;document.querySelector('.sequence-navigator').hidden=true;$('#cloud-decisions').replaceChildren();});
-  window.addEventListener('metric-summary',()=>{live.hidden=false;txPanel.hidden=false;document.querySelector('.sequence-navigator').hidden=false;});
+  window.addEventListener('metric-summary',e=>{if(e.detail.confirmed_archive)return;live.hidden=false;txPanel.hidden=false;document.querySelector('.sequence-navigator').hidden=false;});
   $('#live-update').onclick=load;$('#cloud-refresh').onclick=load;
   for(const id of ['cloud-mode','cloud-zoom','cloud-vectors'])$('#'+id).addEventListener('change',drawCloud);
   $('#live-k').onchange=renderTrellis;$('#live-zoom').onchange=renderTrellis;

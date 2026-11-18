@@ -57,6 +57,11 @@ def load_metric_trace(
     if hashlib.sha256(array_path.read_bytes()).hexdigest() != record["array_file_sha256"]:
         raise ValueError("trial array SHA-256 mismatch")
     with np.load(array_path, allow_pickle=False) as data:
+        if "equalized_symbols" not in data.files:
+            raise ValueError(
+                "this trial stores compact recount arrays only; open a sampled trial "
+                "(trial index divisible by full_array_stride)"
+            )
         size = len(data["equalized_symbols"])
         if start >= size:
             raise ValueError("trace start is outside frame")

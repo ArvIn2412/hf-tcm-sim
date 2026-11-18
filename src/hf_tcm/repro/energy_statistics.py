@@ -147,6 +147,7 @@ def analyze_energy_records(
     arm: str = "b0",
     replicates: int = 1000,
     seed: int = 0,
+    common_clusters: bool = False,
 ) -> dict[str, Any]:
     """Estimate separate-minus-joint required gamma with paired bootstrap.
 
@@ -156,6 +157,11 @@ def analyze_energy_records(
     The percentile 95% CI is exposed only if >=95% of replicates have valid
     crossings in both arms and the observed gain is estimable. Otherwise only
     explicitly conditional quantiles of valid replicates are exposed.
+
+    With ``common_clusters=True`` (common random numbers: the same trial index
+    reuses the same bits, fading and noise at every energy point) one draw of
+    trial indices is shared by all grid points, so the cross-point dependence
+    is preserved. Every point must then contain the same ``trial_index`` set.
     """
     replicates = _count(replicates, "replicates", positive=True)
     seed = _count(seed, "seed")
@@ -175,6 +181,21 @@ def analyze_energy_records(
         grouped[float(row["gamma_db"])].append(row)
     streams = np.random.SeedSequence(seed).spawn(len(points))
     sampled_ber = np.empty((replicates, len(points), 2))
+    shared_draws = None
+    if common_clusters:
+        index_sets = []
+        for trials in grouped.values():
+            try:
+                index_sets.append(sorted(int(row["trial_index"]) for row in trials))
+            except (KeyError, TypeError, ValueError) as exc:
+                raise ValueError("common clusters require integer trial_index values") from exc
+        if any(indices != index_sets[0] for indices in index_sets) or len(
+            set(index_sets[0])
+        ) != len(index_sets[0]):
+            raise ValueError("common clusters require identical unique trial_index sets per point")
+        shared_draws = np.random.default_rng(streams[0]).integers(
+            len(index_sets[0]), size=(replicates, len(index_sets[0]))
+        )
     for index, (gamma, trials) in enumerate(sorted(grouped.items())):
         # A canonical row order also makes seeded replay independent of file order.
         trials.sort(
@@ -185,8 +206,12 @@ def analyze_energy_records(
                 *(row["pair_errors"][name] for name in arms),
             )
         )
-        rng = np.random.default_rng(streams[index])
-        draws = rng.integers(len(trials), size=(replicates, len(trials)))
+        if shared_draws is not None:
+            trials.sort(key=lambda row: int(row["trial_index"]))
+            draws = shared_draws
+        else:
+            rng = np.random.default_rng(streams[index])
+            draws = rng.integers(len(trials), size=(replicates, len(trials)))
         denominators = np.asarray([row["bits"] for row in trials], dtype=float)
         sampled_bits = denominators[draws].sum(axis=1)
         for column, name in enumerate(("joint", arm)):
@@ -234,7 +259,11 @@ def analyze_energy_records(
             else "PARTIAL_VALID_CROSSINGS"
             if valid_gains
             else "NO_VALID_CROSSINGS",
-            "method": "paired_trial_cluster_percentile_independent_gamma_streams",
+            "method": (
+                "paired_trial_cluster_percentile_common_clusters_across_gamma"
+                if common_clusters
+                else "paired_trial_cluster_percentile_independent_gamma_streams"
+            ),
             "seed": seed,
             "total_replicates": replicates,
             "valid_replicates": len(valid_gains),

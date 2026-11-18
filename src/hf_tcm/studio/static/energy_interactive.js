@@ -1,7 +1,7 @@
 /* Interactive views of measured energy aggregates. No statistical estimation. */
 (() => {
   'use strict';
-  const $ = id => document.getElementById(id);
+  const $ = id => document.getElementById(id) || window.resultsArchive?.querySelector('#'+id);
   const methods = [
     {key:'hamming',name:'Хемінг',color:'#bb6518'},
     {key:'joint',name:'Евклід',color:'#087f8c'},
@@ -60,7 +60,7 @@
   function draw(chart){
     if(!chart.bounds)return;const c=coordinates(chart),canvas=chart.canvas,ratio=window.devicePixelRatio||1;
     canvas.width=Math.round(c.w*ratio);canvas.height=Math.round(c.h*ratio);const ctx=canvas.getContext('2d');ctx.setTransform(ratio,0,0,ratio,0,0);
-    ctx.fillStyle='#fff';ctx.fillRect(0,0,c.w,c.h);ctx.font='12px Segoe UI, sans-serif';ctx.lineWidth=1;
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,c.w,c.h);ctx.font='14px Segoe UI, sans-serif';ctx.lineWidth=1;
     const data=values(chart);chart.points=[];
     for(let i=0;i<=4;i++){const f=i/4,y=c.top+f*(c.bottom-c.top),v=chart.bounds.y1-f*(chart.bounds.y1-chart.bounds.y0);ctx.strokeStyle='#dde6ea';ctx.beginPath();ctx.moveTo(c.left,y);ctx.lineTo(c.right,y);ctx.stroke();ctx.textAlign='right';ctx.fillStyle='#243a47';ctx.fillText(chart.log?Math.pow(10,v).toExponential(1):v.toPrecision(3),c.left-7,y+4);ctx.textAlign='center';const x=chart.bounds.x0+f*(chart.bounds.x1-chart.bounds.x0);ctx.fillText(x.toFixed(2),c.px(x),c.h-27);}
     ctx.fillText('Проєктна γᵦ,ᵈ, дБ',(c.left+c.right)/2,c.h-6);ctx.save();ctx.translate(14,(c.top+c.bottom)/2);ctx.rotate(-Math.PI/2);ctx.fillText(chart.kind.toUpperCase()+(chart.log?' · log₁₀':' · частка'),0,0);ctx.restore();
@@ -128,7 +128,7 @@
     state.summary=e.detail;for(const chart of Object.values(state.charts))reset(chart);
     const id=e.detail.configuration?.experiment_id||e.detail.experiment_id;
     const version=++requestId;controller?.abort();
-    if(!id||isSample(e.detail))return;
+    if(e.detail.confirmed_archive||!id||isSample(e.detail))return;
     controller=new AbortController();
     try{
       const response=await fetch('/api/scientific/energy-view?'+new URLSearchParams({study_id:id}),{signal:controller.signal});

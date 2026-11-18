@@ -1,0 +1,45 @@
+#view-parameters.active {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  color: #202e39;
+  font-size: 16px;
+}
+#view-parameters > article {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+#view-parameters h1 { font-size: 32px; line-height: 1.2; margin: 0 0 12px; }
+#view-parameters .simulation-description { font-size: 16px; line-height: 1.5; margin: 0 0 28px; }
+#view-parameters #metric-study-form {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.simulation-primary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 24px; max-width: 800px; }
+.simulation-channel-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; grid-column: 1 / -1; }
+.simulation-channel-controls label { display: flex; flex-direction: column; gap: 8px; font-size: 16px; }
+.simulation-primary > label { display: flex; flex-direction: column; gap: 8px; font-size: 16px; font-weight: 600; }
+.simulation-primary > label[hidden] { display: none; }
+.simulation-primary input, .simulation-primary select { width: 100%; min-height: 48px; padding: 10px 12px; font-size: 16px; }
+.simulation-primary .parameter-explanation { font-size: 14px; font-weight: 400; }
+.simulation-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0 16px; }
+.simulation-actions button, .simulation-result button { min-height: 48px; padding: 10px 20px; font-size: 16px; }
+.simulation-result { margin: 20px 0 28px; }
+.simulation-result p { font-size: 16px; line-height: 1.5; }
+.simulation-advanced { border-top: 1px solid #d5dce0; padding-top: 20px; }
+.simulation-advanced > summary { cursor: pointer; font-size: 18px; font-weight: 600; padding: 8px 0 20px; }
+.simulation-advanced .parameter-section { margin: 12px 0; }
+.simulation-advanced input, .simulation-advanced select { width: 100%; min-height: 44px; font-size: 16px; }
+@media (max-width: 600px) {
+  #view-parameters.active { padding: 24px 16px 48px; }
+  #view-parameters h1 { font-size: 28px; }
+  .simulation-primary { grid-template-columns: 1fr; }
+  .simulation-channel-controls { grid-template-columns: 1fr; }
+  .simulation-actions button { width: 100%; }
+}

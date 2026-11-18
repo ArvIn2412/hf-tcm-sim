@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 const pages=await(await fetch(`http://127.0.0.1:${process.env.HF_TCM_CDP_PORT||9240}/json/list`)).json();
 const baseURL=process.env.HF_TCM_QA_BASE_URL||'http://127.0.0.1:18772';
-const page=pages.find(p=>p.type==='page'&&p.url.startsWith(baseURL+'/scientific'));
+const targetId=process.env.HF_TCM_QA_TARGET_ID;
+const page=pages.find(p=>p.type==='page'&&p.url.startsWith(baseURL+'/scientific')&&(!targetId||p.id===targetId));
 if(!page)throw Error('No localhost scientific lab target; refusing to control an unrelated page');
 const ws=new WebSocket(page.webSocketDebuggerUrl);
 await new Promise(r=>ws.addEventListener('open',r,{once:true}));
@@ -16,3 +17,4 @@ export async function until(expression,timeout=30000){const start=Date.now();whi
 export const close=()=>ws.close();
 export async function screenshot(path){const {data}=await send('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path,Buffer.from(data,'base64'));}
 await send('Page.enable'); await send('Runtime.enable');
+if(process.env.HF_TCM_QA_WIDTH)await send('Emulation.setDeviceMetricsOverride',{width:Number(process.env.HF_TCM_QA_WIDTH),height:1000,deviceScaleFactor:1,mobile:false});

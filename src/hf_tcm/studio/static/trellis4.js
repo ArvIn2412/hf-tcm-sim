@@ -11,7 +11,7 @@
   advanced.append(bar.querySelector('p'));
   const containers=['hamming','euclidean'].map(arm=>$('live-'+arm).parentElement);
   const revealed=new Map();
-  function decorate(){for(const [j,arm]of ['hamming','euclidean'].entries()){const svg=$('live-'+arm);svg.querySelectorAll('text:not(.trellis-axis)').forEach(t=>{t.style.fontSize='12px';t.style.display=$('trellis-numbers').checked?'':'none';});containers[j].parentElement.hidden=$('trellis-arm').value!=='both'&&$('trellis-arm').value!==arm;
+  function decorate(){if(window.systemOnly)return;for(const [j,arm]of ['hamming','euclidean'].entries()){const svg=$('live-'+arm);svg.querySelectorAll('text:not(.trellis-axis)').forEach(t=>{t.style.fontSize='12px';t.style.display=$('trellis-numbers').checked?'':'none';});containers[j].parentElement.hidden=$('trellis-arm').value!=='both'&&$('trellis-arm').value!==arm;
     const t=window.metricLiveTrace;if(!t)continue;svg.querySelectorAll('.trellis-axis,.trellis-selected').forEach(e=>e.remove());const width=Number(svg.getAttribute('viewBox').split(' ')[2]),dx=(width-80)/(t.stop-t.start),k=Number($('live-k').value);
     svg.insertAdjacentHTML('beforeend',Array.from({length:t.stop-t.start},(_,i)=>`<text class="trellis-axis" x="${45+(i+.3)*dx}" y="285" font-size="12">${t.start+i}</text>`).join('')+`<line class="trellis-selected" x1="${45+(k-t.start)*dx}" x2="${45+(k-t.start)*dx}" y1="15" y2="265" stroke="#ba7311" stroke-dasharray="4 3"/>`);
     const signature=[t.study_id,t.start,t.stop,k,width].join(':');if(containers[j].clientWidth&&revealed.get(arm)!==signature){containers[j].scrollLeft=Math.max(0,45+(k-t.start)*dx-containers[j].clientWidth/2);revealed.set(arm,signature);}

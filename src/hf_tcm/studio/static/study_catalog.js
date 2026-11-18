@@ -1,6 +1,7 @@
 /* Paged metadata catalog. Numerical content is opened through verified loaders. */
 (() => {
   'use strict';
+  if(window.systemOnly)return;
   window.studyCatalogEnabled = true;
   const view = document.getElementById('view-saved');
   if (!view) return;

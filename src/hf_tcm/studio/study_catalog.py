@@ -51,7 +51,7 @@ def _metric_counts(summary: dict[str, Any]) -> dict[str, Any]:
 
 def _row(folder: Path, kind: str) -> dict[str, Any]:
     summary_path = folder / "summary.json"
-    config_path = folder / "config.json"
+    config_path = folder / ("configuration.json" if kind == "energy" else "config.json")
     summary = _read_json(summary_path)
     config = _read_json(config_path) if config_path.is_file() else summary.get("configuration", {})
     if not isinstance(config, dict):
@@ -61,13 +61,66 @@ def _row(folder: Path, kind: str) -> dict[str, Any]:
         raise ValueError("unsafe catalog ID")
     date = datetime.fromtimestamp(summary_path.stat().st_mtime, timezone.utc).isoformat()
     metrics = _metric_counts(summary) if kind == "metric" else {}
+    system_comparison = False
+    if kind == "run" and summary.get("paired_observation_verified") is True:
+        system_comparison = all(isinstance(summary.get(key), dict) for key in ("joint", "separate"))
+        if system_comparison:
+            metrics = {
+                arm: {
+                    "ber": summary[key].get("ber"),
+                    "errors": summary[key].get("bit_errors"),
+                    "bits": summary[key].get("compared_bits"),
+                }
+                for arm, key in (("hamming", "separate"), ("euclidean", "joint"))
+            }
+    if kind == "energy" and summary.get("contrast_mode") != "metric":
+        arms = summary.get("receiver_arms", config.get("receiver_arms", []))
+        system_comparison = "joint" in arms and "b0" in arms
+        if system_comparison:
+            rows = summary.get("analyses", {}).get("b0", {}).get("aggregate", [])
+            metrics = {
+                arm: {"ber_range": [min(values), max(values)] if values else None}
+                for arm, key in (("hamming", "b0"), ("euclidean", "joint"))
+                for values in [
+                    [
+                        row["ber"][key]
+                        for row in rows
+                        if isinstance(row.get("ber", {}).get(key), (int, float))
+                    ]
+                ]
+            }
+    actual_channel = config.get(
+        "scenario", config.get("channel_profile", summary.get("channel_profile", "unknown"))
+    )
+    if kind == "energy" and system_comparison:
+        scenarios = {row.get("scenario") for row in rows if row.get("scenario")}
+        if len(scenarios) == 1:
+            actual_channel = {"static": "static_multipath", "rician": "rician_ar1_multipath"}.get(
+                next(iter(scenarios)), next(iter(scenarios))
+            )
+    times = []
+    if system_comparison and kind == "run":
+        times = [summary[key].get("runtime_seconds") for key in ("joint", "separate")]
+    elif system_comparison and kind == "energy":
+        times = [
+            record.get("runtime_seconds", {}).get(arm)
+            for record in summary.get("records", [])
+            for arm in ("joint", "b0")
+        ]
+    processing = (
+        math.fsum(times)
+        if times
+        and all(
+            isinstance(t, (int, float)) and not isinstance(t, bool) and math.isfinite(t) and t >= 0
+            for t in times
+        )
+        else None
+    )
     return {
         "id": ident,
         "kind": kind,
         "date": summary.get("created_at", date),
-        "channel": config.get(
-            "scenario", config.get("channel_profile", summary.get("channel_profile", "unknown"))
-        ),
+        "channel": actual_channel,
         "profile": config.get("profile", config.get("frontend_mode", kind)),
         "N": config.get("frame_symbols", summary.get("frame_symbols")),
         "seed": config.get("root_seed", config.get("source_seed", summary.get("source_seed"))),
@@ -75,6 +128,8 @@ def _row(folder: Path, kind: str) -> dict[str, Any]:
         "status": summary.get("status", "completed"),
         "gain_status": summary.get("gain_analysis", {}).get("status", "NOT_RUN"),
         "metrics": metrics,
+        "system_comparison": system_comparison,
+        "processing_seconds": processing,
         "metadata_verified": _metadata_verified(folder, summary_path, config_path),
         "capabilities": {
             "numerical_results": True,
@@ -138,12 +193,20 @@ def list_study_catalog(
         for row in rows
         if (
             not query
-            or query in " ".join(str(row[field]) for field in ("id", "date", "seed")).casefold()
+            or query
+            in " ".join(str(row[field]) for field in ("id", "date", "seed", "channel")).casefold()
         )
         and (not channel or str(row["channel"]) == channel)
         and (not status or str(row["status"]) == status)
         and (not profile or str(row["profile"]) == profile)
-        and (not kind or str(row["kind"]) == kind)
+        and (
+            not kind
+            or (
+                row["system_comparison"] and (kind == "system" or row["kind"] == kind[7:])
+                if kind.startswith("system")
+                else str(row["kind"]) == kind
+            )
+        )
         and (not metric or metric in row["metrics"])
     ]
     field = sort.split("_")[0]

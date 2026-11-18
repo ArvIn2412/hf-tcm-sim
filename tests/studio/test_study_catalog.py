@@ -34,6 +34,54 @@ def _study(root: Path, index: int) -> Path:
     return folder
 
 
+def test_system_catalog_excludes_isolated_metrics_and_uses_measured_series_channel(tmp_path):
+    _study(tmp_path, 1)
+    root = tmp_path / "repro09" / "paired-run"
+    root.mkdir(parents=True)
+    arm = {"ber": 0, "bit_errors": 0, "compared_bits": 64, "runtime_seconds": 0.1}
+    (root / "summary.json").write_text(
+        json.dumps(
+            {
+                "run_id": "paired-run",
+                "frame_symbols": 32,
+                "paired_observation_verified": True,
+                "joint": arm,
+                "separate": arm,
+                "elapsed_seconds": 0.5,
+            }
+        )
+    )
+    (root / "manifest.json").write_text('{"files": {}}')
+    series = tmp_path / "repro09" / "energy-studies" / "paired-series"
+    series.mkdir(parents=True)
+    (series / "summary.json").write_text(
+        json.dumps(
+            {
+                "experiment_id": "paired-series",
+                "receiver_arms": ["joint", "b0"],
+                "configuration": {"channel_profile": "identity", "frame_symbols": 32},
+                "analyses": {
+                    "b0": {
+                        "aggregate": [
+                            {"ber": {"joint": 0.1, "b0": 0.2}, "scenario": "awgn"},
+                            {"ber": {"joint": 0, "b0": 0.1}, "scenario": "awgn"},
+                        ]
+                    }
+                },
+            }
+        )
+    )
+    (series / "manifest.json").write_text('{"files": {}}')
+    page = list_study_catalog(tmp_path, kind="system", size=1)
+    assert page["total"] == 2
+    run = list_study_catalog(tmp_path, kind="system-run")["items"][0]
+    assert run["metrics"]["hamming"]["ber"] == 0
+    assert run["capabilities"]["iq"] is False
+    assert run["processing_seconds"] == 0.2
+    saved = list_study_catalog(tmp_path, kind="system-energy", channel="awgn")["items"][0]
+    assert saved["metrics"]["euclidean"]["ber_range"] == [0, 0.1]
+
+
 def test_catalog_pages_hundreds_of_records_and_keeps_zero_ber_distinct(tmp_path: Path) -> None:
     for index in range(231):
         _study(tmp_path, index)

@@ -1,7 +1,7 @@
 /* Shared navigation over persisted metric trials. No simulation calls. */
 (() => {
   'use strict';
-  const $ = id => document.getElementById(id);
+  const $ = id => document.getElementById(id) || window.signalArchive?.querySelector('#'+id);
   const state = {run:null, domain:'symbol', index:0, width:20, trace:null, timer:null};
   window.sequenceNavigator = state;
   const nav = document.createElement('section');
@@ -57,7 +57,7 @@
   for(const [id,direction] of [['seq-error-prev',-1],['seq-error-next',1]])$(id).onclick=()=>{if(!state.trace)return;for(let k=symbol()+direction;k>=0&&k<state.trace.total_symbols;k+=direction){if(state.trace.arms.hamming.pair_error_mask[k]||state.trace.arms.euclidean.pair_error_mask[k]){const i=indexFromSymbol(k);if(i!==null){go(i);return;}}}$('seq-status').textContent='У цьому напрямку більше помилок немає.';};
   let debounce; $('seq-map').oninput=e=>{clearTimeout(debounce);debounce=setTimeout(()=>go(e.target.value),120);};
   $('seq-export').onclick=()=>{if(!state.trace)return;const u=URL.createObjectURL(new Blob([JSON.stringify({navigation:{run:state.run,domain:state.domain,index:state.index},trace:state.trace})],{type:'application/json'}));const a=document.createElement('a');a.href=u;a.download=`${state.run}-${state.trace.start}-${state.trace.stop-1}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);};
-  window.addEventListener('article-view',e=>{const target=['transmitter','constellation','viterbi'].map(v=>$('view-'+v)).find(el=>el?.classList.contains('active'));if(target)target.prepend(nav);});
+  window.addEventListener('article-view',e=>{const target=['transmitter','constellation','viterbi'].map(v=>$('view-'+v)).find(el=>el?.classList.contains('active'));if(target && e.detail==='transmitter')target.prepend(nav);});
   const wave=$('live-wave');let drag=null;
   function drawWave(cursor=null){
     const t=state.trace;if(!t)return;wave.height=440;const ctx=wave.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,wave.width,wave.height);

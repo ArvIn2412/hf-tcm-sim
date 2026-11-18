@@ -9,7 +9,7 @@ from numbers import Real
 from typing import Any, Literal
 
 CHANNEL_SCHEMA_VERSION = "repro03-channel-v1"
-FADING_MODES = {"constant", "rician_static", "rician_ar1"}
+FADING_MODES = {"constant", "rician_static", "rician_ar1", "rician_doppler"}
 NOISE_MODELS = {"none", "complex_awgn_sample_domain"}
 
 
@@ -99,7 +99,7 @@ class ChannelConfig:
 
     profile_id: str
     paths: tuple[ChannelPathConfig, ...]
-    fading_mode: Literal["constant", "rician_static", "rician_ar1"]
+    fading_mode: Literal["constant", "rician_static", "rician_ar1", "rician_doppler"]
     noise_model: Literal["none", "complex_awgn_sample_domain"]
     noise_complex_variance: float
     fading_seed: int
@@ -110,6 +110,11 @@ class ChannelConfig:
     rng_algorithm: Literal["numpy.PCG64"] = "numpy.PCG64"
     reveal_noise_variance: bool = False
     schema_version: str = CHANNEL_SCHEMA_VERSION
+    # Only for fading_mode="rician_doppler" (Watterson/ITU-R F.1487 Gaussian
+    # Doppler spectrum). Two-sided spread 2*sigma_f in Hz; the sample rate is
+    # 8 * symbol_rate_baud.
+    doppler_spread_hz: float = 0.0
+    symbol_rate_baud: float = 0.0
 
     def __post_init__(self) -> None:
         if not isinstance(self.profile_id, str) or not self.profile_id.strip():
@@ -141,6 +146,17 @@ class ChannelConfig:
                 raise ValueError("AR(1) correlation must be in [0, 1)")
         elif rho != 0.0:
             raise ValueError("correlation is only valid for fading_mode='rician_ar1'")
+        spread = _finite(self.doppler_spread_hz, "doppler_spread_hz", minimum=0.0)
+        rate = _finite(self.symbol_rate_baud, "symbol_rate_baud", minimum=0.0)
+        if self.fading_mode == "rician_doppler":
+            if spread <= 0.0 or rate <= 0.0:
+                raise ValueError(
+                    "rician_doppler requires positive doppler_spread_hz and symbol_rate"
+                )
+            if spread >= rate:
+                raise ValueError("doppler_spread_hz must be below the symbol rate")
+        elif spread != 0.0 or rate != 0.0:
+            raise ValueError("doppler parameters are only valid for fading_mode='rician_doppler'")
         _seed(self.fading_seed, "fading_seed")
         _seed(self.noise_seed, "noise_seed")
         if self.boundary_policy != "zero_extension":
@@ -193,7 +209,14 @@ class ChannelConfig:
             "output_length_policy": self.output_length_policy,
             "rng_algorithm": self.rng_algorithm,
             "reveal_noise_variance": self.reveal_noise_variance,
-        }
+        } | (
+            {
+                "doppler_spread_hz": self.doppler_spread_hz,
+                "symbol_rate_baud": self.symbol_rate_baud,
+            }
+            if self.fading_mode == "rician_doppler"
+            else {}
+        )
 
 
 def identity_profile() -> ChannelConfig:
@@ -260,4 +283,40 @@ def s1_structure_reconstruction_profile(
         noise_complex_variance=noise_complex_variance,
         fading_seed=fading_seed,
         noise_seed=noise_seed,
+    )
+
+
+# ITU-R F.1487 (formerly F.520) Doppler spreads for HF test channels. The ITU
+# differential delays (0.5/1/2 ms) are NOT reproduced: the metric-isolation
+# clean-tail combiner supports integer delays below 8 samples only, so the
+# second path uses the project delay of 3 samples (3/8 element).
+ITU_HF_DOPPLER_SPREAD_HZ = {"good": 0.1, "moderate": 0.5, "poor": 1.0, "flutter": 10.0}
+
+
+def itu_hf_doppler_profile(
+    condition: str,
+    *,
+    noise_complex_variance: float,
+    fading_seed: int,
+    noise_seed: int,
+    symbol_rate_baud: float = 2400.0,
+    second_path_delay_samples: int = 3,
+) -> ChannelConfig:
+    """Two equal-power Rayleigh paths with ITU HF Doppler spread (Watterson model)."""
+    if condition not in ITU_HF_DOPPLER_SPREAD_HZ:
+        raise ValueError(f"condition must be one of {sorted(ITU_HF_DOPPLER_SPREAD_HZ)}")
+    return ChannelConfig(
+        profile_id=f"itu_hf_{condition}_doppler_project_delay",
+        paths=(
+            ChannelPathConfig(0, 0.5, 0.0, 0.0),
+            ChannelPathConfig(second_path_delay_samples, 0.5, 0.0, 0.0),
+        ),
+        fading_mode="rician_doppler",
+        noise_model="complex_awgn_sample_domain" if noise_complex_variance > 0 else "none",
+        noise_complex_variance=noise_complex_variance,
+        fading_seed=fading_seed,
+        noise_seed=noise_seed,
+        reveal_noise_variance=True,
+        doppler_spread_hz=ITU_HF_DOPPLER_SPREAD_HZ[condition],
+        symbol_rate_baud=symbol_rate_baud,
     )

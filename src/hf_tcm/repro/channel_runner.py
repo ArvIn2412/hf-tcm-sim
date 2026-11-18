@@ -66,6 +66,8 @@ def run_channel(
                 fading_mode=channel_config.fading_mode,
                 correlation=channel_config.correlation,
                 seed=seed,
+                doppler_spread_hz=channel_config.doppler_spread_hz,
+                sample_rate_hz=8.0 * channel_config.symbol_rate_baud,
             )
             for path, seed in zip(channel_config.paths, coefficient_seeds, strict=True)
         ]

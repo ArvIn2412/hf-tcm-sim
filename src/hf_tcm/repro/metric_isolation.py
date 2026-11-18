@@ -179,6 +179,7 @@ class MetricFrontendResult:
     observation_sha256: str
     frontend_output_sha256: str
     residual_isi_bound: str
+    combiner_power: NDArray[np.float64]
 
 
 def _validate_observation(observation: ReceiverObservation, symbol_count: int) -> None:
@@ -206,7 +207,10 @@ def _frontend_result(
     maximum_delay: int,
     mode: str,
     observation: ReceiverObservation,
+    combiner_power: np.ndarray,
 ) -> MetricFrontendResult:
+    # combiner_power is deliberately excluded from the digest so that archived
+    # frontend fingerprints (SCIENTIFIC-EXP-03A/03B) remain byte-identical.
     digest = hashlib.sha256()
     for array in (
         symbols,
@@ -238,6 +242,7 @@ def _frontend_result(
         residual_isi_bound=(
             "zero_for_integer_delay_zoh_tail" if maximum_delay else "zero_for_single_path_zoh"
         ),
+        combiner_power=_immutable(combiner_power, np.dtype(np.float64)),
     )
 
 
@@ -273,6 +278,7 @@ def run_awgn_direct_frontend(
         maximum_delay=0,
         mode="awgn_direct_control",
         observation=observation,
+        combiner_power=np.full(symbol_count, 8.0, dtype=np.float64),
     )
 
 
@@ -318,6 +324,7 @@ def run_pilot_frontend(
     gain_valid = np.zeros(frame, dtype=bool)
     gain_updates = np.zeros(frame, dtype=bool)
     gain_age = np.full(frame, -1, dtype=np.int32)
+    combiner_power = np.zeros(frame, dtype=np.float64)
     sample_indices = np.empty((frame, clean_count), dtype=np.int64)
     received = np.asarray(observation.received_samples, dtype=np.complex128)
     constellation = _phase_symbols(amplitude, phase_offset_rad)
@@ -340,6 +347,7 @@ def run_pilot_frontend(
                     / denominator
                 )
                 variances[symbol_index] = noise_variance / denominator
+                combiner_power[symbol_index] = denominator
                 valid[symbol_index] = True
                 gains[symbol_index] = current_gain
                 gain_valid[symbol_index] = True
@@ -375,6 +383,7 @@ def run_pilot_frontend(
         maximum_delay=maximum_delay,
         mode="causal_pilot_composite_gain_clean_tail",
         observation=observation,
+        combiner_power=combiner_power,
     )
 
 
@@ -387,13 +396,17 @@ def run_oracle_csi_frontend(
     path_coefficients_by_sample: object,
     assumed_noise_variance: float = 0.0,
     minimum_gain_power: float = 1e-12,
+    mode_label: str = "diagnostic_oracle_csi",
 ) -> MetricFrontendResult:
-    """Oracle-only diagnostic combiner using evaluator-provided tap traces.
+    """Known-channel (oracle CSI) combiner using evaluator-provided tap traces.
 
-    This API is intentionally separate from the practical pilot frontend. Its
-    outputs must be tagged ``diagnostic_oracle_csi`` and excluded from practical
-    BER and energy-gain summaries.
+    This API is intentionally separate from the practical pilot frontend.
+    ``mode_label`` is ``diagnostic_oracle_csi`` for the historical diagnostic
+    control and ``known_channel_csi`` for the "known channel" comparison of the
+    metrics, where both decoders receive the exact channel state.
     """
+    if mode_label not in {"diagnostic_oracle_csi", "known_channel_csi"}:
+        raise ValueError("unsupported oracle frontend mode label")
     _validate_observation(observation, schedule.frame_symbols)
     if not path_delays_samples or any(
         type(delay) is not int or delay < 0 for delay in path_delays_samples
@@ -425,6 +438,7 @@ def run_oracle_csi_frontend(
     gain_valid = np.ones(frame, dtype=bool)
     updates = np.zeros(frame, dtype=bool)
     ages = np.zeros(frame, dtype=np.int32)
+    combiner_power = np.zeros(frame, dtype=np.float64)
     sample_indices = np.empty((frame, clean_count), dtype=np.int64)
     for index in range(frame):
         start = index * 8 + maximum_delay
@@ -440,6 +454,7 @@ def run_oracle_csi_frontend(
             continue
         symbols[index] = np.vdot(composite, received[sample_idx]) / power
         variance[index] = noise_variance / power
+        combiner_power[index] = power
     return _frontend_result(
         symbols=symbols,
         variance=variance,
@@ -451,21 +466,45 @@ def run_oracle_csi_frontend(
         sample_indices=sample_indices,
         clean_count=clean_count,
         maximum_delay=maximum_delay,
-        mode="diagnostic_oracle_csi",
+        mode=mode_label,
         observation=observation,
+        combiner_power=combiner_power,
     )
 
 
+EUCLIDEAN_METRIC_KINDS = ("unweighted", "csi_weighted")
+
+
 def euclidean_branch_metric_rows(
-    symbols: object, *, amplitude: float, phase_offset_rad: float = 0.0
+    symbols: object,
+    *,
+    amplitude: float,
+    phase_offset_rad: float = 0.0,
+    csi_weights: object | None = None,
 ) -> NDArray[np.float64]:
-    """Squared complex Euclidean costs in the canonical 16-edge order."""
+    """Squared complex Euclidean costs in the canonical 16-edge order.
+
+    Without ``csi_weights`` this is the historical unweighted cost ``|z-s|^2``
+    on the combiner output ``z``. With ``csi_weights = P_k = sum_n |h_n|^2``
+    (combiner power over the clean samples of symbol ``k``) the cost becomes
+    ``P_k |z_k - s|^2``, which differs from the sample-domain ML metric
+    ``sum_n |y_n - h_n s|^2`` only by a term independent of the candidate ``s``.
+    Deeply faded symbols therefore contribute proportionally less evidence.
+    """
     observed = np.asarray(symbols, dtype=np.complex128)
     if observed.ndim != 1 or len(observed) < 1 or not np.all(np.isfinite(observed)):
         raise ValueError("symbols must be a nonempty finite complex vector")
     constellation = _phase_symbols(amplitude, phase_offset_rad)
     predictions = constellation[_EDGE_PHASES]
-    return np.asarray(np.square(np.abs(observed[:, None] - predictions[None, :])), dtype=np.float64)
+    rows = np.square(np.abs(observed[:, None] - predictions[None, :]))
+    if csi_weights is not None:
+        weights = np.asarray(csi_weights, dtype=np.float64)
+        if weights.shape != observed.shape or not np.all(np.isfinite(weights)):
+            raise ValueError("csi_weights must be a finite vector matching symbols")
+        if np.any(weights < 0):
+            raise ValueError("csi_weights must be nonnegative")
+        rows = rows * weights[:, None]
+    return np.asarray(rows, dtype=np.float64)
 
 
 def hard_phase_decisions(

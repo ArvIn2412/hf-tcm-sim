@@ -6,6 +6,7 @@
   <title>HF-TCM-SIM — наукова лабораторія</title>
   <link rel="stylesheet" href="/static/scientific.css">
   <link rel="stylesheet" href="/static/energy.css">
+  <link rel="stylesheet" href="/static/simulation_workspace.css">
   <script>window.stage4=true;window.studyCatalogEnabled=true;</script>
 </head>
 <body>
@@ -68,12 +69,14 @@
 
     <section class="view" id="view-saved"><div class="page-heading"><div><p class="eyebrow">АРХІВ</p><h1>Збережені експерименти</h1><p>Завантаження перевіряє маніфест і SHA-256 перед відображенням.</p></div><button id="refresh-runs" class="secondary-button">Оновити список</button></div><article class="card saved-row"><div><h2>F=20000 · REPRO-08 / REPRO-06C</h2><p>Відкриває збережені BER/SER та перевірену decoder trace архіву; source runs мають окремі observation hashes.</p></div><button id="open-long-frame" class="secondary-button">Відкрити великий результат</button></article><div id="saved-runs" class="saved-list"><div class="card empty">Збережених запусків ще не знайдено.</div></div></section>
     <section class="view" id="view-metric">
-      <div class="page-heading"><div><h1>Контрольоване порівняння метрик</h1><p>Евклідова та Хемінгова метрики обробляють те саме спостереження і спільний результат pilot frontend. Це окреме дослідження, не порівняння повних приймачів.</p></div><span class="status-pill">η = 20 · пілотний режим</span></div>
+      <div class="page-heading"><div><h1>Контрольоване порівняння метрик</h1><p>Роздільне приймання (жорстке рішення 8PSK → метрика Хемінга) і спільне (м’яка евклідова метрика за станом тракту) обробляють те саме спостереження і той самий тракт приймача — відомий або оцінений за пілотами. Це окреме дослідження, не порівняння повних приймачів.</p></div><span class="status-pill">η = 20 · Хемінг (жорстке) / Евклід (м’яке)</span></div>
       <div class="config-grid energy-study-grid">
         <form id="metric-study-form" class="card config-card">
           <h2>Параметри перевірки</h2>
           <label>Ідентифікатор серії<input id="mx-id" value="metric-validation-01" required></label>
           <label>Канал<select id="mx-scenario"><option value="awgn">AWGN, без equalizer</option><option value="awgn-pilot">AWGN із pilot frontend</option><option value="static">Статичний multipath [0,3]</option><option value="rician">Rician AR(1) multipath [0,3]</option><option value="oracle">Oracle-CSI, діагностика</option></select></label>
+          <label>Тракт приймача<select id="mx-tract"><option value="known" selected>Відомий тракт (точні коефіцієнти каналу)</option><option value="pilot">Оцінений за пілотами</option></select></label>
+          <label>Евклідова метрика<select id="mx-euclid"><option value="csi_weighted" selected>Зважена за станом каналу Σ|ĥ|²</option><option value="unweighted">Незважена |z−s|² (як у EXP-03B)</option></select></label>
           <label>Режим енергетичного sweep<select id="mx-sweep"><option value="amplitude">Амплітудою за фіксованого шуму</option><option value="noise">Дисперсією шуму за фіксованої амплітуди</option></select></label>
           <label>Відносна сітка енергії, дБ<input id="mx-grid" value="-3, 0, 3" required></label>
           <label>Довжина кадру F<input id="mx-frame" type="number" min="20" max="20000" value="256" required></label>
@@ -88,7 +91,7 @@
           <label>Довжина pilot-блоку<input id="mx-burst" type="number" min="3" value="4" required></label>
           <label>Крок кореляції AR(1)<input id="mx-rho" type="number" min="0" max="0.999999" step="any" value="0.98" required></label>
           <div id="mx-overhead" class="card notice" role="status"></div>
-          <div class="card notice"><strong>Контроль метрик</strong><p>Обидва декодери використовують ті самі оцінки каналу, equalizer output, переходи Encoder A, початковий стан, пілотні обмеження та traceback. Oracle-CSI є лише діагностикою й не входить у практичні висновки.</p><p>Пілотні символи враховуються в енергії та тривалості кадру; BER рахується лише за payload. Дискретна шкала не є фізичним Eb/N0.</p></div>
+          <div class="card notice"><strong>Контроль метрик</strong><p>Обидва декодери використовують ті самі оцінки каналу, equalizer output, переходи Encoder A, початковий стан, пілотні обмеження та traceback. У режимі «Відомий тракт» обидва декодери отримують точні коефіцієнти каналу — це чисте порівняння метрик; «Оцінений за пілотами» додає похибку оцінювання (практичний приймач).</p><p>Пілотні символи враховуються в енергії та тривалості кадру; BER рахується лише за payload. Дискретна шкала не є фізичним Eb/N0.</p></div>
           <div class="pair"><button id="mx-run" class="primary-button" type="submit">Запустити перевірку</button><button id="mx-stop" class="secondary-button" type="button" disabled>Зупинити після парного кадру</button></div>
           <div id="mx-status" class="job-status" aria-live="polite">Статистичний запуск потребує явного натискання.</div><progress id="mx-progress" max="1" value="0"></progress>
         </form>
@@ -102,9 +105,9 @@
     </section>
   <section class="view" id="view-constellation"><h1>Сузір’я 8PSK</h1><p>Спільний прийнятий сигнал і спотворення каналу.</p><label>Режим відображення<select id="cloud-mode"><option value="both">Порівняння</option><option value="ideal">Ідеальне</option><option value="received">Після каналу</option></select></label><canvas id="received-cloud" width="700" height="500"></canvas><p id="cloud-info">Оберіть збережений запуск архітектур для перегляду фактичних I/Q. Ідеальні точки доступні завжди.</p></section></main>
   <footer><span>HF-TCM-SIM · REPRO-09</span><span>paper_exact: false · sample-domain noise · Offline simulation</span></footer>
-  <script src="/static/scientific_i18n.js" defer></script>
-  <script src="/static/scientific_ux.js" defer></script>
   <script src="/static/scientific.js" defer></script>
+  <script src="/static/system_workspace.js" defer></script>
+  <script src="/static/channel_controls.js" defer></script>
   <script src="/static/scientific_metric.js" defer></script>
 <script src="/static/article_workspace.js" defer></script>
 <script src="/static/metric_live.js" defer></script>
@@ -116,5 +119,8 @@
 <script src="/static/constellation4.js" defer></script>
 <script src="/static/trellis4.js" defer></script>
 <script src="/static/study_catalog.js" defer></script>
-<script src="/static/energy_interactive.js" defer></script></body>
+<script src="/static/energy_interactive.js" defer></script>
+<script src="/static/simulation_workspace.js" defer></script>
+<script src="/static/signal_workspace.js" defer></script>
+<script src="/static/results_workspace.js" defer></script><script src="/static/experiment_workspace.js" defer></script><script src="/static/system_signal.js" defer></script><script src="/static/system_decoding.js" defer></script><script src="/static/system_results_model.js" defer></script><script src="/static/system_results.js" defer></script><script src="/static/system_studies.js" defer></script><script src="/static/metric_mode.js" defer></script></body>
 </html>

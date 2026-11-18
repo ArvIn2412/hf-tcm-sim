@@ -37,6 +37,13 @@ from hf_tcm.repro.metric_isolation import (
 from hf_tcm.repro.transmitter import run_transmitter
 
 _SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$")
+FrontendMode = Literal["awgn_direct_control", "pilot_equalized", "oracle_csi", "known_channel"]
+EuclideanMetricKind = Literal["unweighted", "csi_weighted"]
+_FRONTEND_MODES = frozenset(
+    {"awgn_direct_control", "pilot_equalized", "oracle_csi", "known_channel"}
+)
+_EUCLIDEAN_METRICS = frozenset({"unweighted", "csi_weighted"})
+_ORACLE_FRONTEND_LABELS = frozenset({"diagnostic_oracle_csi", "known_channel_csi"})
 _PHASE_BY_EDGE = np.asarray(
     [4 * row[3][0] + 2 * row[3][1] + row[3][2] for row in transition_table()],
     dtype=np.int8,
@@ -49,12 +56,13 @@ class MetricTrialSpec:
     frame_symbols: int
     source_seed: int
     channel_config: ChannelConfig
-    frontend_mode: Literal["awgn_direct_control", "pilot_equalized", "oracle_csi"]
+    frontend_mode: FrontendMode
     amplitude: float = 1.0
     preamble_symbols: int = 4
     pilot_period: int = 32
     pilot_burst_symbols: int = 4
     traceback_depth: int = 20
+    euclidean_metric: EuclideanMetricKind = "unweighted"
 
     def __post_init__(self) -> None:
         if not isinstance(self.trial_id, str) or not _SAFE_ID.fullmatch(self.trial_id):
@@ -65,8 +73,10 @@ class MetricTrialSpec:
             raise ValueError("source_seed must be an unsigned 64-bit seed")
         if not isinstance(self.channel_config, ChannelConfig):
             raise TypeError("channel_config must be ChannelConfig")
-        if self.frontend_mode not in {"awgn_direct_control", "pilot_equalized", "oracle_csi"}:
+        if self.frontend_mode not in _FRONTEND_MODES:
             raise ValueError("unsupported metric-isolation frontend mode")
+        if self.euclidean_metric not in _EUCLIDEAN_METRICS:
+            raise ValueError("euclidean_metric must be unweighted or csi_weighted")
         if not math.isfinite(self.amplitude) or self.amplitude <= 0:
             raise ValueError("amplitude must be finite and positive")
         if self.traceback_depth != 20:
@@ -146,7 +156,7 @@ def _truth_diagnostics(
     estimated_gain = np.asarray(frontend.estimated_composite_gain)
     for symbol_index in np.flatnonzero(valid):
         sample_noise = noise_samples[symbol_index]
-        if frontend.mode == "diagnostic_oracle_csi":
+        if frontend.mode in _ORACLE_FRONTEND_LABELS:
             weight = composite[symbol_index]
             denominator = float(np.vdot(weight, weight).real)
             if denominator > 0:
@@ -298,9 +308,18 @@ def run_metric_trial(spec: MetricTrialSpec) -> MetricTrialResult:
             path_delays_samples=path_delays,
             path_coefficients_by_sample=channel.evaluation_truth.coefficients,
             assumed_noise_variance=noise_variance,
+            mode_label=(
+                "known_channel_csi"
+                if spec.frontend_mode == "known_channel"
+                else "diagnostic_oracle_csi"
+            ),
         )
 
-    euclidean_rows = euclidean_branch_metric_rows(frontend.symbols, amplitude=spec.amplitude)
+    euclidean_rows = euclidean_branch_metric_rows(
+        frontend.symbols,
+        amplitude=spec.amplitude,
+        csi_weights=(frontend.combiner_power if spec.euclidean_metric == "csi_weighted" else None),
+    )
     hamming_rows = hamming_branch_metric_rows(frontend.symbols, amplitude=spec.amplitude)
     if schedule is None:
         euclidean_metrics, hamming_metrics = euclidean_rows, hamming_rows
@@ -377,6 +396,7 @@ def run_metric_trial(spec: MetricTrialSpec) -> MetricTrialResult:
         "frontend_output_sha256_hamming": frontend.frontend_output_sha256,
         "pilot_schedule_sha256": schedule.sha256 if schedule is not None else None,
         "traceback_depth_transitions": spec.traceback_depth,
+        "euclidean_metric": spec.euclidean_metric,
         "initial_state": [0, 0],
         "euclidean": {
             "bit_errors": bit_errors_e,
@@ -405,7 +425,11 @@ def run_metric_trial(spec: MetricTrialSpec) -> MetricTrialResult:
         "scientific_limitations": [
             "project reconstructed encoder/phase mapping",
             "sample-domain complex AWGN, not physical Eb/N0",
-            "unweighted squared Euclidean cost under pilot-equalizer residual uncertainty",
+            (
+                "CSI-weighted squared Euclidean cost P_k|z_k-s|^2 (sample-domain ML equivalent)"
+                if spec.euclidean_metric == "csi_weighted"
+                else "unweighted squared Euclidean cost under pilot-equalizer residual uncertainty"
+            ),
             "Rician AR(1) is the configured project approximation, not Jakes/Doppler",
         ],
     }
@@ -430,7 +454,7 @@ class MetricStudyConfig:
 
     experiment_id: str
     scenario: Literal["awgn", "static", "rician"]
-    phase: Literal["validation", "range_finding"]
+    phase: Literal["validation", "range_finding", "confirmatory"]
     frame_symbols: int
     energy_grid_db: tuple[float, ...]
     trials_per_point: int
@@ -440,19 +464,38 @@ class MetricStudyConfig:
     sweep: Literal["amplitude", "noise"]
     amplitude: float
     channel_config: dict[str, Any]
-    frontend_mode: Literal["awgn_direct_control", "pilot_equalized", "oracle_csi"]
+    frontend_mode: FrontendMode
     preamble_symbols: int = 4
     pilot_period: int = 32
     pilot_burst_symbols: int = 4
     bootstrap_replicates: int = 500
+    euclidean_metric: EuclideanMetricKind = "unweighted"
+    # Common random numbers: the same trial index reuses source/fading/noise
+    # seeds at every energy point (only the swept scale changes).
+    common_random_numbers: bool = False
+    # Confirmatory runs must cite the SHA-256 of a frozen protocol file.
+    protocol_sha256: str = ""
+    # Raw signal arrays are stored for trial indices divisible by this stride;
+    # the others keep only the compact arrays needed for the independent recount.
+    full_array_stride: int = 1
 
     def __post_init__(self) -> None:
         if not isinstance(self.experiment_id, str) or not _SAFE_ID.fullmatch(self.experiment_id):
             raise ValueError("experiment_id must be a safe identifier")
         if self.scenario not in {"awgn", "static", "rician"}:
             raise ValueError("scenario must be awgn, static, or rician")
-        if self.phase not in {"validation", "range_finding"}:
-            raise ValueError("SCIENTIFIC-EXP-03A runner cannot execute confirmatory studies")
+        if self.phase not in {"validation", "range_finding", "confirmatory"}:
+            raise ValueError("phase must be validation, range_finding or confirmatory")
+        if not isinstance(self.protocol_sha256, str) or (
+            self.protocol_sha256 and not re.fullmatch(r"[0-9a-f]{64}", self.protocol_sha256)
+        ):
+            raise ValueError("protocol_sha256 must be empty or a lowercase SHA-256 hex digest")
+        if self.phase == "confirmatory" and not self.protocol_sha256:
+            raise ValueError("confirmatory studies require the frozen protocol SHA-256")
+        if type(self.full_array_stride) is not int or not 1 <= self.full_array_stride <= 1000:
+            raise ValueError("full_array_stride must be an integer in [1,1000]")
+        if type(self.common_random_numbers) is not bool:
+            raise ValueError("common_random_numbers must be boolean")
         if type(self.frame_symbols) is not int or not 20 <= self.frame_symbols <= 20_000:
             raise ValueError("frame_symbols must be in [20,20000]")
         if not self.energy_grid_db or len(self.energy_grid_db) > 21:
@@ -473,8 +516,10 @@ class MetricStudyConfig:
             raise ValueError("sweep must be amplitude or noise")
         if not math.isfinite(self.amplitude) or self.amplitude <= 0:
             raise ValueError("amplitude must be finite and positive")
-        if self.frontend_mode not in {"awgn_direct_control", "pilot_equalized", "oracle_csi"}:
+        if self.frontend_mode not in _FRONTEND_MODES:
             raise ValueError("unsupported frontend_mode")
+        if self.euclidean_metric not in _EUCLIDEAN_METRICS:
+            raise ValueError("euclidean_metric must be unweighted or csi_weighted")
         if self.frontend_mode == "awgn_direct_control" and self.scenario != "awgn":
             raise ValueError("the no-equalizer frontend is an AWGN-only control")
         if type(self.bootstrap_replicates) is not int or self.bootstrap_replicates < 100:
@@ -482,7 +527,7 @@ class MetricStudyConfig:
         parsed = ChannelConfig.from_dict(self.channel_config)
         profile_scenario = (
             "rician"
-            if parsed.fading_mode == "rician_ar1"
+            if parsed.fading_mode in {"rician_ar1", "rician_doppler"}
             else "awgn"
             if parsed.profile_id in {"awgn", "identity"}
             else "static"
@@ -511,6 +556,16 @@ class MetricStudyConfig:
     def to_dict(self) -> dict[str, Any]:
         data = asdict(self)
         data["energy_grid_db"] = list(self.energy_grid_db)
+        # Keep config hashes of historical studies unchanged: omit defaults of
+        # fields added after SCIENTIFIC-EXP-03B.
+        if data["euclidean_metric"] == "unweighted":
+            del data["euclidean_metric"]
+        if not data["common_random_numbers"]:
+            del data["common_random_numbers"]
+        if not data["protocol_sha256"]:
+            del data["protocol_sha256"]
+        if data["full_array_stride"] == 1:
+            del data["full_array_stride"]
         return data
 
 
@@ -597,7 +652,14 @@ def list_metric_studies(studies_root: str | Path) -> list[dict[str, Any]]:
     return studies[:100]
 
 
-def _refresh_manifest(root: Path, experiment_id: str, config_hash: str) -> None:
+def _refresh_manifest(
+    root: Path,
+    experiment_id: str,
+    config_hash: str,
+    cache: dict[str, str] | None = None,
+) -> None:
+    """Rewrite the manifest. With ``cache`` (relative path -> SHA-256 of
+    write-once trial files) only new or mutable files are hashed again."""
     files: dict[str, str] = {}
     for candidate in sorted(root.rglob("*")):
         if not candidate.is_file() or candidate.name == "manifest.json":
@@ -605,7 +667,13 @@ def _refresh_manifest(root: Path, experiment_id: str, config_hash: str) -> None:
         if candidate.suffix in {".pending", ".tmp"}:
             continue
         relative = candidate.relative_to(root).as_posix()
+        write_once = relative.startswith("trials/")
+        if cache is not None and write_once and relative in cache:
+            files[relative] = cache[relative]
+            continue
         files[relative] = _sha256_file(candidate)
+        if cache is not None and write_once:
+            cache[relative] = files[relative]
     _atomic_json(
         root / "manifest.json",
         {
@@ -626,7 +694,9 @@ def _trial_seeds(root_seed: int, point_index: int, trial_index: int) -> tuple[in
 def _trial_config_for_point(
     config: MetricStudyConfig, level_db: float, point_index: int, trial_index: int
 ) -> MetricTrialSpec:
-    source_seed, fading_seed, noise_seed = _trial_seeds(config.root_seed, point_index, trial_index)
+    source_seed, fading_seed, noise_seed = _trial_seeds(
+        config.root_seed, 0 if config.common_random_numbers else point_index, trial_index
+    )
     base = ChannelConfig.from_dict(config.channel_config)
     amplitude = config.amplitude
     noise_variance = float(base.noise_complex_variance)
@@ -654,48 +724,70 @@ def _trial_config_for_point(
         pilot_period=config.pilot_period,
         pilot_burst_symbols=config.pilot_burst_symbols,
         traceback_depth=20,
+        euclidean_metric=config.euclidean_metric,
     )
 
 
-def _save_trial(root: Path, point_index: int, trial_index: int, result: MetricTrialResult) -> None:
+def _save_trial(
+    root: Path,
+    point_index: int,
+    trial_index: int,
+    result: MetricTrialResult,
+    *,
+    full_arrays: bool = True,
+) -> None:
     trial_dir = root / "trials"
     trial_dir.mkdir(parents=True, exist_ok=True)
     stem = f"p{point_index:03d}-t{trial_index:04d}"
     npz_path = trial_dir / f"{stem}.npz"
     temporary = npz_path.with_suffix(".npz.pending")
     schedule = result.schedule
+    payload_mask = (
+        np.ones(result.summary["frame_symbols_total"], dtype=bool)
+        if schedule is None
+        else schedule.payload_mask
+    )
     with temporary.open("wb") as stream:
-        np.savez_compressed(
-            stream,
-            reference_payload_pairs=result.reference_payload_pairs,
-            decoded_euclidean_pairs=result.decoded_euclidean_pairs,
-            decoded_hamming_pairs=result.decoded_hamming_pairs,
-            transmitted_samples=result.transmitted_samples,
-            received_samples=result.received_samples,
-            equalized_symbols=result.equalized_symbols,
-            euclidean_branch_metrics=result.euclidean_branch_metrics,
-            hamming_branch_metrics=result.hamming_branch_metrics,
-            payload_mask=(
-                np.ones(result.summary["frame_symbols_total"], dtype=bool)
-                if schedule is None
-                else schedule.payload_mask
-            ),
-            pilot_mask=(
-                np.zeros(result.summary["frame_symbols_total"], dtype=bool)
-                if schedule is None
-                else schedule.pilot_mask
-            ),
-            known_phase_indices=(
-                np.full(result.summary["frame_symbols_total"], -1, dtype=np.int8)
-                if schedule is None
-                else schedule.known_phase_indices
-            ),
-            selected_sample_indices=result.frontend.selected_sample_indices,
-            estimated_composite_gain=result.frontend.estimated_composite_gain,
-            output_noise_variance=result.frontend.output_noise_variance,
-            gain_update_mask=result.frontend.gain_update_mask,
-            gain_age_symbols=result.frontend.gain_age_symbols,
-        )
+        if not full_arrays:
+            np.savez_compressed(
+                stream,
+                reference_payload_pairs=result.reference_payload_pairs,
+                decoded_euclidean_pairs=result.decoded_euclidean_pairs,
+                decoded_hamming_pairs=result.decoded_hamming_pairs,
+                payload_mask=payload_mask,
+            )
+        else:
+            np.savez_compressed(
+                stream,
+                reference_payload_pairs=result.reference_payload_pairs,
+                decoded_euclidean_pairs=result.decoded_euclidean_pairs,
+                decoded_hamming_pairs=result.decoded_hamming_pairs,
+                transmitted_samples=result.transmitted_samples,
+                received_samples=result.received_samples,
+                equalized_symbols=result.equalized_symbols,
+                euclidean_branch_metrics=result.euclidean_branch_metrics,
+                hamming_branch_metrics=result.hamming_branch_metrics,
+                payload_mask=(
+                    np.ones(result.summary["frame_symbols_total"], dtype=bool)
+                    if schedule is None
+                    else schedule.payload_mask
+                ),
+                pilot_mask=(
+                    np.zeros(result.summary["frame_symbols_total"], dtype=bool)
+                    if schedule is None
+                    else schedule.pilot_mask
+                ),
+                known_phase_indices=(
+                    np.full(result.summary["frame_symbols_total"], -1, dtype=np.int8)
+                    if schedule is None
+                    else schedule.known_phase_indices
+                ),
+                selected_sample_indices=result.frontend.selected_sample_indices,
+                estimated_composite_gain=result.frontend.estimated_composite_gain,
+                output_noise_variance=result.frontend.output_noise_variance,
+                gain_update_mask=result.frontend.gain_update_mask,
+                gain_age_symbols=result.frontend.gain_age_symbols,
+            )
         stream.flush()
         os.fsync(stream.fileno())
     os.replace(temporary, npz_path)
@@ -705,6 +797,7 @@ def _save_trial(root: Path, point_index: int, trial_index: int, result: MetricTr
         "trial_index": trial_index,
         "array_file": npz_path.name,
         "array_file_sha256": _sha256_file(npz_path),
+        "array_policy": "full" if full_arrays else "compact_recount_only",
         **result.summary,
     }
     _atomic_json(trial_dir / f"{stem}.json", metadata)
@@ -801,6 +894,9 @@ def run_metric_study(
     started = time.perf_counter()
     planned = len(expected)
     completed = len(existing)
+    manifest_cache: dict[str, str] = {}
+    _refresh_manifest(root, config.experiment_id, config_hash, manifest_cache)
+    last_manifest_write = time.perf_counter()
     for point_index, level_db in enumerate(config.energy_grid_db):
         for trial_index in range(config.trials_per_point):
             trial_id = f"metric-p{point_index:03d}-t{trial_index:04d}"
@@ -820,7 +916,15 @@ def run_metric_study(
                     "point_index": point_index,
                     "trial_index": trial_index,
                     "root_seed": config.root_seed,
-                    "derived_seeds": list(_trial_seeds(config.root_seed, point_index, trial_index)),
+                    "derived_seeds": list(
+                        _trial_seeds(
+                            config.root_seed,
+                            0 if config.common_random_numbers else point_index,
+                            trial_index,
+                        )
+                    ),
+                    "common_random_numbers": config.common_random_numbers,
+                    "protocol_sha256": config.protocol_sha256 or None,
                     "algorithm_versions_sha256": {
                         "metric_isolation": _sha256_file(
                             Path(__file__).with_name("metric_isolation.py")
@@ -829,7 +933,13 @@ def run_metric_study(
                     },
                 }
             )
-            _save_trial(root, point_index, trial_index, result)
+            _save_trial(
+                root,
+                point_index,
+                trial_index,
+                result,
+                full_arrays=trial_index % config.full_array_stride == 0,
+            )
             records.append(
                 {
                     "_array_path": str(
@@ -841,7 +951,11 @@ def run_metric_study(
             )
             existing.add(trial_id)
             completed += 1
-            _refresh_manifest(root, config.experiment_id, config_hash)
+            # Trial JSON already binds its NPZ SHA-256; the manifest is a
+            # periodic checkpoint (every 30 s) and is always rewritten at the end.
+            if time.perf_counter() - last_manifest_write >= 30.0:
+                _refresh_manifest(root, config.experiment_id, config_hash, manifest_cache)
+                last_manifest_write = time.perf_counter()
             if progress_callback is not None:
                 progress_callback(
                     {
@@ -884,6 +998,7 @@ def run_metric_study(
                 "sweep": config.sweep,
                 "phase": config.phase,
                 "gamma_db": gamma_by_point[row["point_index"]],
+                "trial_index": int(row["trial_index"]),
                 "bits": int(row["payload_information_bits"]),
                 "pairs": int(row["payload_symbols"]),
                 "bit_errors": {
@@ -898,16 +1013,30 @@ def run_metric_study(
         )
     analysis: dict[str, Any] = {"status": "NOT_ESTIMABLE", "reason": "no complete paired trials"}
     aggregates: list[dict[str, Any]] = []
+    crn_incomplete = config.common_random_numbers and completed != planned
     if rows_for_analysis:
         aggregates = aggregate_energy_records(rows_for_analysis)
+    if rows_for_analysis and crn_incomplete:
+        analysis = {
+            "status": "NOT_ESTIMABLE",
+            "reason": "INCOMPLETE_CRN_DESIGN: resume the study with the identical configuration",
+            "target_ber": config.target_ber,
+            "gain_db": None,
+        }
+    elif rows_for_analysis:
         analysis = analyze_energy_records(
             rows_for_analysis,
             config.target_ber,
             arm="hamming",
             replicates=config.bootstrap_replicates,
             seed=config.root_seed ^ 0x03A03A,
+            common_clusters=config.common_random_numbers,
         )
-        analysis["interpretation"] = "exploratory_project_discrete_energy_only"
+        analysis["interpretation"] = (
+            "confirmatory_frozen_protocol_discrete_eb_n0"
+            if config.phase == "confirmatory"
+            else "exploratory_project_discrete_energy_only"
+        )
         analysis["physical_ebn0"] = None
     status = "completed" if completed == planned else "incomplete"
     result_summary = {
@@ -931,7 +1060,8 @@ def run_metric_study(
         "trial_ids": sorted(row["trial_id"] for row in disk_records),
         "runtime_seconds_this_invocation": time.perf_counter() - started,
         "config_sha256": config_hash,
-        "confirmatory_series_executed": False,
+        "confirmatory_series_executed": config.phase == "confirmatory",
+        "protocol_sha256": config.protocol_sha256 or None,
         "paper_exact": False,
     }
     _atomic_json(root / "summary.json", result_summary)

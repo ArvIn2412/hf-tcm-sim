@@ -1,0 +1,26 @@
+/* Paginated catalog of paired system results. No metric-isolation fallback. */
+(() => {
+ 'use strict';
+ document.addEventListener('DOMContentLoaded',()=>{
+  const view=document.getElementById('view-saved');window.systemArchive.append(...view.childNodes);
+  view.innerHTML='<h1>Дослідження</h1><form id="system-study-search" class="system-signal-tools"><input id="system-study-q" placeholder="Пошук" aria-label="Пошук досліджень"><select id="system-study-channel" aria-label="Канал"><option value="">Усі канали</option><option value="identity">Без спотворень</option><option value="awgn">AWGN</option><option value="static_multipath">Статична багатопроменевість</option><option value="rician_ar1_multipath">Rician / Rayleigh</option></select><select id="system-study-kind" aria-label="Тип дослідження"><option value="system">Кадри й серії</option><option value="system-run">Кадри</option><option value="system-energy">Серії</option></select><button>Знайти</button></form><div id="catalog-status-text" role="status"></div><table class="system-study-table"><thead><tr><th>Назва</th><th>Дата</th><th>Канал</th><th>N</th><th>BER Хемінга</th><th>BER Евкліда</th><th>Час обробки, с</th><th></th></tr></thead><tbody id="system-study-rows"></tbody></table><div class="system-signal-tools"><button id="system-study-prev">Попередня</button><span id="system-study-page"></span><button id="system-study-next">Наступна</button></div>';
+  const $=id=>document.getElementById(id),state={page:1,data:null,controller:null,version:0};window.systemStudies=state;
+  const fmt=v=>typeof v==='number'&&Number.isFinite(v)?v.toLocaleString('uk-UA',{maximumSignificantDigits:6}):'—';
+  const channel=c=>({identity:'Без спотворень',awgn:'AWGN',static_multipath:'Статична багатопроменевість',static_single_path:'Статичний канал',rician_ar1_multipath:'Rician / Rayleigh'})[c]||'Канал не вказано';
+  const ber=(row,key)=>{const m=row.metrics?.[key];return m?.ber_range?m.ber_range.map(fmt).join('…'):fmt(m?.ber);};
+  async function refresh(){const version=++state.version;state.controller?.abort();state.controller=new AbortController();$('catalog-status-text').textContent='Завантаження…';try{
+   const q=new URLSearchParams({page:state.page,size:15,kind:$('system-study-kind').value,q:$('system-study-q').value,channel:$('system-study-channel').value});const r=await fetch('/api/scientific/study-catalog?'+q,{signal:state.controller.signal});const d=await r.json();if(!r.ok)throw Error(d.error);if(version!==state.version)return;state.data=d;const rows=$('system-study-rows');rows.replaceChildren();
+   for(const row of d.items){const tr=document.createElement('tr'),date=new Date(row.date);for(const value of [row.kind==='run'?'Кадр':'Серія',Number.isNaN(date.valueOf())?'—':date.toLocaleString('uk-UA',{dateStyle:'short',timeStyle:'short'}),channel(row.channel),row.N??'—',ber(row,'hamming'),ber(row,'euclidean'),fmt(row.processing_seconds)]){const td=document.createElement('td');td.textContent=value;if(row.kind==='energy')td.title='BER: діапазон виміряних енергетичних точок';tr.append(td);}
+    const actions=document.createElement('td');for(const [label,action]of [['Відкрити',()=>open(row)],['Використати конфігурацію',()=>{window.dispatchEvent(new CustomEvent('system-reuse-configuration',{detail:{configuration:row.parameters,kind:row.kind}}));document.querySelector('.tabs [data-view=parameters]').click();}]]){const b=document.createElement('button');b.type='button';b.textContent=label;b.onclick=action;actions.append(b);}tr.append(actions);rows.append(tr);
+   }
+   $('catalog-status-text').textContent=d.total?`${d.total} досліджень${d.items.some(r=>r.kind==='energy')?' · BER серій: діапазон точок':''}`:'Збігів немає.';$('system-study-page').textContent=`${d.page} / ${d.pages}`;$('system-study-prev').disabled=d.page<=1;$('system-study-next').disabled=d.page>=d.pages;
+  }catch(e){if(e.name!=='AbortError'){$('catalog-status-text').textContent='Не вдалося завантажити каталог: '+e.message;$('system-study-rows').replaceChildren();}}}
+  async function open(row){$('catalog-status-text').textContent='Відкриття…';if(row.kind==='energy'||!row.capabilities.iq)window.dispatchEvent(new CustomEvent('system-context-cleared',{detail:{numericOnly:true}}));
+   if(row.kind==='run'&&!row.capabilities.iq){try{const r=await fetch('/api/scientific/runs/'+encodeURIComponent(row.id));const d=await r.json();if(!r.ok)throw Error(d.error);window.dispatchEvent(new CustomEvent('scientific-summary',{detail:{...d,trace_available:false}}));document.querySelector('.tabs [data-view=metric]').click();$('catalog-status-text').textContent='Доступні збережені числові результати; сигнал і решітки відсутні.';}catch(e){$('catalog-status-text').textContent='Не вдалося відкрити кадр: '+e.message;}}
+   else window.dispatchEvent(new CustomEvent('catalog-open',{detail:{kind:row.kind,id:row.id}}));
+  }
+  $('system-study-search').onsubmit=e=>{e.preventDefault();state.page=1;refresh();};$('system-study-prev').onclick=()=>{state.page--;refresh();};$('system-study-next').onclick=()=>{state.page++;refresh();};
+  window.addEventListener('scientific-view',e=>{if(e.detail==='saved')refresh();});window.addEventListener('scientific-summary',()=>{state.data=null;});
+  refresh();
+ });
+})();

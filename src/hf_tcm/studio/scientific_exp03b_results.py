@@ -2,19 +2,78 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
+import logging
+import os
+import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from threading import Lock
 from typing import Any
 
 from hf_tcm.repro.exp03b_runner import load_frozen_protocol, sha256_file
+
+# Process-local evidence only: never trust a persisted cache as provenance.
+# A replacement, edit (including restored mtime), or disappearance invalidates it.
+_HASHES: dict[Path, tuple[tuple[int, ...], str]] = {}
+_HASH_LOCK = Lock()
+_LOAD_LOCK = Lock()
+
+if os.name == "nt":
+    import ctypes
+    import msvcrt
+    from ctypes import wintypes
+
+    class _FileBasicInfo(ctypes.Structure):
+        _fields_ = [
+            ("creation", ctypes.c_longlong),
+            ("access", ctypes.c_longlong),
+            ("write", ctypes.c_longlong),
+            ("change", ctypes.c_longlong),
+            ("attributes", wintypes.DWORD),
+        ]
+
+    _get_info = ctypes.WinDLL("kernel32", use_last_error=True).GetFileInformationByHandleEx
+    _get_info.argtypes = [wintypes.HANDLE, ctypes.c_int, ctypes.c_void_p, wintypes.DWORD]
+    _get_info.restype = wintypes.BOOL
+
+
+def _signature(path: Path) -> tuple[int, ...]:
+    stat = path.stat()
+    change = stat.st_ctime_ns
+    if os.name == "nt":
+        # Windows st_ctime is creation time, not metadata-change time.
+        with path.open("rb") as stream:
+            info = _FileBasicInfo()
+            if not _get_info(
+                msvcrt.get_osfhandle(stream.fileno()), 0, ctypes.byref(info), ctypes.sizeof(info)
+            ):
+                raise ctypes.WinError(ctypes.get_last_error())
+            change = info.change
+    return (stat.st_dev, stat.st_ino, stat.st_size, stat.st_mtime_ns, change)
+
+
+def _checked_sha(path: Path) -> str:
+    before = _signature(path)
+    with _HASH_LOCK:
+        cached = _HASHES.get(path)
+    if cached is not None and cached[0] == before:
+        return cached[1]
+    digest = sha256_file(path)
+    if _signature(path) != before:
+        raise ValueError(f"archive file changed during integrity verification: {path}")
+    with _HASH_LOCK:
+        _HASHES[path] = (before, digest)
+    return digest
 
 
 def _verify_study(
     root: Path, protocol_hash: str, expected_trials: int, expected_manifest_hash: str
 ) -> None:
+    started = time.perf_counter()
+    logging.getLogger(__name__).info("Verifying archive %s (%d trials)", root.name, expected_trials)
     manifest_path = root / "manifest.json"
-    if not manifest_path.is_file() or sha256_file(manifest_path) != expected_manifest_hash:
+    if not manifest_path.is_file() or _checked_sha(manifest_path) != expected_manifest_hash:
         raise ValueError(f"confirmatory study manifest SHA-256 mismatch: {root}")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if (
@@ -25,7 +84,7 @@ def _verify_study(
     ):
         raise ValueError(f"confirmatory study manifest is incomplete or inconsistent: {root}")
     checkpoint = root / "checkpoint.jsonl"
-    checkpoint_hash = hashlib.sha256(checkpoint.read_bytes()).hexdigest()
+    checkpoint_hash = _checked_sha(checkpoint)
     if checkpoint_hash != manifest.get("checkpoint_sha256"):
         raise ValueError(f"confirmatory study checkpoint SHA-256 mismatch: {root}")
     lines = [line for line in checkpoint.read_text(encoding="utf-8").splitlines() if line.strip()]
@@ -33,14 +92,14 @@ def _verify_study(
         raise ValueError(f"confirmatory study checkpoint has the wrong trial count: {root}")
     ids = []
     root_resolved = root.resolve()
-    for line in lines:
+
+    def verify_line(line: str) -> str:
         entry = json.loads(line)
         if not all(
             isinstance(entry.get(key), str)
             for key in ("trial_id", "record_path", "record_sha256", "array_path", "array_sha256")
         ):
             raise ValueError(f"confirmatory study checkpoint entry is malformed: {root}")
-        ids.append(entry["trial_id"])
         for path_key, hash_key, description in (
             ("record_path", "record_sha256", "record"),
             ("array_path", "array_sha256", "array"),
@@ -48,15 +107,34 @@ def _verify_study(
             payload_path = (root_resolved / entry[path_key]).resolve()
             if not payload_path.is_relative_to(root_resolved):
                 raise ValueError(f"confirmatory study {description} path escapes its root: {root}")
-            if not payload_path.is_file() or sha256_file(payload_path) != entry[hash_key]:
+            if not payload_path.is_file() or _checked_sha(payload_path) != entry[hash_key]:
                 raise ValueError(
                     f"confirmatory study {description} SHA-256 mismatch: {payload_path}"
                 )
+        return entry["trial_id"]
+
+    # Bound disk pressure; preserve every original digest and path/count gate.
+    with ThreadPoolExecutor(max_workers=4) as workers:
+        ids = list(workers.map(verify_line, lines))
     if len(ids) != len(set(ids)):
         raise ValueError(f"confirmatory study checkpoint has duplicate trial IDs: {root}")
+    logging.getLogger(__name__).info(
+        "Verified %s in %.3fs", root.name, time.perf_counter() - started
+    )
 
 
 def load_exp03b_analysis(
+    analysis_path: str | Path,
+    protocol_path: str | Path,
+    output_root: str | Path,
+) -> dict[str, Any]:
+    # Serialize concurrent cold requests; followers reuse verified file digests
+    # while still checking current metadata and all provenance relationships.
+    with _LOAD_LOCK:
+        return _load_exp03b_analysis(analysis_path, protocol_path, output_root)
+
+
+def _load_exp03b_analysis(
     analysis_path: str | Path,
     protocol_path: str | Path,
     output_root: str | Path,
@@ -69,7 +147,7 @@ def load_exp03b_analysis(
         raise FileNotFoundError("confirmatory SCIENTIFIC-EXP-03B analysis is not available")
     manifest_path = path.with_name("analysis_manifest.json")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    analysis_hash = sha256_file(path)
+    analysis_hash = _checked_sha(path)
     if manifest.get("analysis_sha256") != analysis_hash:
         raise ValueError("analysis SHA-256 does not match its manifest")
     if manifest.get("protocol_sha256") != protocol_hash:

@@ -3,7 +3,7 @@
   window.addEventListener('metric-summary',()=>{catalogContext++;});
   window.addEventListener('metric-context-cleared',()=>{catalogContext++;});
   const state = {runId: null, summary: null, trace: null, viterbi: null, longFrameArchive: null, selectedSymbol: 0, selectedSample: 0, selectedTransition: null, jobId: null, timer: null, energyJobId: null, energyTimer: null, energySummary: null, exp03bResults: null, activeView: "parameters"};
-  const $ = (selector) => document.querySelector(selector);
+  const $ = (selector) => document.querySelector(selector) || window.resultsArchive?.querySelector(selector) || window.systemArchive?.querySelector(selector) || window.systemNodes?.get(selector);
   const $$ = (selector) => [...document.querySelectorAll(selector)];
   const esc = (value) => String(value).replace(/[&<>"']/g, (ch) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
   const fmt = (value, digits = 5) => Number(value).toLocaleString("uk-UA", {maximumFractionDigits: digits});
@@ -15,6 +15,7 @@
     return body;
   }
 
+  window.addEventListener('scientific-navigate',e=>selectView(e.detail));
   function selectView(name) {
     state.activeView = name;
     $$(".tab").forEach(button => button.classList.toggle("active", button.dataset.view === name));
@@ -28,6 +29,7 @@
   }
 
   function configFromForm() {
+    if(window.systemExperiment)return window.systemExperiment.build();
     const form = new FormData($("#run-form"));
     const profile = form.get("channel_profile");
     let delays = [0], coeffs = [[1, 0]];
@@ -59,6 +61,7 @@
 
   async function startRun(event) {
     event.preventDefault();
+    if(window.systemExperiment?.mode==='series'){await launchEnergyStudy();return;}
     const button = $("#run-button");
     button.disabled = true;
     $("#job-status").textContent = "Перевірка конфігурації…";
@@ -153,7 +156,7 @@
     state.selectedSymbol = 0; state.selectedSample = 0; state.selectedTransition = null;
     $("#paired-badge").textContent = summary.paired_observation_verified ? "Обидва приймачі використали одне спостереження" : "Спостереження не збігаються";
     $("#paired-badge").classList.toggle("status-partial", !summary.paired_observation_verified);
-    const receiverKeys = ["joint", "separate", ...(summary.b1 ? ["b1"] : [])];
+    const receiverKeys = ["joint", "separate"];
     const cards = receiverKeys.map(key => {
       const r = summary[key], title = key === "joint" ? "Спільна демодуляція та декодування — метрика Евкліда" : key === "b0" || key === "separate" ? "Роздільна демодуляція та декодування — метрика Хемінга" : "Роздільне приймання з компенсацією каналу — метрика Хемінга";
       const pairText = Number.isFinite(r.information_pair_ser) ? `SER інформаційних пар ${fmt(r.information_pair_ser, 7)} · ${r.information_pair_errors}/${r.compared_information_pairs} пар` : "SER інформаційних пар недоступний";
@@ -175,7 +178,7 @@
     $("#viterbi-symbol").max = Math.max(0, summary.frame_symbols - 1);
     $("#global-sample").max = Math.max(0, summary.sample_count - 1);
     const receiverSelect = $("#global-receiver");
-    receiverSelect.querySelector('option[value="b1"]').disabled = !summary.b1;
+    if(receiverSelect.querySelector('option[value="b1"]'))receiverSelect.querySelector('option[value="b1"]').disabled = !summary.b1;
     if (!summary.b1 && receiverSelect.value === "b1") receiverSelect.value = "joint";
     $("#sync-status").textContent = `Моделювання завершено · ${summary.frame_symbols} елементів сигналу`;
     await loadWindow();
@@ -191,6 +194,7 @@
       const input = $(selector); if (input) input.value = String(state.selectedSymbol);
     }
     const start = state.selectedSymbol;
+    if(window.systemOnly&&window.systemSignal&&window.systemDecoding){window.dispatchEvent(new CustomEvent('system-position',{detail:{symbol:state.selectedSymbol,sample:state.selectedSample}}));return;}
     if (state.longFrameArchive) {
       $("#sync-status").textContent = `Архів: ${state.longFrameArchive.repro08_metrics.frame_symbols} символів · відліки I/Q відсутні`;
       if (state.activeView === "viterbi") await loadViterbi();
@@ -200,6 +204,7 @@
       const trace = await api(`/api/scientific/traces?run_id=${encodeURIComponent(run)}&start=${start}&count=20`);
       if(context!==catalogContext||run!==state.runId||start!==state.selectedSymbol)return;
       state.trace=trace;
+      window.dispatchEvent(new CustomEvent('system-position',{detail:{symbol:state.selectedSymbol,sample:state.selectedSample}}));
       drawAll();
       if (state.activeView === "viterbi") await loadViterbi();
     } catch (error) { console.error(error); }
@@ -636,6 +641,7 @@
 
   function renderEnergyStudy(summary) {
     state.energySummary = summary;
+    if(window.systemResults){window.dispatchEvent(new CustomEvent('system-energy-summary',{detail:{...summary,contrast_mode:summary.contrast_mode||'system'}}));return;}
     const analyses = summary.analyses || {}, first = Object.values(analyses)[0], points = first?.aggregate || [];
     const arms = summary.receiver_arms || [];
     const labels = {joint:"Спільне приймання — метрика Евкліда",b0:"Роздільне приймання — метрика Хемінга",b1:"Роздільне приймання з оцінюванням каналу — метрика Хемінга"};
@@ -802,6 +808,7 @@
   }
 
   async function loadViterbi() {
+    if(window.systemDecoding)return;
     if (!state.runId || !state.summary) return;
     const receiver = $("#global-receiver").value;
     if (receiver === "b1" && !state.summary.b1) {
@@ -1288,7 +1295,7 @@
   $("#load-viterbi").addEventListener("click",loadViterbi);
   $("#traceback-depth").addEventListener("change",loadViterbi);
   $("#survivor-endpoint").addEventListener("change",loadViterbi);
-  $("#trellis-filter").addEventListener("change",renderViterbi);
+  $("#trellis-filter")?.addEventListener("change",renderViterbi);
   $("#symbol-previous").addEventListener("click",()=>setSelectedSymbol(state.selectedSymbol-1));
   $("#symbol-next").addEventListener("click",()=>setSelectedSymbol(state.selectedSymbol+1));
   $("#zoom-20-samples").addEventListener("click",async()=>{selectView("viterbi");await loadSampleZoom();});

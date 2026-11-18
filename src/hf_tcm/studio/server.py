@@ -56,6 +56,7 @@ from hf_tcm.studio.scientific import (
 )
 from hf_tcm.studio.scientific_exp03b_results import load_exp03b_analysis
 from hf_tcm.studio.study_catalog import list_study_catalog
+from hf_tcm.studio.system_signal import system_signal
 
 STATIC_ROOT = Path(__file__).with_name("static")
 
@@ -77,7 +78,7 @@ def make_server(
         server_version = "HF-TCM-SIM-M11b"
 
         def log_message(self, fmt: str, *args: object) -> None:
-            print("[M11b] " + fmt % args)
+            logging.getLogger(__name__).debug(fmt, *args)
 
         def _send(self, status: int, payload: bytes, content_type: str) -> None:
             try:
@@ -292,6 +293,17 @@ def make_server(
                         raise ValueError("invalid run ID")
                     start = int(query.get("start", ["0"])[0])
                     count = int(query.get("count", ["20"])[0])
+                    if query.get("overview") == ["1"]:
+                        self._json(
+                            200,
+                            system_signal(
+                                Path("outputs/repro09") / run_id,
+                                start,
+                                count,
+                                int(query.get("symbol", ["0"])[0]),
+                            ),
+                        )
+                        return
                     self._json(
                         200,
                         trace_window(
@@ -485,6 +497,11 @@ def make_server(
                 if length <= 0 or length > 32768:
                     raise ValueError("request body must be between 1 and 32768 bytes")
                 data = json.loads(self.rfile.read(length).decode("utf-8"))
+                if isinstance(data, dict) and data.get("phase") == "confirmatory":
+                    raise ValueError(
+                        "the GUI cannot execute confirmatory studies; "
+                        "use scripts/run_scientific_exp04.py with an approved protocol"
+                    )
                 config = MetricStudyConfig.from_dict(data)
                 job_id = JOBS.submit_metric_study(
                     config, Path("outputs/scientific-exp03a/metric-studies")
@@ -667,4 +684,9 @@ def make_server(
             except (ValueError, TypeError, json.JSONDecodeError, OverflowError) as exc:
                 self._json(400, {"error": str(exc), "receiver_invoked": False})
 
-    return ThreadingHTTPServer((host, port), StudioHandler)
+    class StudioHTTPServer(ThreadingHTTPServer):
+        # A browser opens concurrent connections for scripts, windows and catalog
+        # requests. The socketserver default backlog of five can drop this burst.
+        request_queue_size = 64
+
+    return StudioHTTPServer((host, port), StudioHandler)

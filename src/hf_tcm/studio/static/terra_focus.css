@@ -1,0 +1,124 @@
+/* HF-TCM-SIM · Terra Focus / optional additive UX layer.
+   Does not mutate scientific data, APIs, or decoder behavior. */
+:root {
+  --terra-ink: #172532;
+  --terra-muted: #607280;
+  --terra-border: #dbe4e8;
+  --terra-surface: #ffffff;
+  --terra-canvas: #f8fafb;
+  --terra-accent: #096d72;
+  --terra-accent-soft: #e3f2f0;
+  --terra-radius: 10px;
+}
+body.terra-focus { background:var(--terra-canvas); color:var(--terra-ink); }
+body.terra-focus .topbar {
+  gap:14px; align-items:center; padding:10px clamp(12px,2vw,28px);
+  background:rgba(255,255,255,.97); border-bottom:1px solid var(--terra-border);
+  box-shadow:none; backdrop-filter:blur(12px);
+}
+body.terra-focus .topbar .tabs,
+body.terra-focus .topbar .mobile-view-menu { display:none!important; }
+body.terra-focus .topbar .legacy-link { display:none; }
+body.terra-focus .terra-primary-nav {
+  display:flex; flex:1 1 540px; align-items:center; gap:5px;
+  min-width:0; overflow-x:auto; overscroll-behavior-inline:contain;
+  scrollbar-width:thin; padding:2px; white-space:nowrap;
+}
+body.terra-focus .terra-primary-nav button,
+body.terra-focus .terra-secondary-nav button {
+  flex:0 0 auto; min-height:40px; border:none; background:transparent;
+  color:#455c67; font-size:13px; line-height:1.15; font-weight:650;
+  padding:10px 14px; border-radius:9px; cursor:pointer;
+}
+body.terra-focus .terra-primary-nav button:hover,
+body.terra-focus .terra-secondary-nav button:hover { background:#edf3f4; color:#153f47; }
+body.terra-focus .terra-primary-nav button[aria-current="page"],
+body.terra-focus .terra-secondary-nav button[aria-current="page"] {
+  background:var(--terra-accent-soft); color:var(--terra-accent);
+}
+body.terra-focus .terra-primary-nav button:focus-visible,
+body.terra-focus .terra-secondary-nav button:focus-visible,
+body.terra-focus .terra-toggle:focus-visible {
+  outline:3px solid #0a6f76; outline-offset:2px;
+}
+body.terra-focus .terra-secondary-nav {
+  display:flex; align-items:center; gap:4px; padding:4px 0 10px;
+  max-width:100%; overflow-x:auto;
+}
+body.terra-focus main { max-width:1760px; padding-top:14px; }
+body.terra-focus .view { min-width:0; }
+body.terra-focus .view > h1,
+body.terra-focus .view > .page-heading h1,
+body.terra-focus .page-heading h1 {font-size:clamp(23px,2.2vw,31px);letter-spacing:-.026em;line-height:1.2;}
+body.terra-focus .page-heading { margin:8px 0 16px; }
+body.terra-focus .page-heading p { color:var(--terra-muted); }
+body.terra-focus .card {
+  border:1px solid var(--terra-border); border-radius:var(--terra-radius);
+  box-shadow:none; background:var(--terra-surface);
+}
+body.terra-focus button { transition:background-color .12s,color .12s,border-color .12s; }
+body.terra-focus .secondary-button,
+body.terra-focus .plot-export-button { background:#eef4f4; color:#245c63; font-weight:650; }
+body.terra-focus .primary-button { background:var(--terra-accent); }
+body.terra-focus .config-card { padding:14px; gap:10px; }
+body.terra-focus .config-grid { gap:12px; }
+body.terra-focus .stage4-runbar { background:#f1f8f7; border:1px solid #cce4e0; }
+body.terra-focus .stage4-runbar button { font-weight:750; }
+body.terra-focus .sequence-navigator {
+  border:1px solid var(--terra-border); padding:10px 12px; margin:0 0 14px;
+  border-radius:var(--terra-radius); box-shadow:none; background:#fff;
+}
+body.terra-focus .sequence-navigator h2 {font-size:13px;letter-spacing:.01em;margin:0;}
+body.terra-focus .terra-navigator-head {display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px;}
+body.terra-focus .terra-toggle {
+  width:auto;min-height:34px; font:650 12px/1.3 inherit; color:var(--terra-accent);
+  background:#eef6f5; border:1px solid #dcebe9; padding:7px 11px; border-radius:8px;
+}
+body.terra-focus .sequence-navigator.terra-compact .navigator-more {display:none!important;}
+body.terra-focus .sequence-navigator .live-controls {gap:6px;}
+body.terra-focus .sequence-navigator #seq-status {
+  color:var(--terra-muted); max-width:100%; font-size:11px; line-height:1.4;
+}
+body.terra-focus .sequence-navigator.terra-compact #seq-status { max-height:1.6em; overflow:hidden; text-overflow:ellipsis; }
+body.terra-focus .terra-source-button { margin:0 0 10px; }
+body.terra-focus .terra-collapsed-source {display:none!important;}
+body.terra-focus .source-summary:not(.terra-collapsed-source),
+body.terra-focus #metric-active-source:not(.terra-collapsed-source) {
+  max-width:100%; border:1px solid var(--terra-border); border-radius:8px;
+  padding:9px 12px; font-size:12px; line-height:1.45;
+}
+body.terra-focus .chart-grid,body.terra-focus .article-pair {gap:14px;}
+body.terra-focus .chart-card { min-width:0; }
+body.terra-focus .chart-card canvas,body.terra-focus canvas { max-width:100%; }
+body.terra-focus .chart-card h2 {font-size:15px;}
+body.terra-focus .table-wrap {min-width:0;}
+body.terra-focus .status-pill,body.terra-focus .value-chip {box-shadow:none;}
+body.terra-focus .page-heading .eyebrow {font-size:10px;letter-spacing:.08em;}
+body.terra-focus footer {font-size:11px;color:var(--terra-muted);}
+@media (min-width: 1280px) {
+  body.terra-focus .chart-card:has(#live-wave),
+  body.terra-focus #view-transmitter .chart-card.wide,
+  body.terra-focus #view-metric .metric-chart-card {min-width:0;}
+  body.terra-focus .sequence-navigator > .live-controls {align-items:center;}
+}
+@media (max-width: 900px) {
+  body.terra-focus .topbar {flex-wrap:wrap; gap:7px;}
+  body.terra-focus .terra-primary-nav {order:3;flex-basis:100%;}
+  body.terra-focus .terra-secondary-nav {padding-bottom:8px;}
+  body.terra-focus .page-heading {gap:10px;}
+}
+@media (max-width: 600px) {
+  body.terra-focus .topbar {padding:8px 10px; display:flex; flex-wrap:wrap;}
+  body.terra-focus .terra-primary-nav {flex:1 1 100%;order:2;gap:2px;}
+  body.terra-focus .terra-primary-nav button {font-size:12px;padding:10px 12px;min-height:44px;}
+  body.terra-focus .terra-secondary-nav button {min-height:44px;}
+  body.terra-focus main {padding:10px 10px 24px;}
+  body.terra-focus .card {padding:12px;}
+  body.terra-focus .sequence-navigator {padding:10px;}
+  body.terra-focus .sequence-navigator .live-controls {gap:5px;}
+  body.terra-focus .chart-card canvas {width:100%;}
+  body.terra-focus #view-parameters h1 {margin-bottom:8px;}
+}
+@media (prefers-reduced-motion: reduce) {
+  body.terra-focus button {transition:none;}
+}

@@ -2,15 +2,55 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 
 import pytest
 
+from hf_tcm.studio import scientific_exp03b_results as archive
 from hf_tcm.studio.scientific_exp03b_results import _verify_study, load_exp03b_analysis
 
 
 def _sha(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def test_verified_hash_cache_rechecks_edits_and_missing_files(tmp_path, monkeypatch):
+    path = tmp_path / "payload"
+    path.write_bytes(b"original")
+    calls = []
+    original = archive.sha256_file
+
+    def counted(file):
+        calls.append(file)
+        return original(file)
+
+    monkeypatch.setattr(archive, "sha256_file", counted)
+    first = archive._checked_sha(path)
+    assert archive._checked_sha(path) == first
+    assert len(calls) == 1
+    stat = path.stat()
+    path.write_bytes(b"modified")  # Same size and restored mtime must not reuse SHA.
+    os.utime(path, ns=(stat.st_atime_ns, stat.st_mtime_ns))
+    assert archive._checked_sha(path) != first
+    assert len(calls) == 2
+    path.unlink()
+    with pytest.raises(FileNotFoundError):
+        archive._checked_sha(path)
+
+
+def test_hash_cache_does_not_accept_a_file_changed_while_hashing(tmp_path, monkeypatch):
+    path = tmp_path / "payload"
+    path.write_bytes(b"before")
+
+    def changed(file):
+        digest = _sha(file.read_bytes())
+        file.write_bytes(b"after modification")
+        return digest
+
+    monkeypatch.setattr(archive, "sha256_file", changed)
+    with pytest.raises(ValueError, match="changed during integrity verification"):
+        archive._checked_sha(path)
 
 
 def test_gui_result_loader_rejects_analysis_without_valid_digest(tmp_path: Path) -> None:

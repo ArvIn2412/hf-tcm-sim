@@ -14,6 +14,31 @@ from hf_tcm.studio import historical_energy
 from hf_tcm.studio import server as server_module
 
 
+def test_browser_static_module_burst_is_served_without_missing_files():
+    """Exercise concurrent startup asset requests, without scientific execution."""
+    server = server_module.make_server(port=0, default_view="scientific")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    names = ["scientific.js", "metric_live.js", "energy_interactive.js", "results_workspace.js"] * 6
+    barrier = threading.Barrier(len(names))
+
+    def fetch(name):
+        barrier.wait(timeout=10)
+        url = f"http://127.0.0.1:{server.server_port}/static/{name}"
+        with urllib.request.urlopen(url, timeout=10) as response:
+            actual = response.read()
+        expected = (Path("src/hf_tcm/studio/static") / name).read_bytes()
+        assert actual == expected
+
+    try:
+        with ThreadPoolExecutor(max_workers=len(names)) as pool:
+            list(pool.map(fetch, names))
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=5)
+
+
 def _fixture(root: Path) -> dict:
     payloads = {
         "record.json": b'{"fixture":"synthetic"}',

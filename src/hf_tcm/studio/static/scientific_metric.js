@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const $ = selector => document.querySelector(selector);
+  const $ = selector => document.querySelector(selector) || window.resultsArchive?.querySelector(selector);
   const state = {jobId: null, timer: null, summary: null, pendingSweep: null, sampleTrials: 0, stage: 'sample', started: 0};
   const energyStatus = (status, reason) => {
     window.metricEnergyStatus = status;
@@ -50,43 +50,20 @@
   }
 
   function channelConfiguration(scenario, variance, seed, rho) {
-    const constant = (delay, coefficient) => ({
-      delay_samples: delay,
-      average_power: coefficient[0] ** 2 + coefficient[1] ** 2,
-      k_factor: 0,
-      los_phase_rad: 0,
-      constant_coefficient: coefficient,
+    const values = id => $(id).value.split(',').map(Number);
+    const frontend = frontendModeFor(scenario);
+    return window.channelControls.build({
+      awgn: $('#channel-awgn').value === 'on', fading: $('#channel-fading').value,
+      rays: Number($('#channel-rays').value), variance, seed, rho, frontend,
+      delays: values('#model-delays'), powers: values('#model-powers'),
+      factors: values('#model-k'), phases: values('#model-los'),
     });
-    const common = {
-      noise_model: variance > 0 ? "complex_awgn_sample_domain" : "none",
-      noise_complex_variance: variance,
-      fading_seed: seed + 17,
-      noise_seed: seed + 18,
-      reveal_noise_variance: true,
-      boundary_policy: "zero_extension",
-      output_length_policy: "tx_plus_max_delay",
-      rng_algorithm: "numpy.PCG64",
-    };
-    if (scenario === "awgn" || scenario === "awgn-pilot") return {
-      ...common, profile_id: "awgn", paths: [constant(0, [1, 0])],
-      fading_mode: "constant", correlation: 0, schema_version: "repro03-channel-v1",
-    };
-    if (scenario === "rician") return {
-      ...common,
-      profile_id: "rician_ar1_multipath",
-      paths: (document.querySelector('#model-delays')?.value || '0,3').split(',').map((d,i)=>({
-        delay_samples:Number(d), average_power:Number((document.querySelector('#model-powers')?.value || '1,0.25').split(',')[i]),
-        k_factor:Number((document.querySelector('#model-k')?.value || '4,1').split(',')[i]),
-        los_phase_rad:Number((document.querySelector('#model-los')?.value || '0,0.7').split(',')[i]),constant_coefficient:null,
-      })),
-      fading_mode: "rician_ar1", correlation: rho, schema_version: "repro03-channel-v1",
-    };
-    return {
-      ...common,
-      profile_id: "static_multipath",
-      paths: [constant(0, [1, 0]), constant(3, [0.3, -0.2])],
-      fading_mode: "constant", correlation: 0, schema_version: "repro03-channel-v1",
-    };
+  }
+
+  function frontendModeFor(selected) {
+    if (selected === "oracle") return "oracle_csi";
+    if (selected === "awgn") return "awgn_direct_control";
+    return $("#mx-tract")?.value === "known" ? "known_channel" : "pilot_equalized";
   }
 
   function updatePilotOverhead() {
@@ -133,8 +110,7 @@
     const selected = $("#mx-scenario").value;
     const oracle = selected === "oracle";
     const scenario = oracle ? "static" : selected === "awgn-pilot" ? "awgn" : selected;
-    const frontendMode = oracle ? "oracle_csi" : selected === "awgn"
-      ? "awgn_direct_control" : "pilot_equalized";
+    const frontendMode = frontendModeFor(selected);
     const grid = $("#mx-grid").value.split(",").map(value => Number(value.trim()));
     if (!grid.length || grid.some(value => !Number.isFinite(value)) || new Set(grid).size !== grid.length) {
       throw new Error("Введіть унікальні скінченні рівні енергії через кому.");
@@ -148,6 +124,7 @@
       channel_config: channelConfiguration(selected, number("#mx-noise"), number("#mx-seed"), number("#mx-rho")),
       frontend_mode: frontendMode, preamble_symbols: number("#mx-preamble"), pilot_period: number("#mx-period"),
       pilot_burst_symbols: number("#mx-burst"), bootstrap_replicates: 5000,
+      euclidean_metric: $("#mx-euclid")?.value || "unweighted",
     };
   }
 
@@ -306,6 +283,14 @@
       element.textContent = 'CANCELLED — серію завершено достроково; доступні тільки фактично збережені вимірювання.';
       energyStatus('CANCELLED', element.textContent);
       return;
+    }
+    element.parentElement?.querySelectorAll(".metric-tract-note").forEach(node => node.remove());
+    if (summary.configuration?.frontend_mode === "known_channel") {
+      const weighted = summary.configuration?.euclidean_metric === "csi_weighted";
+      const note = document.createElement("p");
+      note.className = "metric-tract-note";
+      note.textContent = `Відомий тракт: обидва декодери отримали точні коефіцієнти каналу; евклідова метрика ${weighted ? "зважена за Σ|ĥ|²" : "незважена"}.`;
+      element.before(note);
     }
     if (summary.configuration?.frontend_mode === "oracle_csi") {
       element.textContent = "Oracle-CSI є лише діагностичним контролем; результат не включається до практичних висновків.";

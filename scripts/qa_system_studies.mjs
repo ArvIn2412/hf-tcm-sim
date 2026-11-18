@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import {send,js,until,errors,close} from './stage4_cdp.mjs';
+try{
+ await send('Page.navigate',{url:'http://127.0.0.1:18772/scientific'});
+ await until('window.systemStudies?.data?.items?.length');
+ await js('document.querySelector(".tabs [data-view=saved]").click()');
+ await js('document.getElementById("system-study-kind").value="system-run";document.getElementById("system-study-search").requestSubmit()');
+ await until('systemStudies.data?.items?.length && systemStudies.data.items.every(r=>r.kind==="run")');
+ assert.ok(await js('systemStudies.data.items.every(r=>r.system_comparison)'));
+ await js('document.getElementById("system-study-next").click()');
+ await until('systemStudies.data.page===2');
+ await js('document.getElementById("system-study-prev").click()');
+ await until('systemStudies.data.page===1');
+ await js('document.querySelector("#system-study-rows button").click()');
+ await until('systemResults.single && systemSignal.data');
+ assert.equal(await js('document.querySelector(".view.active").id'),'view-metric');
+ await js('document.querySelector(".tabs [data-view=saved]").click();document.getElementById("system-study-kind").value="system-energy";document.getElementById("system-study-search").requestSubmit()');
+ await until('systemStudies.data?.items?.length && systemStudies.data.items.every(r=>r.kind==="energy")');
+ await js('document.querySelector("#system-study-rows button").click()');
+ await until('systemResults.series && !systemSignal.data && !systemDecoding.traces');
+ assert.equal(await js('systemSignal.summary'),null);
+ await js('document.querySelector(".tabs [data-view=saved]").click()');
+ await until('systemStudies.data?.items?.every(r=>r.kind==="energy")');
+ const expected=await js('systemStudies.data.items[0].parameters');
+ await js('document.querySelectorAll("#system-study-rows button")[1].click()');
+ assert.equal(await js('document.querySelector(".view.active").id'),'view-parameters');
+ const reused=await js('systemExperiment.build()');
+ assert.equal(reused.frame_symbols,expected.frame_symbols);
+ assert.equal(reused.amplitude,expected.amplitude);
+ assert.deepEqual(reused.delays_samples,expected.delays_samples);
+ assert.equal(await js('systemExperiment.mode'),'series');
+ await js('document.querySelector(".tabs [data-view=saved]").click();document.getElementById("system-study-q").value="no-match-catalog-xyz";document.getElementById("system-study-search").requestSubmit()');
+ await until('systemStudies.data?.total===0');
+ assert.equal(await js('document.querySelector("#system-study-rows").children.length'),0);
+ assert.deepEqual(errors.filter(e=>!String(e.url||'').startsWith('chrome-extension://')),[]);
+ console.log('PASS: system-only pagination/search, real frame/series opening, numeric-only context, configuration reuse');
+}finally{close();}

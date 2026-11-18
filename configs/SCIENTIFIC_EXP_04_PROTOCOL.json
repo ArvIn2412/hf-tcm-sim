@@ -1,0 +1,313 @@
+{
+  "protocol_id": "SCIENTIFIC-EXP-04",
+  "title": "Hamming (hard decision, separate demodulation and decoding) vs Euclidean (soft, joint demodulation and decoding) in a known tract",
+  "status": "DRAFT_PENDING_APPROVAL",
+  "version": 1,
+  "date": "2026-11-17",
+  "documentation": "docs/research/SCIENTIFIC_EXP_04_PROTOCOL_UK.md",
+  "hypotheses": {
+    "H1_primary": "In every primary cell the Euclidean arm requires less Eb/N0 than the Hamming arm at the cell's primary target BER (gain > 0 dB, 95% CI lower bound > 0).",
+    "H2_secondary_csi_weight": "In ITU moderate fading the CSI-weighted Euclidean metric needs no more Eb/N0 than the unweighted one (descriptive, identical observations).",
+    "H3_secondary_practical": "With causal pilot estimation the Euclidean arm keeps a positive gain over Hamming (descriptive)."
+  },
+  "design": {
+    "code": "rate-2/3 4-state TCM, 8PSK natural (set-partition) labeling, ADR-002",
+    "traceback_depth": 20,
+    "frame_symbols": 512,
+    "samples_per_symbol": 8,
+    "symbol_rate_baud": 2400.0,
+    "noise_complex_variance": 1.0,
+    "energy_sweep": "amplitude at fixed noise variance; axis Eb/N0 = gamma_b,d validated in docs/research/EBN0_VALIDATION_UK.md (pilot energy included in Eb)",
+    "pilots": {
+      "preamble_symbols": 4,
+      "pilot_period": 32,
+      "pilot_burst_symbols": 4
+    },
+    "common_random_numbers": "same information bits, fading and noise per trial index at every Eb/N0 point; only the amplitude changes",
+    "pairing": "both arms decode the same observation and the same frontend output in every trial",
+    "stopping_rule": "fixed design (no data-dependent stopping); a cell stopped by its time budget is reported as incomplete and may be resumed with identical configuration",
+    "range_finding_pilot": {
+      "location": "outputs/scientific_exp04/pilot_range_finding (exploratory, not confirmatory)",
+      "trials_per_point": 20,
+      "decisions": [
+        "0.5 dB grid steps where the Euclidean AWGN/static curve falls steeply",
+        "400 frames/point for AWGN and static so BER 1e-3 carries >=100 Euclidean errors",
+        "1000 frames/point for fading cells because each 512-element frame spans about one fade at 0.5-1 Hz Doppler"
+      ]
+    },
+    "array_storage": {
+      "full_array_stride": 100,
+      "policy": "raw signal arrays (TX/RX/frontend/branch metrics) for trial indices divisible by 100 at every point; all other trials keep reference and decoded pairs plus payload mask, sufficient for the independent error recount",
+      "reason": "about 125 KB per full trial; 119 200 trials would need about 15 GB"
+    }
+  },
+  "cells": [
+    {
+      "id": "A1-awgn",
+      "role": "primary",
+      "channel": {
+        "kind": "awgn"
+      },
+      "frontend_mode": "awgn_direct_control",
+      "euclidean_metric": "unweighted",
+      "eb_n0_grid_db": [
+        0,
+        1,
+        2,
+        3,
+        3.5,
+        4,
+        4.5,
+        5,
+        5.5,
+        6,
+        6.5,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "trials_per_point": 400,
+      "root_seed": 404001,
+      "primary_target_key": "awgn_static",
+      "time_budget_seconds": 3600
+    },
+    {
+      "id": "A2-static",
+      "role": "primary",
+      "channel": {
+        "kind": "static",
+        "delays_samples": [
+          0,
+          3
+        ],
+        "coefficients": [
+          [
+            1.0,
+            0.0
+          ],
+          [
+            0.3,
+            -0.2
+          ]
+        ]
+      },
+      "frontend_mode": "known_channel",
+      "euclidean_metric": "csi_weighted",
+      "eb_n0_grid_db": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        4.5,
+        5,
+        5.5,
+        6,
+        6.5,
+        7,
+        7.5,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "trials_per_point": 400,
+      "root_seed": 404002,
+      "primary_target_key": "awgn_static",
+      "time_budget_seconds": 3600
+    },
+    {
+      "id": "A3-itu-moderate",
+      "role": "primary",
+      "channel": {
+        "kind": "itu_doppler",
+        "condition": "moderate",
+        "second_path_delay_samples": 3
+      },
+      "frontend_mode": "known_channel",
+      "euclidean_metric": "csi_weighted",
+      "eb_n0_grid_db": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        34,
+        36,
+        38,
+        40
+      ],
+      "trials_per_point": 1000,
+      "root_seed": 404003,
+      "primary_target_key": "fading",
+      "time_budget_seconds": 10800
+    },
+    {
+      "id": "A4-itu-poor",
+      "role": "primary",
+      "channel": {
+        "kind": "itu_doppler",
+        "condition": "poor",
+        "second_path_delay_samples": 3
+      },
+      "frontend_mode": "known_channel",
+      "euclidean_metric": "csi_weighted",
+      "eb_n0_grid_db": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        34,
+        36,
+        38,
+        40
+      ],
+      "trials_per_point": 1000,
+      "root_seed": 404004,
+      "primary_target_key": "fading",
+      "time_budget_seconds": 10800
+    },
+    {
+      "id": "S1-itu-moderate-unweighted",
+      "role": "secondary",
+      "note": "same root seed as A3: identical observations, Hamming arm identical; isolates the CSI weight",
+      "channel": {
+        "kind": "itu_doppler",
+        "condition": "moderate",
+        "second_path_delay_samples": 3
+      },
+      "frontend_mode": "known_channel",
+      "euclidean_metric": "unweighted",
+      "eb_n0_grid_db": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        34,
+        36,
+        38,
+        40
+      ],
+      "trials_per_point": 1000,
+      "root_seed": 404003,
+      "primary_target_key": "fading",
+      "time_budget_seconds": 10800
+    },
+    {
+      "id": "S2-itu-moderate-pilot",
+      "role": "secondary",
+      "note": "same root seed as A3: identical transmitted frame and channel; causal pilot estimate instead of the known tract",
+      "channel": {
+        "kind": "itu_doppler",
+        "condition": "moderate",
+        "second_path_delay_samples": 3
+      },
+      "frontend_mode": "pilot_equalized",
+      "euclidean_metric": "csi_weighted",
+      "eb_n0_grid_db": [
+        0,
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30,
+        32,
+        34,
+        36,
+        38,
+        40
+      ],
+      "trials_per_point": 1000,
+      "root_seed": 404003,
+      "primary_target_key": "fading",
+      "time_budget_seconds": 10800
+    }
+  ],
+  "analysis": {
+    "primary_target_ber": {
+      "awgn_static": 0.001,
+      "fading": 0.01
+    },
+    "all_target_ber": [
+      0.05,
+      0.01,
+      0.001
+    ],
+    "article_reference_target_ber": 0.05,
+    "gain_definition": "Eb/N0 required by Hamming minus Eb/N0 required by Euclidean at the target BER, dB",
+    "interpolation": "linear in log10(BER) between adjacent measured points; no extrapolation",
+    "bootstrap": "paired trial-cluster percentile bootstrap with common clusters across Eb/N0 points",
+    "bootstrap_replicates": 5000,
+    "bootstrap_seed": 404404,
+    "minimum_valid_bootstrap_fraction": 0.95,
+    "max_ci_half_width_db": 0.5,
+    "verdicts": [
+      "PRECISION_CRITERIA_MET",
+      "INSUFFICIENT_PRECISION",
+      "ENERGY_GAIN_NOT_ESTIMABLE"
+    ],
+    "claims_policy": "paper_exact=false; the article's 1.5 dB is compared descriptively only; no result is tuned to it"
+  },
+  "known_limitations": [
+    "ITU-R F.1487 differential delays (0.5-2 ms) are not reproduced; the second path uses 3 samples because the clean-tail combiner requires delays below 8 samples",
+    "known tract = exact channel coefficients (genie CSI); S2 shows the practical pilot-estimated tract",
+    "Eb/N0 is validated for the discrete AWGN model; band filters, synchronisation and the radio's pulse shape are not modelled",
+    "encoder labeling and generator are project reconstructions (SCI-02)"
+  ]
+}

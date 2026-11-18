@@ -314,7 +314,9 @@ def run_scientific_run(config: ScientificRunConfig) -> dict[str, Any]:
     channel = run_channel(transmitter, channel_config)
     observation = channel.receiver_observation
     # Receivers receive only the same public ReceiverObservation object.
+    joint_started = time.perf_counter()
     joint = run_adaptive_multipath_receiver(observation, joint_config)
+    joint_seconds = time.perf_counter() - joint_started
     separate_started = time.perf_counter()
     separate = run_separate_receiver(observation, separate_config)
     separate_seconds = time.perf_counter() - separate_started
@@ -584,7 +586,8 @@ def run_scientific_run(config: ScientificRunConfig) -> dict[str, Any]:
             "ser": float(np.mean(joint_symbol_mask)),
             "bit_error_positions": np.flatnonzero(joint_bit_mask).tolist(),
             "symbol_error_positions": np.flatnonzero(joint_symbol_mask).tolist(),
-            "runtime_seconds": float(joint.diagnostics.get("elapsed_seconds", 0.0)),
+            "runtime_seconds": float(joint_seconds),
+            "runtime_scope": "complete_receiver_call",
             "trellis_state_count": joint.trellis_state_count,
             "trellis_edge_count": joint.trellis_edge_count,
         },
@@ -611,6 +614,7 @@ def run_scientific_run(config: ScientificRunConfig) -> dict[str, Any]:
             "bit_error_positions": sep_eval.bit_error_positions.tolist(),
             "symbol_error_positions": sep_eval.symbol_error_positions.tolist(),
             "runtime_seconds": float(separate_seconds),
+            "runtime_scope": "complete_receiver_call",
         },
         "b1": b1_evaluation,
         "trellises": {

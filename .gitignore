@@ -34,3 +34,5 @@ venv/
 *.7z
 
 chatgpt_review_bundle/
+
+.historical-input/
