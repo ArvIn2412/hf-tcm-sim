@@ -44,6 +44,7 @@ from hf_tcm.studio.historical_energy import (
     load_historical_exp01b_energy_study,
 )
 from hf_tcm.studio.lab_window import load_lab_window
+from hf_tcm.studio.metric_frame import load_metric_frame
 from hf_tcm.studio.metric_trace import load_metric_trace
 from hf_tcm.studio.scientific import (
     JOBS,
@@ -219,6 +220,23 @@ def make_server(
                         result = list_study_catalog(Path("outputs"), **options)
                     self._json(200, result)
                 except (OSError, ValueError, KeyError, TypeError) as exc:
+                    self._json(400, {"error": str(exc)})
+                return
+            if path == "/api/scientific/metric-frame":
+                query = parse_qs(parsed.query)
+                try:
+                    self._json(
+                        200,
+                        load_metric_frame(
+                            Path("outputs/scientific-exp03a/metric-studies"),
+                            query.get("study_id", [""])[0],
+                            **{
+                                key: int(query.get(key, [str(default)])[0])
+                                for key, default in (("point", 0), ("trial", 0), ("bins", 1200))
+                            },
+                        ),
+                    )
+                except (OSError, ValueError, KeyError) as exc:
                     self._json(400, {"error": str(exc)})
                 return
             if path == "/api/scientific/metric-trace":

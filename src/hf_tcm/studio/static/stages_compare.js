@@ -20,7 +20,35 @@
     for (const v of values) counts.set(v, (counts.get(v) || 0) + 1);
     return [...counts.entries()].filter(([, n]) => n > 1).sort((a, b) => a[0] - b[0]);
   }
-  const api = {bits3, hammingLabelMetrics, euclidLabelMetrics, nextIndex, ties};
+  /**
+   * Add-compare-select of one Viterbi step, exactly as run_metric_viterbi does it:
+   * candidate = path metric of the source state + branch metric; disallowed inputs
+   * (pilot constraint) and unreachable sources are skipped; strict '<' keeps the
+   * first edge in table order on ties.
+   */
+  function acsCandidates(edges, states, prev, branch, allowedPair) {
+    const key = st => st.join('');
+    const index = new Map(states.map((st, i) => [key(st), i]));
+    return states.map((dst, di) => {
+      const candidates = [];
+      for (const [id, src, pair, out, to] of edges) {
+        if (index.get(key(to)) !== di) continue;
+        if (allowedPair && key(pair) !== key(allowedPair)) continue;
+        const before = prev[index.get(key(src))];
+        if (before === null || before === undefined || !Number.isFinite(before)) continue;
+        candidates.push({edge: id, from: index.get(key(src)), pair, out, before, branch: branch[id], total: before + branch[id]});
+      }
+      let winner = null;
+      for (const c of candidates) if (!winner || c.total < winner.total) winner = c;
+      const tolerance = winner ? 1e-12 * Math.max(1, Math.abs(winner.total)) : 0;
+      for (const c of candidates) {
+        c.winner = c === winner;
+        c.tied = !c.winner && Math.abs(c.total - winner.total) <= tolerance;
+      }
+      return {state: di, candidates, winner: winner ? winner.edge : null};
+    });
+  }
+  const api = {bits3, hammingLabelMetrics, euclidLabelMetrics, nextIndex, ties, acsCandidates};
   if (typeof module !== 'undefined') module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -51,16 +79,29 @@
   // ------------------------------------------------------------------ layout
   const css = document.createElement('style');
   css.textContent = `
-  #view-stages .st-controls{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 12px;padding:14px 16px;margin-bottom:16px}
-  #view-stages .st-controls label{min-width:0}
-  #view-stages .st-controls #st-study{width:300px}
-  #view-stages .st-controls #st-point{width:190px}
-  #view-stages .st-controls input{width:96px}
-  #view-stages .st-controls .st-nav{display:flex;gap:6px;align-items:flex-end}
-  #view-stages .st-controls .st-nav button{min-width:38px}
-  #view-stages .st-flags{display:flex;flex-wrap:wrap;gap:6px;margin-left:auto}
-  #view-stages .st-flag{font:600 11.5px Inter,"Segoe UI",sans-serif;padding:5px 10px;border-radius:99px;background:#ecf7ef;color:#1d6b37;border:1px solid #cde8d4}
-  #view-stages .st-flag.warn{background:#fdf6e7;color:#6d5a2c;border-color:#f0dfb6}
+  .st-controls{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 12px}
+  .st-summary{display:flex;gap:8px;align-items:center;font:600 12.5px Inter,"Segoe UI",sans-serif;color:#3f5161;padding-bottom:9px}
+  .st-summary .ok{color:#16a34a}.st-summary .bad{color:#dc2626}
+  #view-stages .st-acs{margin-top:12px}
+  #view-stages .st-acs-head{font:700 12.5px Inter,"Segoe UI",sans-serif;color:#142433;margin-bottom:6px}
+  #view-stages .st-acs table{width:100%;border-collapse:collapse;font-size:12px}
+  #view-stages .st-acs th{padding:5px 8px;font-size:11px;text-align:left}
+  #view-stages .st-acs td{padding:5px 8px;border-bottom:1px solid #eef2f4;vertical-align:top}
+  #view-stages .st-acs tr.on-path td{background:#fff9e6}
+  #view-stages .st-acs tr.on-path td:first-child{box-shadow:inset 3px 0 0 #142433}
+  #view-stages .st-acs-c{display:inline-block;margin:2px 6px 2px 0;padding:2px 7px;border-radius:6px;background:#f4f7f8;color:#6a7a87;font:11.5px ui-monospace,Consolas,monospace;text-decoration:line-through;text-decoration-color:#c5d0d6}
+  #view-stages .st-acs-c.win{background:#e5f3f4;color:#142433;text-decoration:none;outline:1.5px solid currentColor}
+  #view-stages .st-col.hamming .st-acs-c.win{background:#fbe9df}
+  #view-stages .st-acs-c.tie{background:#fdf1dc;color:#92400e;text-decoration:none}
+  .st-controls label{min-width:0}
+  .st-controls #st-study{width:300px}
+  .st-controls #st-point{width:190px}
+  .st-controls input{width:96px}
+  .st-controls .st-nav{display:flex;gap:6px;align-items:flex-end}
+  .st-controls .st-nav button{min-width:38px}
+  .st-flags{display:flex;flex-wrap:wrap;gap:6px;margin-left:auto}
+  .st-flag{font:600 11.5px Inter,"Segoe UI",sans-serif;padding:5px 10px;border-radius:99px;background:#ecf7ef;color:#1d6b37;border:1px solid #cde8d4}
+  .st-flag.warn{background:#fdf6e7;color:#6d5a2c;border-color:#f0dfb6}
   #view-stages .st-shared{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:14px;margin-bottom:14px}
   #view-stages .st-stage{position:relative;padding:16px 18px}
   #view-stages .st-num{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#e5f3f4;color:#076b76;font:800 11px Inter,sans-serif;margin-right:8px;vertical-align:1px}
@@ -110,7 +151,7 @@
     section.id = 'view-stages';
     section.innerHTML = `
       <h1>Хемінг і Евклід: етап за етапом</h1>
-      <div class="card st-controls">
+      <div class="st-controls" role="toolbar" aria-label="Кадр і символ для вкладок порівняння метрик">
         <label>Дослідження<select id="st-study"></select></label>
         <label>Рівень енергії<select id="st-point"></select></label>
         <label>Кадр<input id="st-trial" type="number" min="0" value="0"></label>
@@ -122,10 +163,14 @@
           <button type="button" id="st-next-e" title="Наступний символ, де помиляється Евклід">Помилка Евкліда ›</button>
           <button type="button" id="st-next-d" title="Наступний символ, де рішення двох декодерів різні">Розбіжність ›</button>
         </div>
+        <div class="st-summary" id="st-summary" aria-live="polite"></div>
         <div class="st-flags" id="st-flags"></div>
       </div>
       <div id="st-body"><div class="card st-empty-msg">Оберіть дослідження з режиму «Метрики». Якщо їх ще немає — запустіть експеримент.</div></div>`;
     document.querySelector('main').append(section);
+    const header = document.querySelector('header.topbar');
+    const bar = section.querySelector('.st-controls');
+    header.insertBefore(bar, header.querySelector('.sync-toolbar'));
 
     tab = document.createElement('button');
     tab.type = 'button';
@@ -151,8 +196,8 @@
     $('st-next-h').addEventListener('click', () => jump(state.frame?.hammingErrors));
     $('st-next-e').addEventListener('click', () => jump(state.frame?.euclidErrors));
     $('st-next-d').addEventListener('click', () => jump(state.frame?.disagree));
-    section.addEventListener('keydown', e => {
-      if (e.target.matches('input,select')) return;
+    document.addEventListener('keydown', e => {
+      if (!METRIC_VIEWS.includes(document.body.dataset.view) || e.target.matches('input,select,textarea')) return;
       if (e.key === 'ArrowRight') { e.preventDefault(); goTo(state.k + 1); }
       if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(state.k - 1); }
     });
@@ -181,12 +226,15 @@
       const data = await response.json();
       const studies = (data.studies || []).filter(s => s.contrast_id === 'metric_isolation' && s.completed_trials > 0);
       const changed = studies.map(s => s.experiment_id).join() !== state.studies.map(s => s.experiment_id).join();
+      const known = new Set(state.studies.map(s => s.experiment_id));
+      const fresh = state.studies.length > 0 && studies.length > 0 && !known.has(studies[0].experiment_id);
       state.studies = studies;
       if (changed) {
         $('st-study').replaceChildren(...studies.map(s => new Option(`${s.experiment_id} · ${s.completed_trials} кадр.`, s.experiment_id)));
       }
       if (!studies.length) return;
-      if (!state.study || !studies.some(s => s.experiment_id === state.study) || (changed && studies[0].experiment_id !== state.study && !state.data)) {
+      if (!state.study || !studies.some(s => s.experiment_id === state.study) || fresh || (changed && studies[0].experiment_id !== state.study && !state.data)) {
+        if (state.study !== studies[0].experiment_id) { state.point = 0; state.trial = 0; state.k = 0; state.frame = null; }
         state.study = studies[0].experiment_id;
       }
       $('st-study').value = state.study;
@@ -230,6 +278,9 @@
       $('st-k').value = state.k;
       $('st-trial').max = Math.max(0, (state.config.trials_per_point || 1) - 1);
       render();
+      const key = `${state.study}|${state.point}|${state.trial}`;
+      window.dispatchEvent(new CustomEvent('metric-context', {detail: {study: state.study, point: state.point, trial: state.trial, k: state.k, size, frameChanged: key !== state.contextKey}}));
+      state.contextKey = key;
     } catch (error) {
       if (version !== state.request) return;
       state.data = null;
@@ -268,6 +319,8 @@
     flags.push(['Метрики перераховано з z_k', true]);
     $('st-flags').replaceChildren(...flags.map(([t, ok]) => { const s = document.createElement('span'); s.className = 'st-flag' + (ok ? '' : ' warn'); s.textContent = (ok ? '✓ ' : '! ') + t; return s; }));
 
+    const mark = (decided, wrong) => fw.pilot ? 'пілот' : `${bits3(decided)} <span class="${wrong ? 'bad' : 'ok'}">${wrong ? '✗' : '✓'}</span>`;
+    $('st-summary').innerHTML = `k = ${state.k} з ${state.frame.size - 1} · передано ${bits3(truth)} · Хемінг ${mark(hmDecided, hmErr)} · Евклід ${mark(euDecided, euErr)}`;
     const body = $('st-body');
     body.replaceChildren();
     const shared = document.createElement('div');
@@ -332,12 +385,14 @@
     e5.insertAdjacentHTML('beforeend', `<p class="st-note">Кожна мітка має власне значення; друга найближча мітка «дорожча» за першу в <strong>${num(ratio, 1)}</strong> раза. Вага P_k = ${weight === undefined ? '—' : num(weight, 2)} масштабує всі метрики такту: слабкий сигнал важить менше.</p>`);
 
     // 6 trellis
-    const h6 = card(left, 6, 'Вітербі: шлях, що вижив');
+    const h6 = card(left, 6, 'Вітербі: кандидати, вибір і шлях');
     h6.append(trellis('hamming'));
     h6.insertAdjacentHTML('beforeend', trellisLegend('hamming'));
-    const e6 = card(right, 6, 'Вітербі: шлях, що вижив');
+    h6.append(acsTable('hamming'));
+    const e6 = card(right, 6, 'Вітербі: кандидати, вибір і шлях');
     e6.append(trellis('euclidean'));
     e6.insertAdjacentHTML('beforeend', trellisLegend('euclid'));
+    e6.append(acsTable('euclidean'));
 
     // 7 result
     const h7 = card(left, 7, 'Результат декодування');
@@ -481,40 +536,91 @@
   function trellis(arm) {
     const d = state.data, a = d.arms[arm];
     const n = d.stop - d.start;
-    const w = 560, h = 200, left = 40, right = 14, top = 16, bottom = 34;
-    const node = svg(w, h, 'Фрагмент решітки Вітербі');
+    const w = 560, h = 236, left = 40, right = 14, top = 18, bottom = 34;
+    const node = svg(w, h, 'Фрагмент решітки Вітербі з кандидатами вибору');
     const X = t => left + t * (w - left - right) / n, Y = s => top + s * (h - top - bottom) / 3;
     const color = arm === 'hamming' ? C.hamming : C.euclid;
     const stateIndex = st => d.states.findIndex(s => s.join('') === st.join(''));
     const edgeById = new Map(d.edges.map(e => [e[0], e]));
     const kx = state.k - d.start;
-    add(node, 'rect', {x: X(kx), y: top - 8, width: X(kx + 1) - X(kx), height: h - top - bottom + 16, fill: '#fff5d6'});
-    // all transitions (parallel edges share a line)
-    const drawn = new Set();
-    for (let t = 0; t < n; t++) for (const e of d.edges) {
-      const key = `${t}:${stateIndex(e[1])}:${stateIndex(e[4])}`;
-      if (drawn.has(key)) continue;
-      drawn.add(key);
-      add(node, 'line', {x1: X(t), y1: Y(stateIndex(e[1])), x2: X(t + 1), y2: Y(stateIndex(e[4])), stroke: '#e6ecef', 'stroke-width': 1});
+    const allowed = t => (d.payload_mask[t] ? null : d.transmitter.input_pairs[t]);
+    add(node, 'rect', {x: X(kx), y: top - 10, width: X(kx + 1) - X(kx), height: h - top - bottom + 20, fill: '#fff5d6'});
+    // every possible transition (pilot steps: only the known input); parallel edges share a line
+    for (let t = 0; t < n; t++) {
+      const drawn = new Set();
+      for (const e of d.edges) {
+        const pair = allowed(t);
+        if (pair && e[2].join('') !== pair.join('')) continue;
+        const key = `${stateIndex(e[1])}:${stateIndex(e[4])}`;
+        if (drawn.has(key)) continue;
+        drawn.add(key);
+        add(node, 'line', {x1: X(t), y1: Y(stateIndex(e[1])), x2: X(t + 1), y2: Y(stateIndex(e[4])), stroke: '#e9eef1', 'stroke-width': 1});
+      }
+    }
+    // survivors chosen at every step (one per destination state)
+    a.survivors.forEach((row, t) => row.forEach(id => {
+      if (id < 0) return;
+      const e = edgeById.get(id);
+      add(node, 'line', {x1: X(t), y1: Y(stateIndex(e[1])), x2: X(t + 1), y2: Y(stateIndex(e[4])), stroke: '#9fb0ba', 'stroke-width': 1.3});
+    }));
+    // competing candidates at step k: losers dashed, winners solid; parallel edges as arcs
+    const acs = acsCandidates(d.edges, d.states, a.state_metrics[kx], a.branch_metrics[kx], allowed(kx));
+    for (const group of acs) for (const c of group.candidates) {
+      const e = edgeById.get(c.edge);
+      const x1 = X(kx), y1 = Y(c.from), x2 = X(kx + 1), y2 = Y(group.state);
+      const twin = group.candidates.filter(o => o.from === c.from);
+      const bend = twin.length > 1 ? (twin.indexOf(c) === 0 ? -9 : 9) : 0;
+      const mx = (x1 + x2) / 2 - (y2 - y1) / Math.hypot(x2 - x1, y2 - y1 || 1) * bend, my = (y1 + y2) / 2 + (x2 - x1) / Math.hypot(x2 - x1, y2 - y1 || 1) * bend;
+      const path = add(node, 'path', {d: `M${x1},${y1} Q${mx},${my} ${x2},${y2}`, fill: 'none', stroke: c.winner ? color : c.tied ? '#b45309' : color, 'stroke-width': c.winner ? 2.2 : 1.4, 'stroke-dasharray': c.winner ? 'none' : '5 3', opacity: c.winner ? 0.95 : 0.6});
+      add(path, 'title', {}, `${d.states[c.from].join('')} → ${d.states[group.state].join('')}, u=${e[2].join('')}, c=${e[3].join('')}: ${fmtMetric(c.before, arm)} + ${fmtMetric(c.branch, arm)} = ${fmtMetric(c.total, arm)}${c.winner ? ' (вибрано)' : c.tied ? ' (рівний, відкинуто правилом)' : ' (відкинуто)'}`);
     }
     // true path
     const tx = d.transmitter;
     for (let t = 0; t < n; t++) add(node, 'line', {x1: X(t), y1: Y(stateIndex(tx.pre_states[t])), x2: X(t + 1), y2: Y(stateIndex(tx.post_states[t])), stroke: C.truth, 'stroke-width': 1.5, 'stroke-dasharray': '4 3'});
-    // decoded path
+    // decoded path (delayed decisions)
     a.decoded_edges.forEach((id, t) => {
       const e = edgeById.get(id);
       const wrong = (arm === 'hamming' ? state.frame.hammingErrors : state.frame.euclidErrors)[d.start + t];
-      add(node, 'line', {x1: X(t), y1: Y(stateIndex(e[1])), x2: X(t + 1), y2: Y(stateIndex(e[4])), stroke: wrong ? C.bad : color, 'stroke-width': 3, 'stroke-linecap': 'round', opacity: 0.9});
+      add(node, 'line', {x1: X(t), y1: Y(stateIndex(e[1])), x2: X(t + 1), y2: Y(stateIndex(e[4])), stroke: wrong ? C.bad : color, 'stroke-width': 3.2, 'stroke-linecap': 'round', opacity: 0.9});
     });
-    for (let t = 0; t <= n; t++) for (let s = 0; s < 4; s++) add(node, 'circle', {cx: X(t), cy: Y(s), r: 2.6, fill: '#5b6b77'});
+    for (let t = 0; t <= n; t++) for (let s = 0; s < 4; s++) {
+      const reachable = a.state_metrics[t]?.[s] !== null;
+      add(node, 'circle', {cx: X(t), cy: Y(s), r: 2.7, fill: reachable ? '#5b6b77' : '#fff', stroke: '#5b6b77', 'stroke-width': reachable ? 0 : 1});
+    }
+    // path metrics entering step k
+    for (let s = 0; s < 4; s++) {
+      const v = a.state_metrics[kx][s];
+      if (v !== null) add(node, 'text', {x: X(kx) - 4, y: Y(s) - 5, 'text-anchor': 'end', style: 'font-size:9.5px;font-weight:700;fill:#142433;paint-order:stroke;stroke:#fff5d6;stroke-width:3px'}, fmtMetric(v, arm));
+    }
     for (let s = 0; s < 4; s++) add(node, 'text', {x: 4, y: Y(s) + 4, style: 'font-family:ui-monospace,Consolas,monospace'}, d.states[s].join(''));
     for (let t = 0; t < n; t += 2) add(node, 'text', {x: (X(t) + X(t + 1)) / 2, y: h - 16, 'text-anchor': 'middle', style: `font-size:10.5px;${d.start + t === state.k ? 'font-weight:800;fill:#142433' : ''}`}, String(d.start + t));
     add(node, 'text', {x: w / 2, y: h - 2, 'text-anchor': 'middle', style: 'font-size:11px'}, `такти k = ${d.start}…${d.stop - 1}`);
     return node;
   }
+  function fmtMetric(v, arm) {
+    return arm === 'hamming' ? String(Math.round(v)) : num(v, 2);
+  }
   function trellisLegend(arm) {
     const color = arm === 'hamming' ? C.hamming : C.euclid;
-    return `<div class="st-legend"><span><i style="border-color:${color}"></i>рішення декодера</span><span><i style="border-color:${C.bad}"></i>помилковий перехід</span><span><i style="border-color:${C.truth};border-top-style:dashed"></i>переданий шлях</span><span><i style="border-color:#fff5d6;border-top-width:8px"></i>такт k</span></div>`;
+    return `<div class="st-legend"><span><i style="border-color:${color}"></i>рішення декодера</span><span><i style="border-color:${C.bad}"></i>помилковий перехід</span><span><i style="border-color:#9fb0ba"></i>вижили на кожному такті</span><span><i style="border-color:${color};border-top-style:dashed"></i>відкинутий кандидат на такті k</span><span><i style="border-color:${C.truth};border-top-style:dashed"></i>переданий шлях</span></div>`;
+  }
+  function acsTable(arm) {
+    const d = state.data, a = d.arms[arm], kx = state.k - d.start;
+    const pilot = !d.payload_mask[kx];
+    const groups = acsCandidates(d.edges, d.states, a.state_metrics[kx], a.branch_metrics[kx], pilot ? d.transmitter.input_pairs[kx] : null);
+    const onPath = d.edges.find(e => e[0] === a.decoded_edges[kx]);
+    const pathState = onPath ? d.states.findIndex(s => s.join('') === onPath[4].join('')) : -1;
+    const rows = groups.map(g => {
+      const cells = g.candidates.map(c => `<span class="st-acs-c${c.winner ? ' win' : ''}${c.tied ? ' tie' : ''}" title="ребро ${c.edge}, u=${c.pair.join('')}, c=${c.out.join('')}">${d.states[c.from].join('')}·${c.pair.join('')}: ${fmtMetric(c.before, arm)} + ${fmtMetric(c.branch, arm)} = <b>${fmtMetric(c.total, arm)}</b></span>`).join('');
+      return `<tr class="${g.state === pathState ? 'on-path' : ''}"><td class="st-mono">${d.states[g.state].join('')}</td><td>${cells || '<span class="st-acs-c">недосяжний</span>'}</td></tr>`;
+    }).join('');
+    const tieCount = groups.reduce((n, g) => n + g.candidates.filter(c => c.tied).length, 0);
+    const box = document.createElement('div');
+    box.className = 'st-acs';
+    box.innerHTML = `<div class="st-acs-head">Вибір на такті k = ${state.k}: шлях = метрика стану + метрика гілки (стан·u)</div>
+      <table><thead><tr><th>У стан</th><th>Кандидати (переможець виділено)</th></tr></thead><tbody>${rows}</tbody></table>
+      <p class="st-note">${pilot ? 'Пілот: дозволено лише відомий вхід u, тому кандидатів менше. ' : ''}${tieCount ? `<strong style="color:#b45309">${tieCount} рівн${tieCount === 1 ? 'ий кандидат' : 'і кандидати'}</strong>: сума збігається з переможцем, і вибір робить лише правило «перше ребро в таблиці» — метрика не має інформації, щоб їх розрізнити. ` : 'Рівних кандидатів на цьому такті немає. '}Рядок зі смугою — стан, через який пройшов остаточний (відкладений на η = 20) шлях декодера.</p>`;
+    return box;
   }
 
   function strip(arm) {
@@ -542,6 +648,15 @@
     const errors = (arm === 'hamming' ? state.frame.hammingErrors : state.frame.euclidErrors).filter(Boolean).length;
     return `<p class="st-note">На такті k декодер вибрав точку <strong class="st-mono">${bits3(decided)}</strong> — ${wrong ? `<strong style="color:${C.bad}">помилка</strong> (передано ${bits3(truth)})` : '<strong style="color:#16a34a">правильно</strong>'}. Рішення видається із затримкою η = 20 тактів, тому воно враховує й наступні символи. У всьому кадрі: BER = ${Number(s.ber).toExponential(2)} (${s.bit_errors} з ${s.bits} біт), помилкових символів ${errors}.</p>`;
   }
+
+  const METRIC_VIEWS = ['stages', 'mchannel', 'mdecoding'];
+  /** Shared selection for the metric tabs (study · energy point · frame · symbol k). */
+  window.metricContext = {
+    get: () => ({study: state.study, point: state.point, trial: state.trial, k: state.k, size: state.frame?.size ?? 0}),
+    goTo: k => goTo(k),
+    refresh: () => refreshStudies(),
+    openStages: k => { goTo(k); tab.click(); },
+  };
 
   // Build after system_workspace.js has rebuilt the navigation.
   if (document.readyState === 'complete') build(); else document.addEventListener('DOMContentLoaded', build);

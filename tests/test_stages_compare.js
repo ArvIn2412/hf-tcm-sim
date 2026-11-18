@@ -27,3 +27,30 @@ test('error navigation finds the next flagged symbol', () => {
   assert.equal(s.nextIndex(mask, 4), -1);
   assert.equal(s.nextIndex(mask, 4, -1), 1);
 });
+
+test('add-compare-select keeps the minimum, flags ties and honours pilot constraints', () => {
+  const states = [[0], [1]];
+  // [id, from, input, output, to]
+  const edges = [
+    [0, [0], [0], [0, 0, 0], [0]],
+    [1, [0], [1], [0, 0, 1], [1]],
+    [2, [1], [0], [0, 1, 0], [0]],
+    [3, [1], [1], [0, 1, 1], [1]],
+    [4, [1], [1], [1, 1, 1], [1]],
+  ];
+  const branch = [1, 2, 0, 1, 2];
+  const [to0, to1] = s.acsCandidates(edges, states, [3, 4], branch, null);
+  assert.equal(to0.winner, 0);                       // 3+1=4 vs 4+0=4: tie, first edge wins
+  assert.deepEqual(to0.candidates.map(c => [c.total, c.winner, c.tied]), [[4, true, false], [4, false, true]]);
+  assert.equal(to1.winner, 1);                       // 3+2=5 < 4+1=5? tie again -> edge 1; edge 4: 6
+  assert.deepEqual(to1.candidates.map(c => c.total), [5, 5, 6]);
+  assert.equal(to1.candidates.find(c => c.edge === 4).tied, false);
+
+  const pilot = s.acsCandidates(edges, states, [3, 4], branch, [1]);
+  assert.deepEqual(pilot[0].candidates, []);         // no input-1 edge reaches state 0
+  assert.equal(pilot[0].winner, null);
+  assert.deepEqual(pilot[1].candidates.map(c => c.edge), [1, 3, 4]);
+
+  const unreachable = s.acsCandidates(edges, states, [null, 4], branch, null);
+  assert.deepEqual(unreachable[0].candidates.map(c => c.edge), [2]);
+});

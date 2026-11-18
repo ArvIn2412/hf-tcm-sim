@@ -85,6 +85,21 @@ body.ds #job-status[data-tone=busy]::before { background: #d97706; animation: ds
 body.ds #job-status[data-tone=error]::before { background: #dc2626; }
 @keyframes ds-pulse { 50% { opacity: .3; } }
 
+/* Shared metric context bar (study · point · frame · k): only on the metric tabs. */
+body.ds header.topbar > .st-controls {
+  grid-column: 1 / -1; display: none; margin: 0 -32px; padding: 10px 32px 12px;
+  border-top: 1px solid var(--ds-line-2); background: var(--ds-surface-2);
+}
+body.ds[data-view=stages] header.topbar > .st-controls,
+body.ds[data-view=mchannel] header.topbar > .st-controls,
+body.ds[data-view=mdecoding] header.topbar > .st-controls { display: flex; }
+body.ds header .st-controls button { min-height: 36px; }
+/* Legacy full-receiver views live behind the single «Joint / B0» tab. */
+body.ds .tabs .tab[data-view=transmitter], body.ds .tabs .tab[data-view=viterbi] { display: none; }
+body.ds .tabs .tab[data-view=joint] { color: var(--ds-muted); font-weight: 500; }
+body.ds .tabs .tab[data-view=joint].active { color: var(--ds-accent-ink); }
+body.ds #view-viterbi.active { margin-top: 28px; }
+
 /* Contextual signal toolbar: only on Signal and Decoding. */
 body.ds .topbar .sync-toolbar {
   grid-column: 1 / -1;

@@ -77,22 +77,14 @@ def _frontend_window(
     return stages
 
 
-def load_metric_trace(
-    root: Path,
-    study_id: str,
-    *,
-    point: int = 0,
-    trial: int = 0,
-    start: int = 0,
-    count: int = 20,
-    limit: int = 1000,
-    compact: bool = False,
-) -> dict[str, Any]:
-    """Replay maintained decoder and require exact agreement with persisted bits."""
+def open_verified_trial(
+    root: Path, study_id: str, *, point: int = 0, trial: int = 0
+) -> tuple[dict[str, Any], dict[str, Any], Path]:
+    """Check the manifest and array SHA-256 of one saved trial; return its sources."""
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,79}", study_id):
         raise ValueError("invalid study ID")
-    if min(point, trial, start) < 0 or not 1 <= count <= 80 or not 8 <= limit <= 4000:
-        raise ValueError("invalid trace range")
+    if min(point, trial) < 0:
+        raise ValueError("invalid trial position")
     folder = root / study_id
     manifest = json.loads((folder / "manifest.json").read_text(encoding="utf8"))
     stem = f"p{point:03d}-t{trial:04d}"
@@ -105,6 +97,51 @@ def load_metric_trace(
     array_path = folder / "trials" / f"{stem}.npz"
     if hashlib.sha256(array_path.read_bytes()).hexdigest() != record["array_file_sha256"]:
         raise ValueError("trial array SHA-256 mismatch")
+    return config, record, array_path
+
+
+def pilot_constraints(config: dict[str, Any], size: int) -> np.ndarray | None:
+    """Known-input constraints used by the saved decoders (None for the AWGN control)."""
+    if config["frontend_mode"] == "awgn_direct_control":
+        return None
+    schedule = build_pilot_schedule(
+        frame_symbols=size,
+        preamble_symbols=config["preamble_symbols"],
+        pilot_period=config["pilot_period"],
+        pilot_burst_symbols=config["pilot_burst_symbols"],
+    )
+    constraints = np.full((size, 2), -1, dtype=np.int8)
+    constraints[schedule.pilot_mask] = schedule.pilot_input_pairs[schedule.pilot_mask]
+    return constraints
+
+
+def replay_arm(data: Any, arm: str, constraints: np.ndarray | None) -> Any:
+    """Replay one stored arm and require the saved decoded bits to be reproduced."""
+    rows = data[f"{arm}_branch_metrics"]
+    size = len(rows)
+    replay = _replay(
+        rows.tobytes(), rows.dtype.str, size, None if constraints is None else constraints.tobytes()
+    )
+    if not np.array_equal(replay.information_pairs, data[f"decoded_{arm}_pairs"]):
+        raise ValueError("decoder trace replay does not match saved result")
+    return replay
+
+
+def load_metric_trace(
+    root: Path,
+    study_id: str,
+    *,
+    point: int = 0,
+    trial: int = 0,
+    start: int = 0,
+    count: int = 20,
+    limit: int = 1000,
+    compact: bool = False,
+) -> dict[str, Any]:
+    """Replay maintained decoder and require exact agreement with persisted bits."""
+    if min(point, trial, start) < 0 or not 1 <= count <= 80 or not 8 <= limit <= 4000:
+        raise ValueError("invalid trace range")
+    config, record, array_path = open_verified_trial(root, study_id, point=point, trial=trial)
     with np.load(array_path, allow_pickle=False) as data:
         if "equalized_symbols" not in data.files:
             raise ValueError(
