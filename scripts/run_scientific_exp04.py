@@ -4,6 +4,7 @@ python scripts/run_scientific_exp04.py preflight            # validates, times; 
 python scripts/run_scientific_exp04.py freeze               # writes <protocol>.sha256 (after approval)
 python scripts/run_scientific_exp04.py run --approve <SHA256> [--cell A1-awgn ...]
 python scripts/run_scientific_exp04.py analyze [--cell ...] # gains at all targets from stored trials
+python scripts/run_scientific_exp04.py bundle               # docs/research/SCIENTIFIC_EXP_04_RESULTS.json
 """
 
 from __future__ import annotations
@@ -15,7 +16,9 @@ from pathlib import Path
 from hf_tcm.repro.exp04_protocol import (
     DEFAULT_OUTPUT,
     DEFAULT_PROTOCOL,
+    RESULTS_BUNDLE,
     analyze_cell,
+    build_results_bundle,
     load_protocol,
     preflight,
     run_cells,
@@ -26,7 +29,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("command", choices=["preflight", "freeze", "run", "analyze"])
+    parser.add_argument("command", choices=["preflight", "freeze", "run", "analyze", "bundle"])
     parser.add_argument("--protocol", default=str(DEFAULT_PROTOCOL))
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     parser.add_argument("--cell", action="append", default=[])
@@ -62,6 +65,12 @@ def main() -> None:
             protocol_path, cells, approve_sha256=args.approve, output_root=output
         ):
             print(summary["experiment_id"], summary["status"], summary["completed_trials"])
+    elif args.command == "bundle":
+        analysis = json.loads((output / "analysis.json").read_text(encoding="utf-8"))
+        points = json.loads((output / "report_points.json").read_text(encoding="utf-8"))
+        bundle = build_results_bundle(protocol, digest, analysis, points)
+        RESULTS_BUNDLE.write_text(json.dumps(bundle, indent=1) + "\n", encoding="utf-8")
+        print(f"bundle -> {RESULTS_BUNDLE} ({len(bundle['cells'])} cells)")
     else:
         results = []
         for cell in cells:

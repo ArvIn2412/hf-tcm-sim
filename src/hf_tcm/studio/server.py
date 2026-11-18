@@ -25,6 +25,7 @@ from hf_tcm.evaluation.m11a_demo_studio import (
     build_demo_trace,
     build_studio_metadata,
 )
+from hf_tcm.repro.exp04_protocol import load_results_bundle
 from hf_tcm.repro.metric_experiment import (
     MetricStudyConfig,
     list_metric_studies,
@@ -154,6 +155,14 @@ def make_server(
                         ]
                     },
                 )
+                return
+            if path == "/api/scientific/exp04-results":
+                try:
+                    self._json(200, load_results_bundle())
+                except FileNotFoundError as exc:
+                    self._json(404, {"error": str(exc)})
+                except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+                    self._json(409, {"error": str(exc)})
                 return
             if path == "/api/scientific/exp03b-results":
                 try:

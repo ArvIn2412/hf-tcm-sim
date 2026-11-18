@@ -287,3 +287,94 @@ def analyze_cell(protocol: dict[str, Any], cell_id: str, study_root: Path) -> di
             "verdict": verdict,
         }
     return {"cell": cell_id, "trials": len(records), "targets": results}
+
+
+RESULTS_BUNDLE = Path("docs/research/SCIENTIFIC_EXP_04_RESULTS.json")
+BUNDLE_SCHEMA = "scientific-exp04-results-bundle-v1"
+_POINT_KEYS = (
+    "eb_n0_db",
+    "trials",
+    "bits",
+    "hamming_errors",
+    "euclidean_errors",
+    "hamming_frames_with_errors",
+    "euclidean_frames_with_errors",
+)
+
+
+def build_results_bundle(
+    protocol: dict[str, Any],
+    digest: str,
+    analysis: list[dict[str, Any]],
+    points: dict[str, Any],
+) -> dict[str, Any]:
+    """Compact, version-controlled summary of the confirmatory series.
+
+    ``analysis`` is the output of ``analyze_cell`` for every cell and ``points``
+    the ``report_points.json`` written by ``scripts/report_exp04.py``. Only error
+    counts are stored; BER values are derived from them by the reader.
+    """
+    if points.get("protocol_sha256") != digest:
+        raise ValueError("report points belong to a different protocol digest")
+    by_cell = {item["cell"]: item for item in analysis}
+    cells = []
+    for cell in protocol["cells"]:
+        cell_id = cell["id"]
+        if cell_id not in by_cell or cell_id not in points["cells"]:
+            raise ValueError(f"cell {cell_id} lacks analysis or points")
+        report = points["cells"][cell_id]
+        if report["recount"]["mismatches"] != 0:
+            raise ValueError(f"cell {cell_id} failed the independent recount")
+        planned = len(cell["eb_n0_grid_db"]) * int(cell["trials_per_point"])
+        if by_cell[cell_id]["trials"] != planned:
+            raise ValueError(f"cell {cell_id} is incomplete")
+        cells.append(
+            {
+                "id": cell_id,
+                "role": cell["role"],
+                "channel": cell["channel"],
+                "frontend_mode": cell["frontend_mode"],
+                "euclidean_metric": cell["euclidean_metric"],
+                "primary_target_ber": protocol["analysis"]["primary_target_ber"][
+                    cell["primary_target_key"]
+                ],
+                "trials": by_cell[cell_id]["trials"],
+                "recount_mismatches": 0,
+                "points": [{key: row[key] for key in _POINT_KEYS} for row in report["points"]],
+                "targets": by_cell[cell_id]["targets"],
+            }
+        )
+    return {
+        "schema_version": BUNDLE_SCHEMA,
+        "protocol_id": PROTOCOL_ID,
+        "protocol_sha256": digest,
+        "phase": "confirmatory",
+        "paper_exact": False,
+        "article_reference_target_ber": protocol["analysis"]["article_reference_target_ber"],
+        "all_target_ber": protocol["analysis"]["all_target_ber"],
+        "bootstrap_replicates": protocol["analysis"]["bootstrap_replicates"],
+        "max_ci_half_width_db": protocol["analysis"]["max_ci_half_width_db"],
+        "report": "docs/research/SCIENTIFIC_EXP_04_RESULTS_UK.md",
+        "cells": cells,
+    }
+
+
+def load_results_bundle(
+    bundle_path: Path = RESULTS_BUNDLE, protocol_path: Path = DEFAULT_PROTOCOL
+) -> dict[str, Any]:
+    """Read the bundle and check it against the frozen protocol it claims."""
+    _, digest, status = load_protocol(protocol_path)
+    if status != "FROZEN":
+        raise ValueError(f"protocol is {status}")
+    bundle = json.loads(Path(bundle_path).read_text(encoding="utf-8"))
+    if bundle.get("schema_version") != BUNDLE_SCHEMA:
+        raise ValueError("unsupported EXP-04 results bundle")
+    if bundle.get("protocol_sha256") != digest:
+        raise ValueError("results bundle does not match the frozen protocol SHA-256")
+    for cell in bundle["cells"]:
+        for row in cell["points"]:
+            if not 0 <= row["hamming_errors"] <= row["bits"]:
+                raise ValueError("invalid error counts")
+            if not 0 <= row["euclidean_errors"] <= row["bits"]:
+                raise ValueError("invalid error counts")
+    return bundle
