@@ -61,6 +61,9 @@
       frontend_mode: frontend,
       bootstrap_replicates: Math.max(100, bootstrap),
       euclidean_metric: metric,
+      // Series: frame k has the same bits, fading and noise at every Eb/N0 level (only the
+      // amplitude changes), so levels are compared on identical channels, as in EXP-04.
+      ...(series ? {common_random_numbers: true} : {}),
       // Long frames: keep full arrays only for frame 0 of each energy point.
       ...(frameSymbols > 20000 ? {full_array_stride: Math.max(1, series ? trials : 1)} : {}),
     };

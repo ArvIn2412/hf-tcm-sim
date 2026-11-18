@@ -106,3 +106,10 @@ test('clean samples left to the combiner by the path delays', () => {
   assert.equal(cleanSamples(['0'], 1).lossDb, 0);
   assert.equal(cleanSamples(['0', '8'], 2).clean, 0);
 });
+
+test('series use common random numbers; a single run does not need them', () => {
+  const series = buildMetricConfig(input({comparisonMode: 'series'}), build);
+  assert.equal(series.common_random_numbers, true);
+  const single = buildMetricConfig(input(), build);
+  assert.equal(single.common_random_numbers, undefined);
+});
