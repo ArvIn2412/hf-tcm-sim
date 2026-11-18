@@ -204,7 +204,7 @@ body.ds #view-transmitter .signal-bar select { width: 170px; }
 body.ds #view-transmitter .signal-bar input { width: 110px; }
 body.ds #view-transmitter #seq-status { margin: 8px 0 0; font-size: 12.5px; color: var(--ds-muted); }
 body.ds #view-transmitter .ds-panel { padding: 16px 18px; }
-body.ds #view-transmitter #system-signal-canvas { display: block; width: 100%; height: 480px; border-radius: var(--ds-radius-sm); }
+body.ds #view-transmitter #system-signal-canvas { display: block; width: 100%; height: 500px; border-radius: var(--ds-radius-sm); }
 body.ds #view-transmitter #system-symbol-inspector { margin-top: 12px; font-size: 14px; color: var(--ds-ink-2); }
 body.ds #view-transmitter #system-symbol-inspector:empty { display: none; }
 

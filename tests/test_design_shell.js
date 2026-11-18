@@ -12,8 +12,8 @@ test('status chip tone follows the job status text', () => {
   assert.equal(tone(''), 'idle');
 });
 
-test('workflow pages are numbered 1-4 and the archive has no step', () => {
-  assert.deepEqual(['parameters', 'transmitter', 'viterbi', 'metric'].map(k => PAGES[k].step), ['1', '2', '3', '4']);
+test('workflow pages are numbered 1-5 and the archive has no step', () => {
+  assert.deepEqual(['parameters', 'stages', 'transmitter', 'viterbi', 'metric'].map(k => PAGES[k].step), ['1', '2', '3', '4', '5']);
   assert.equal(PAGES.saved.step, undefined);
   for (const page of Object.values(PAGES)) assert.ok(page.tab && page.eyebrow && page.lead);
 });

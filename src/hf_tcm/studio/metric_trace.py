@@ -13,7 +13,12 @@ from typing import Any
 import numpy as np
 
 from hf_tcm.repro.encoder import STATE_ORDER, encode, transition_table
-from hf_tcm.repro.metric_isolation import build_pilot_schedule, run_metric_viterbi
+from hf_tcm.repro.metric_isolation import (
+    build_pilot_schedule,
+    hamming_branch_metric_rows,
+    hard_phase_decisions,
+    run_metric_viterbi,
+)
 
 
 @lru_cache(maxsize=4)
@@ -26,6 +31,50 @@ def _replay(rows_bytes: bytes, dtype: str, size: int, constraint_bytes: bytes | 
         else np.frombuffer(constraint_bytes, dtype=np.int8).reshape(size, 2)
     )
     return run_metric_viterbi(rows, allowed_input_pairs=constraints)
+
+
+def _frontend_window(
+    symbols: np.ndarray,
+    hamming_rows: np.ndarray,
+    euclidean_rows: np.ndarray,
+    payload_mask: np.ndarray,
+    *,
+    amplitude: float,
+) -> list[dict[str, Any]]:
+    """Per-symbol decision stage of both arms, recomputed from the shared z_k.
+
+    The hard decision and the squared distances are recomputed from the stored
+    frontend output and must reproduce the stored Hamming rows exactly and the
+    stored Euclidean rows up to the per-symbol CSI weight P_k. Pilot symbols
+    carry no metric evidence (rows are zeroed by the pilot constraint).
+    """
+    edges = transition_table()
+    edge_phase = np.array([4 * e[3][0] + 2 * e[3][1] + e[3][2] for e in edges])
+    points = amplitude * np.exp(1j * np.arange(8) * np.pi / 4)
+    stages = []
+    if len(symbols) == 0:
+        return stages
+    hard = hard_phase_decisions(symbols, amplitude=amplitude)
+    recomputed = hamming_branch_metric_rows(symbols, amplitude=amplitude)
+    for k, z in enumerate(symbols):
+        distances = np.square(np.abs(z - points))
+        entry: dict[str, Any] = {
+            "z": [float(z.real), float(z.imag)],
+            "hard_phase": int(hard[k]),
+            "distances": distances.tolist(),
+            "pilot": not bool(payload_mask[k]),
+        }
+        if payload_mask[k]:
+            if not np.array_equal(recomputed[k], hamming_rows[k]):
+                raise ValueError("stored Hamming metrics do not match the hard decision of z_k")
+            edge_distances = distances[edge_phase]
+            reference = int(np.argmax(edge_distances))
+            weight = float(euclidean_rows[k, reference] / edge_distances[reference])
+            if not np.allclose(euclidean_rows[k], weight * edge_distances, rtol=1e-9, atol=1e-12):
+                raise ValueError("stored Euclidean metrics are not P_k·|z_k − s|²")
+            entry["csi_weight"] = weight
+        stages.append(entry)
+    return stages
 
 
 def load_metric_trace(
@@ -143,7 +192,15 @@ def load_metric_trace(
             {"symbol": int(i), "tx_phase": int(phases[i]), "i": float(z.real), "q": float(z.imag)}
             for i, z in zip(symbol_indices, frontend, strict=True)
         ]
+        stages = _frontend_window(
+            data["equalized_symbols"][start:stop],
+            data["hamming_branch_metrics"][start:stop],
+            data["euclidean_branch_metrics"][start:stop],
+            payload_mask[start:stop],
+            amplitude=float(record["amplitude"]),
+        )
         result = {
+            "frontend_window": stages,
             "study_id": study_id,
             "trial_id": record["trial_id"],
             "configuration": config,

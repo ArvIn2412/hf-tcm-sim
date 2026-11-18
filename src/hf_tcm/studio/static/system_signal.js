@@ -16,16 +16,17 @@
    $('system-symbol-inspector').textContent=`Елемент ${state.symbol} · біти ${t.input_pairs[0].join('')} → ${t.coded_triples[0].join('')} · TX (${f(t.tx_i[0])}; ${f(t.tx_q[0])}) · RX (${f(t.received_i[0])}; ${f(t.received_q[0])}) · жорсткий фазовий індекс ${t.hard_phase_indices[0]} · B0 перехід ${t.separate_decoded_edges[0]} · Joint перехід ${chosen}`;
    if(mode.value==='cloud'&&cloudMode.value==='joint')$('system-symbol-inspector').textContent+=' · фактичні кандидатні метрики: '+t.joint_metrics[0].map((v,i)=>`${i}: ${f(v)}`).join(' · ');
   }
-  function draw(){if(!state.data)return;const d=state.data;const w=Math.max(800,canvas.clientWidth),h=500;canvas.width=w;canvas.height=h;const c=canvas.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,w,h);c.font='14px Segoe UI';state.points=[];
+  function draw(){if(!state.data)return;const d=state.data;const w=Math.max(320,canvas.clientWidth||800),h=500,dpr=window.devicePixelRatio||1;canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);const c=canvas.getContext('2d');c.setTransform(dpr,0,0,dpr,0,0);c.fillStyle='#fff';c.fillRect(0,0,w,h);c.font='14px Segoe UI';state.points=[];
    if(mode.value==='cloud'){
     const t=d.selected;const amplitude=state.summary.configuration?.amplitude||1;const range=Math.max(amplitude*1.3,...d.cloud.flatMap(p=>p.slice(1).map(Math.abs)))*state.scale;
-    const scale=Math.min(w-100,h-80)/(2*range);state.axisScale={x:scale,y:scale};const x=v=>w/2+(v-state.cx)*scale,y=v=>h/2-(v-state.cy)*scale;
-    c.strokeStyle='#ddd';c.beginPath();c.moveTo(50,y(0));c.lineTo(w-20,y(0));c.moveTo(x(0),20);c.lineTo(x(0),h-40);c.stroke();c.fillStyle='#334';c.fillText('I',w-35,y(0)-8);c.fillText('Q',x(0)+8,30);
-    for(let k=0;k<8;k++){const a=k*Math.PI/4;c.strokeStyle='#778';c.beginPath();c.arc(x(amplitude*Math.cos(a)),y(amplitude*Math.sin(a)),6,0,Math.PI*2);c.stroke();c.fillText(String(k),x(amplitude*Math.cos(a))+9,y(amplitude*Math.sin(a)));}
+    const plotH=h-60,scale=Math.min(w-100,plotH-40)/(2*range);state.axisScale={x:scale,y:scale};const x=v=>w/2+(v-state.cx)*scale,y=v=>plotH/2-(v-state.cy)*scale;
+    c.strokeStyle='#ddd';c.beginPath();c.moveTo(50,y(0));c.lineTo(w-20,y(0));c.moveTo(x(0),20);c.lineTo(x(0),plotH-10);c.stroke();c.fillStyle='#334';c.fillStyle='#334';c.fillText('I',w-35,y(0)-8);c.fillText('Q',x(0)+8,30);
+    for(let k=0;k<8;k++){const a=k*Math.PI/4;c.strokeStyle='#778';c.beginPath();c.arc(x(amplitude*Math.cos(a)),y(amplitude*Math.sin(a)),6,0,Math.PI*2);c.stroke();c.fillText([(k>>2)&1,(k>>1)&1,k&1].join(''),x(amplitude*Math.cos(a))+9,y(amplitude*Math.sin(a)));}
     for(const p of d.cloud){c.fillStyle='#087f8c80';c.fillRect(x(p[1])-2,y(p[2])-2,4,4);state.points.push({x:x(p[1]),y:y(p[2]),sample:p[0],i:p[1],q:p[2]});}
     c.strokeStyle='#111';c.beginPath();c.arc(x(t.received_i[0]),y(t.received_q[0]),8,0,7);c.stroke();
-    if(cloudMode.value==='hard'){const a=t.hard_phase_indices[0]*Math.PI/4;c.strokeStyle='#bb6518';c.lineWidth=3;c.beginPath();c.arc(x(amplitude*Math.cos(a)),y(amplitude*Math.sin(a)),10,0,7);c.stroke();}
-    else{c.fillStyle='#334';c.fillText('Метрики — для траєкторій Joint; RX не є окремою м’якою точкою',50,h-15);}
+    c.fillStyle='#fff';c.fillRect(0,plotH,w,h-plotH);c.strokeStyle='#e3e9ec';c.beginPath();c.moveTo(0,plotH);c.lineTo(w,plotH);c.stroke();c.fillStyle='#334';c.fillText('Точки — сирі відліки RX до комбайнера (8 на елемент); коло — перший відлік вибраного елемента.',50,h-34);
+    if(cloudMode.value==='hard'){const a=t.hard_phase_indices[0]*Math.PI/4;c.strokeStyle='#bb6518';c.lineWidth=3;c.beginPath();c.arc(x(amplitude*Math.cos(a)),y(amplitude*Math.sin(a)),10,0,7);c.stroke();c.lineWidth=1;c.fillStyle='#bb6518';c.fillText('Помаранчеве коло — жорстке рішення B0 на виході його фронтенду (не по сирому відліку).',50,h-15);}
+    else{c.fillStyle='#334';c.fillText('Joint оцінює канал окремо для кожного шляху Вітербі — єдиної точки z немає. Відстані Евкліда: вкладка «Етапи обробки».',50,h-15);}
     state.transform={scale,x,y};return;
    }
    const entries=Object.entries(d.series).filter(([k])=>mode.value==='noise'?k.startsWith('Шум'):mode.value==='paths'?k.startsWith('Промінь'):k.startsWith('TX')||k.startsWith('RX'));
