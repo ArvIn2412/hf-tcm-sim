@@ -378,3 +378,40 @@ def load_results_bundle(
             if not 0 <= row["euclidean_errors"] <= row["bits"]:
                 raise ValueError("invalid error counts")
     return bundle
+
+
+GUI_METRIC_ROOT = Path("outputs/scientific-exp03a/metric-studies")
+
+
+def metric_study_root(study_id: str, output_root: Path = DEFAULT_OUTPUT) -> Path:
+    """Folder that holds a metric study: EXP-04 cells live under the protocol output."""
+    if study_id.startswith("exp04-"):
+        return Path(output_root) / "studies"
+    return GUI_METRIC_ROOT
+
+
+def list_exp04_frames(
+    protocol_path: Path = DEFAULT_PROTOCOL, output_root: Path = DEFAULT_OUTPUT
+) -> list[dict[str, Any]]:
+    """Locally stored confirmatory cells whose sampled frames can be opened read-only."""
+    protocol, digest, _status = load_protocol(protocol_path)
+    stride = int(protocol["design"].get("array_storage", {}).get("full_array_stride", 1))
+    cells = []
+    for cell in protocol["cells"]:
+        root = Path(output_root) / "studies" / f"exp04-{cell['id']}"
+        summary_path = root / "summary.json"
+        if not summary_path.is_file():
+            continue
+        summary = json.loads(summary_path.read_text(encoding="utf-8"))
+        if summary.get("protocol_sha256") != digest or summary.get("status") != "completed":
+            continue
+        cells.append(
+            {
+                "experiment_id": f"exp04-{cell['id']}",
+                "cell": cell["id"],
+                "eb_n0_grid_db": cell["eb_n0_grid_db"],
+                "trials_per_point": int(cell["trials_per_point"]),
+                "full_array_stride": stride,
+            }
+        )
+    return cells

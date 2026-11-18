@@ -99,7 +99,17 @@
     return {width, height, pad, x0, x1, lx, ly, yMin, yMax};
   }
 
-  const api = {qFunction, qpskBer, qpskRequiredDb, cellRows, gainSummary, berLabel, hypotheses, logPlotModel, CELL_TITLES, VERDICTS};
+  /** Energy point whose Euclidean BER is closest (in log10) to the cell's primary target. */
+  function typicalPoint(cell) {
+    let best = -1, score = Infinity;
+    cell.points.forEach((p, i) => {
+      if (!p.euclidean_errors) return;
+      const d = Math.abs(Math.log10(p.euclidean_errors / p.bits) - Math.log10(cell.primary_target_ber));
+      if (d < score) { score = d; best = i; }
+    });
+    return best;
+  }
+  const api = {qFunction, qpskBer, qpskRequiredDb, cellRows, gainSummary, berLabel, hypotheses, logPlotModel, typicalPoint, CELL_TITLES, VERDICTS};
   if (typeof module !== 'undefined') module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -142,6 +152,9 @@
     #view-result .r4-legend i{display:inline-block;width:22px;height:3px;vertical-align:middle;margin-right:6px}
     #view-result .r4-meta{font-size:11px;color:var(--muted);line-height:1.6;overflow-wrap:anywhere}
     body.r4-on .sync-toolbar{display:none}
+  #view-result .r4-frame{display:flex;align-items:center;gap:14px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+  #view-result .r4-frame p{margin:0;font-size:13px;color:var(--muted);line-height:1.5}
+  #view-result .r4-frame button{flex:none}
   @media(max-width:1000px){#view-result .r4-grid{grid-template-columns:1fr}}
     @media(max-width:560px){#view-result .r4-kpi{grid-template-columns:1fr}#view-result th,#view-result td{padding:7px 4px}}`;
     document.head.append(css);
@@ -150,7 +163,7 @@
     section.className = 'view';
     section.id = 'view-result';
     section.innerHTML = `
-      <div class="page-heading"><div><p class="eyebrow">ПІДТВЕРДЖУВАЛЬНА СЕРІЯ · SCIENTIFIC-EXP-04</p>
+      <div class="page-heading"><div><p class="eyebrow">Підтверджувальна серія SCIENTIFIC-EXP-04</p>
         <h1>Хемінг проти Евкліда у відомому тракті</h1>
         <p>Роздільні демодуляція (жорстке рішення 8PSK) і декодування з метрикою Хемінга проти спільних демодуляції й декодування з м'якою евклідовою метрикою. Обидва декодери обробляють те саме спостереження в кожному кадрі.</p></div>
         <span class="status-pill" id="r4-status">Завантаження…</span></div>
@@ -276,7 +289,7 @@
     $('r4-plot-title').textContent = `${title}: BER від Eb/N0`;
     $('r4-plot-sub').textContent = `${sub} · ${cell.points.length} рівнів × ${cell.points[0].trials} кадрів = ${cell.trials.toLocaleString('uk-UA')} парних кадрів`;
     document.querySelectorAll('#r4-cells button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.cell === cell.id)));
-    document.querySelectorAll('#r4-table tr[data-cell]').forEach(r => r.style.outline = r.dataset.cell === cell.id ? '2px solid #087f8c55' : '');
+    document.querySelectorAll('#r4-table tr[data-cell]').forEach(r => r.style.outline = r.dataset.cell === cell.id ? '2px solid #22364d55' : '');
     drawPlot(cell);
     $('r4-kpi').replaceChildren(...state.bundle.all_target_ber.map(target => {
       const g = gainSummary(cell, target);
@@ -284,6 +297,37 @@
       box.innerHTML = `<small>BER ${berLabel(target)}${g.primary ? ' · первинна' : ''}</small><strong>${g.text}</strong><span>${g.ci || '—'}</span><span class="${g.verdict === 'PRECISION_CRITERIA_MET' ? '' : 'r4-flag'}">${VERDICTS[g.verdict]}</span>`;
       return box;
     }));
+    renderFrameLink(cell);
+  }
+
+  function renderFrameLink(cell) {
+    let slot = $('r4-frame');
+    if (!slot) {
+      slot = document.createElement('div');
+      slot.id = 'r4-frame';
+      slot.className = 'r4-frame';
+      $('r4-kpi').after(slot);
+    }
+    const id = 'exp04-' + cell.id;
+    const point = typicalPoint(cell);
+    if (!state.frames?.includes(id) || point < 0 || !window.metricContext) {
+      slot.innerHTML = state.frames ? '<p>Сирі кадри серії в цій копії проєкту відсутні: доступні лише підсумкові числа.</p>' : '';
+      return;
+    }
+    const p = cell.points[point];
+    slot.innerHTML = `<button type="button" class="ds-primary">Розібрати типовий кадр</button><p>Кадр 0 на рівні Eb/N0 ${dec(p.eb_n0_db, 1)} дБ, де BER Евкліда найближчий до первинної цілі ${berLabel(cell.primary_target_ber)} (Хемінг ${(p.hamming_errors / p.bits).toExponential(1)}, Евклід ${(p.euclidean_errors / p.bits).toExponential(1)}). Відкриється на першій розбіжності декодерів у «Етапах обробки».</p>`;
+    const button = slot.querySelector('button');
+    button.addEventListener('click', async () => {
+      button.disabled = true;
+      button.textContent = 'Відкриваю кадр…';
+      try {
+        await window.metricContext.open({study: id, point, trial: 0, jumpTo: 'disagree'});
+        window.metricContext.showStages();
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Розібрати типовий кадр';
+      }
+    });
   }
 
   function renderTable() {
@@ -340,6 +384,10 @@
 
   async function load() {
     $('r4-status').textContent = 'Завантаження…';
+    fetch('/api/scientific/exp04-frames').then(r => (r.ok ? r.json() : {cells: []})).then(d => {
+      state.frames = (d.cells || []).map(c => c.experiment_id);
+      if (state.bundle) renderFrameLink(state.bundle.cells.find(c => c.id === state.cell));
+    }).catch(() => { state.frames = []; });
     try {
       const response = await fetch('/api/scientific/exp04-results');
       const data = await response.json();

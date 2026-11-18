@@ -25,7 +25,7 @@ from hf_tcm.evaluation.m11a_demo_studio import (
     build_demo_trace,
     build_studio_metadata,
 )
-from hf_tcm.repro.exp04_protocol import load_results_bundle
+from hf_tcm.repro.exp04_protocol import list_exp04_frames, load_results_bundle, metric_study_root
 from hf_tcm.repro.metric_experiment import (
     MetricStudyConfig,
     list_metric_studies,
@@ -209,7 +209,7 @@ def make_server(
                 try:
                     if path.endswith("energy-view"):
                         result = load_energy_view(
-                            Path("outputs/scientific-exp03a/metric-studies"),
+                            metric_study_root(query.get("study_id", [""])[0]),
                             query.get("study_id", [""])[0],
                         )
                     else:
@@ -222,13 +222,19 @@ def make_server(
                 except (OSError, ValueError, KeyError, TypeError) as exc:
                     self._json(400, {"error": str(exc)})
                 return
+            if path == "/api/scientific/exp04-frames":
+                try:
+                    self._json(200, {"cells": list_exp04_frames()})
+                except (OSError, ValueError, KeyError, json.JSONDecodeError) as exc:
+                    self._json(409, {"error": str(exc)})
+                return
             if path == "/api/scientific/metric-frame":
                 query = parse_qs(parsed.query)
                 try:
                     self._json(
                         200,
                         load_metric_frame(
-                            Path("outputs/scientific-exp03a/metric-studies"),
+                            metric_study_root(query.get("study_id", [""])[0]),
                             query.get("study_id", [""])[0],
                             **{
                                 key: int(query.get(key, [str(default)])[0])
@@ -245,7 +251,7 @@ def make_server(
                     self._json(
                         200,
                         load_metric_trace(
-                            Path("outputs/scientific-exp03a/metric-studies"),
+                            metric_study_root(query.get("study_id", [""])[0]),
                             query.get("study_id", [""])[0],
                             compact=query.get("compact", ["0"])[0] == "1",
                             **{

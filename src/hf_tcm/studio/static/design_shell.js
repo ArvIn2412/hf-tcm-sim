@@ -184,9 +184,23 @@
     const resultTab = document.querySelector('.tabs .tab[data-view="result"]');
     if (resultTab) resultTab.textContent = 'Головний результат';
     const status = $('job-status');
-    const toolbar = header?.querySelector('.sync-toolbar');
+    const tools = el('div', {class: 'ds-header-tools'});
+    const nav = header?.querySelector('nav.tabs');
+    if (header && nav) nav.after(tools);
+    const projector = el('button', {type: 'button', class: 'ds-projector', 'aria-pressed': 'false', title: 'Більший шрифт і елементи для показу на проекторі'});
+    projector.textContent = 'Проектор';
+    const setProjector = on => {
+      document.body.classList.toggle('projector', on);
+      projector.setAttribute('aria-pressed', String(on));
+      try { localStorage.setItem('hf-tcm-projector', on ? '1' : '0'); } catch { /* storage unavailable */ }
+      window.dispatchEvent(new Event('resize'));
+    };
+    projector.addEventListener('click', () => setProjector(!document.body.classList.contains('projector')));
+    let stored = false;
+    try { stored = localStorage.getItem('hf-tcm-projector') === '1'; } catch { /* storage unavailable */ }
+    if (stored) setProjector(true);
     if (header && status) {
-      header.insertBefore(status, toolbar || null);
+      tools.append(status, projector);
       status.setAttribute('role', 'status');
       const refresh = () => { status.dataset.tone = tone(status.textContent); status.title = status.textContent; };
       new MutationObserver(refresh).observe(status, {childList: true, characterData: true, subtree: true});
@@ -194,6 +208,18 @@
     }
     const zoom = $('zoom-20-samples');
     if (zoom) zoom.textContent = 'Наблизити 20 відліків';
+
+    // Keys 0-5 switch the workflow steps (ignored while typing).
+    const STEP_KEYS = {0: 'result', 1: 'parameters', 2: 'stages', 3: 'mchannel', 4: 'mdecoding', 5: 'metric'};
+    document.addEventListener('keydown', e => {
+      if (e.ctrlKey || e.metaKey || e.altKey || (e.target instanceof Element && e.target.matches('input,select,textarea,[contenteditable]'))) return;
+      const view = STEP_KEYS[e.key];
+      if (view && document.querySelector(`.tabs .tab[data-view="${view}"]`)) { e.preventDefault(); go(view); }
+    });
+    for (const [key, view] of Object.entries(STEP_KEYS)) {
+      const tab = document.querySelector(`.tabs .tab[data-view="${view}"]`);
+      if (tab) tab.title = `Клавіша ${key}`;
+    }
 
     // Track the active view on <body> for contextual styling.
     const views = [...document.querySelectorAll('main > .view')];

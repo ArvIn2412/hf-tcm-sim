@@ -188,7 +188,7 @@
 
     $('st-study').addEventListener('change', () => { state.study = $('st-study').value; state.point = 0; state.trial = 0; state.k = 0; state.frame = null; load(); });
     $('st-point').addEventListener('change', () => { state.point = Number($('st-point').value); state.frame = null; load(); });
-    $('st-trial').addEventListener('change', () => { state.trial = Math.max(0, Number($('st-trial').value) || 0); state.frame = null; load(); });
+    $('st-trial').addEventListener('change', () => { state.trial = snapTrial($('st-trial').value); $('st-trial').value = state.trial; state.frame = null; load(); });
     $('st-k').addEventListener('change', () => goTo(Number($('st-k').value)));
     $('st-prev').addEventListener('click', () => goTo(state.k - 1));
     $('st-next').addEventListener('click', () => goTo(state.k + 1));
@@ -197,7 +197,7 @@
     $('st-next-e').addEventListener('click', () => jump(state.frame?.euclidErrors));
     $('st-next-d').addEventListener('click', () => jump(state.frame?.disagree));
     document.addEventListener('keydown', e => {
-      if (!METRIC_VIEWS.includes(document.body.dataset.view) || e.target.matches('input,select,textarea')) return;
+      if (!METRIC_VIEWS.includes(document.body.dataset.view) || (e.target instanceof Element && e.target.matches('input,select,textarea'))) return;
       if (e.key === 'ArrowRight') { e.preventDefault(); goTo(state.k + 1); }
       if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(state.k - 1); }
     });
@@ -222,26 +222,68 @@
 
   async function refreshStudies() {
     try {
-      const response = await fetch('/api/scientific/metric-studies');
-      const data = await response.json();
-      const studies = (data.studies || []).filter(s => s.contrast_id === 'metric_isolation' && s.completed_trials > 0);
-      const changed = studies.map(s => s.experiment_id).join() !== state.studies.map(s => s.experiment_id).join();
+      const [mine, exp04] = await Promise.all([
+        fetch('/api/scientific/metric-studies').then(r => r.json()),
+        fetch('/api/scientific/exp04-frames').then(r => (r.ok ? r.json() : {cells: []})).catch(() => ({cells: []})),
+      ]);
+      const studies = (mine.studies || []).filter(s => s.contrast_id === 'metric_isolation' && s.completed_trials > 0);
+      const cells = exp04.cells || [];
+      const signature = studies.map(s => s.experiment_id).join() + '|' + cells.map(c => c.experiment_id).join();
+      const changed = signature !== state.signature;
       const known = new Set(state.studies.map(s => s.experiment_id));
       const fresh = state.studies.length > 0 && studies.length > 0 && !known.has(studies[0].experiment_id);
       state.studies = studies;
+      state.exp04 = Object.fromEntries(cells.map(c => [c.experiment_id, c]));
+      state.signature = signature;
       if (changed) {
-        $('st-study').replaceChildren(...studies.map(s => new Option(`${s.experiment_id} · ${s.completed_trials} кадр.`, s.experiment_id)));
+        const groups = [];
+        if (studies.length) {
+          const g = document.createElement('optgroup');
+          g.label = 'Мої запуски';
+          g.append(...studies.map(s => new Option(`${s.experiment_id} · ${s.completed_trials} кадр.`, s.experiment_id)));
+          groups.push(g);
+        }
+        if (cells.length) {
+          const g = document.createElement('optgroup');
+          g.label = 'EXP-04 · підтверджувальна серія';
+          g.append(...cells.map(c => new Option(`${c.cell} · ${c.trials_per_point} кадр./рівень`, c.experiment_id)));
+          groups.push(g);
+        }
+        $('st-study').replaceChildren(...groups);
       }
-      if (!studies.length) return;
-      if (!state.study || !studies.some(s => s.experiment_id === state.study) || fresh || (changed && studies[0].experiment_id !== state.study && !state.data)) {
-        if (state.study !== studies[0].experiment_id) { state.point = 0; state.trial = 0; state.k = 0; state.frame = null; }
-        state.study = studies[0].experiment_id;
+      const all = [...studies.map(s => s.experiment_id), ...cells.map(c => c.experiment_id)];
+      if (!all.length) return;
+      if (!state.study || !all.includes(state.study) || fresh || (changed && !state.data && studies.length && studies[0].experiment_id !== state.study)) {
+        const next = studies[0]?.experiment_id ?? all[0];
+        if (state.study !== next) { state.point = 0; state.trial = 0; state.k = 0; state.frame = null; }
+        state.study = next;
       }
       $('st-study').value = state.study;
       if (!state.data || state.data.study_id !== state.study) load();
     } catch (error) {
       $('st-body').innerHTML = `<div class="card st-empty-msg">Не вдалося отримати список досліджень: ${esc(error.message)}</div>`;
     }
+  }
+
+  /** Frame stride of a study: EXP-04 keeps full arrays only for every 100th frame. */
+  const strideOf = study => state.exp04?.[study]?.full_array_stride ?? 1;
+  function snapTrial(value) {
+    const stride = strideOf(state.study);
+    return Math.max(0, Math.round((Number(value) || 0) / stride) * stride);
+  }
+
+  /** Open a given study/point/frame and optionally jump to the first disagreement. */
+  async function open({study, point = 0, trial = 0, k = 0, jumpTo = null}) {
+    if (!state.signature) await refreshStudies();
+    state.study = study;
+    state.point = point;
+    state.trial = trial;
+    state.k = k;
+    state.frame = null;
+    state.pendingJump = jumpTo;
+    $('st-study').value = study;
+    $('st-trial').value = trial;
+    await load();
   }
 
   function goTo(k) {
@@ -276,7 +318,17 @@
       fillPoints();
       $('st-k').max = size - 1;
       $('st-k').value = state.k;
-      $('st-trial').max = Math.max(0, (state.config.trials_per_point || 1) - 1);
+      const stride = strideOf(state.study);
+      $('st-trial').step = stride;
+      $('st-trial').max = Math.max(0, Math.floor(((state.config.trials_per_point || 1) - 1) / stride) * stride);
+      $('st-trial').value = state.trial;
+      if (state.pendingJump) {
+        const jumpTo = state.pendingJump;
+        state.pendingJump = null;
+        const mask = {disagree: state.frame.disagree, hamming: state.frame.hammingErrors, euclidean: state.frame.euclidErrors}[jumpTo];
+        const first = mask ? mask.indexOf(true) : -1;
+        if (first >= 0 && first !== state.k) { state.k = first; return load(); }
+      }
       render();
       const key = `${state.study}|${state.point}|${state.trial}`;
       window.dispatchEvent(new CustomEvent('metric-context', {detail: {study: state.study, point: state.point, trial: state.trial, k: state.k, size, frameChanged: key !== state.contextKey}}));
@@ -292,7 +344,8 @@
     const grid = state.config.energy_grid_db || [0];
     const gamma = state.data.record.gamma_b_discrete_db;
     const select = $('st-point');
-    const options = grid.map((_, i) => new Option(i === state.point ? `#${i + 1} · Eb/N0 ${num(gamma, 1)} дБ` : `#${i + 1} з ${grid.length}`, i));
+    const known = state.exp04?.[state.study]?.eb_n0_grid_db;
+    const options = grid.map((_, i) => new Option(known ? `Eb/N0 ${num(known[i], 1)} дБ` : i === state.point ? `#${i + 1} · Eb/N0 ${num(gamma, 1)} дБ` : `#${i + 1} з ${grid.length}`, i));
     select.replaceChildren(...options);
     select.value = state.point;
   }
@@ -656,6 +709,8 @@
     goTo: k => goTo(k),
     refresh: () => refreshStudies(),
     openStages: k => { goTo(k); tab.click(); },
+    open: options => open(options),
+    showStages: () => tab.click(),
   };
 
   // Build after system_workspace.js has rebuilt the navigation.

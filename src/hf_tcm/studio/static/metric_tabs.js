@@ -25,7 +25,13 @@
     values.forEach((v, i) => { if (mask[i] && v !== null && Number.isFinite(v)) { sum += v; n += 1; } });
     return n ? sum / n : null;
   }
-  const api = {windowAround, summarizeEvents, meanWhere};
+  /** Event-length histogram: counts for lengths 1..cap-1 and one bucket for >= cap. */
+  function lengthHistogram(events, cap = 10) {
+    const counts = Array(cap).fill(0);
+    for (const e of events) counts[Math.min(cap, e.stop - e.start) - 1] += 1;
+    return counts;
+  }
+  const api = {windowAround, summarizeEvents, meanWhere, lengthHistogram};
   if (typeof module !== 'undefined') module.exports = api;
   if (typeof document === 'undefined') return;
 
@@ -80,6 +86,8 @@
   .mt-view table.mt-events button{min-height:28px;padding:2px 9px;font-size:12px}
   .mt-view .mt-scroll{max-height:320px;overflow:auto}
   .mt-view .mt-empty{padding:30px;text-align:center;color:#6a7a87}
+  .mt-view .mt-readout{display:flex;flex-wrap:wrap;gap:4px 16px;min-height:22px;margin:0 0 6px;font-size:12.5px;color:#3f5161;font-variant-numeric:tabular-nums}
+  .mt-view .mt-readout .ok{color:#15803d}.mt-view .mt-readout .bad{color:#dc2626}
   .mt-view .mt-trellis-label{display:flex;justify-content:space-between;align-items:baseline;margin:4px 0}
   .mt-view .mt-trellis-label strong{font-size:14px}
   .mt-view .mt-trellis-label.hamming strong{color:${C.hamming}}
@@ -290,7 +298,27 @@
       const s = a + ((e.clientX - box.left) / box.width * W - left) / (W - left - right) * (b - a);
       if (s >= a && s < b) goTo(Math.floor(s));
     });
-    card.append(node);
+    const cursor = add(node, 'rect', {x: 0, y: 0, width: 1, height: H - 24, fill: C.ink, opacity: 0, 'pointer-events': 'none'});
+    const readout = document.createElement('div');
+    readout.className = 'mt-readout';
+    readout.setAttribute('aria-live', 'off');
+    const describe = i => {
+      const mark = (bad) => bad ? '<b class="bad">помилка</b>' : '<b class="ok">вірно</b>';
+      const pilot = !f.payload_mask[i];
+      return `<span>символ <b>${i}</b>${pilot ? ' (пілот)' : ''}</span><span>SNR z_k <b>${num(f.effective_snr_db[i], 1)} дБ</b></span><span>|ĝ_k| <b>${num(f.channel_gain[i], 3)}</b></span><span>|z_k − s| <b>${num(f.offset[i], 3)}</b></span><span>жорстке рішення ${f.hard_correct[i] ? '<b class="ok">у своєму секторі</b>' : '<b class="bad">у чужому секторі</b>'}</span><span style="color:${C.hamming}">Хемінг ${mark(f.arms.hamming.pair_errors[i])}</span><span style="color:${C.euclid}">Евклід ${mark(f.arms.euclidean.pair_errors[i])}</span>`;
+    };
+    readout.innerHTML = describe(k);
+    node.addEventListener('mousemove', e => {
+      const box = node.getBoundingClientRect();
+      const s = Math.floor(a + ((e.clientX - box.left) / box.width * W - left) / (W - left - right) * (b - a));
+      if (s < a || s >= b) { cursor.setAttribute('opacity', 0); readout.innerHTML = describe(k); return; }
+      cursor.setAttribute('x', X(s));
+      cursor.setAttribute('width', Math.max(1, X(s + 1) - X(s)));
+      cursor.setAttribute('opacity', 0.25);
+      readout.innerHTML = describe(s);
+    });
+    node.addEventListener('mouseleave', () => { cursor.setAttribute('opacity', 0); readout.innerHTML = describe(k); });
+    card.append(readout, node);
     card.insertAdjacentHTML('beforeend', `<div class="mt-legend"><span><i style="border-color:#7c3aed"></i>RX I</span><span><i style="border-color:#db2777"></i>RX Q</span><span><i style="border-color:${C.snr}"></i>SNR z_k = A²/σ²_z</span><span><b style="background:${C.bad}"></b>помилка символу / хибне жорстке рішення</span><span><b style="background:${C.hamming};opacity:.3"></b><b style="background:${C.euclid};opacity:.3"></b>подія помилки (шлях відійшов від переданого)</span><span><b style="background:${C.pilot};border:1px solid #dde4e9"></b>пілоти</span><span><b style="background:#f59e0b;opacity:.4"></b>символ k</span></div>`);
 
     // split summary
@@ -305,7 +333,7 @@
       const box = document.createElement('article');
       box.className = 'card ' + (arm === 'hamming' ? 'hamming' : 'euclid');
       box.innerHTML = `<h2>${arm === 'hamming' ? 'Хемінг · жорстке рішення' : 'Евклід · м’яке рішення'}</h2>
-        <div class="mt-kpis"><div><small>Помилкових символів</small><strong>${ev.symbols}</strong></div><div><small>Подій помилок</small><strong>${ev.count}</strong></div><div><small>BER кадру</small><strong>${Number(a2.statistics.ber).toExponential(1)}</strong></div><div><small>SNR на помилках</small><strong>${snrAtErr === null ? '—' : num(snrAtErr, 1) + ' дБ'}</strong></div></div>
+        <div class="mt-kpis"><div><small>Помилкових символів</small><strong>${ev.symbols}</strong></div><div><small>Подій помилок</small><strong>${ev.count}</strong></div><div><small>BER кадру</small><strong>${Number(a2.statistics.ber) === 0 ? "0" : Number(a2.statistics.ber).toExponential(1)}</strong></div><div><small>SNR на помилках</small><strong>${snrAtErr === null ? '—' : num(snrAtErr, 1) + ' дБ'}</strong></div></div>
         <p class="mt-note">${arm === 'hamming'
           ? `Жорстке рішення хибне на <strong>${hardWrong}</strong> символах даних (z_k за межею сектора — червоні точки). Хемінг отримує лише 3 біти, тож кожне таке рішення для нього — повна помилка без міри надійності.`
           : `Евклід бачить ті самі z_k, але враховує, наскільки далеко кожне від усіх точок: близька до межі точка майже не «голосує».`} Середнє SNR z_k на символах даних — ${num(snrAll, 1)} дБ.</p>`;
@@ -356,6 +384,7 @@
     }
     card.insertAdjacentHTML('beforeend', `<div class="mt-legend"><span><i style="border-color:${C.hamming}"></i><i style="border-color:${C.euclid}"></i>шлях декодера</span><span><i style="border-color:${C.ink};border-top-style:dashed"></i>переданий шлях</span><span><b style="background:${C.bad};opacity:.18"></b>подія помилки</span><span><b style="background:${C.pilot};border:1px solid #dde4e9"></b>пілоти</span><span><b style="background:#f59e0b;opacity:.4"></b>такт k</span></div>`);
 
+    body.append(histogramCard(f));
     const split = document.createElement('div');
     split.className = 'mt-split';
     body.append(split);
@@ -419,6 +448,39 @@
       if (t >= a && t < b) goTo(Math.floor(t));
     });
     return node;
+  }
+
+  function histogramCard(f) {
+    const cap = 10;
+    const hist = {hamming: lengthHistogram(f.arms.hamming.events, cap), euclidean: lengthHistogram(f.arms.euclidean.events, cap)};
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.style.marginTop = '14px';
+    card.innerHTML = '<h2>Довжина подій помилок</h2><p class="mt-note" style="margin:0 0 6px">Скільки тактів шлях декодера йде поза переданим шляхом, перш ніж повернутися. Короткі події — одна-дві хибні гілки; довгі — декодер довго «вірить» хибному шляху.</p>';
+    const W = 1200, H = 190, left = 70, right = 16, top = 12, bottom = 36;
+    const node = svg(W, H, 'Гістограма довжин подій помилок для обох декодерів');
+    const max = Math.max(1, ...hist.hamming, ...hist.euclidean);
+    const slot = (W - left - right) / cap, bar = slot * 0.36;
+    const Y = v => top + (H - top - bottom) * (1 - v / max);
+    for (let g = 0; g <= 4; g++) {
+      const v = Math.round(max * g / 4);
+      add(node, 'line', {x1: left, x2: W - right, y1: Y(v), y2: Y(v), stroke: C.grid});
+      add(node, 'text', {x: left - 8, y: Y(v) + 4, 'text-anchor': 'end'}, String(v));
+    }
+    for (let i = 0; i < cap; i++) {
+      const x0 = left + i * slot + slot * 0.12;
+      [['hamming', C.hamming, 0], ['euclidean', C.euclid, 1]].forEach(([arm, color, j]) => {
+        const v = hist[arm][i];
+        const r = add(node, 'rect', {x: x0 + j * bar, y: Y(v), width: bar - 2, height: Y(0) - Y(v), fill: color});
+        add(r, 'title', {}, `${arm === 'hamming' ? 'Хемінг' : 'Евклід'}: ${v} под. довжини ${i + 1 === cap ? cap + '+' : i + 1}`);
+        if (v) add(node, 'text', {x: x0 + j * bar + (bar - 2) / 2, y: Y(v) - 4, 'text-anchor': 'middle', style: 'font-size:10.5px'}, String(v));
+      });
+      add(node, 'text', {x: left + (i + 0.5) * slot, y: H - 18, 'text-anchor': 'middle'}, i + 1 === cap ? `${cap}+` : String(i + 1));
+    }
+    add(node, 'text', {x: left + (W - left - right) / 2, y: H - 2, 'text-anchor': 'middle'}, 'довжина події, тактів');
+    card.append(node);
+    card.insertAdjacentHTML('beforeend', `<div class="mt-legend"><span><b style="background:${C.hamming}"></b>Хемінг</span><span><b style="background:${C.euclid}"></b>Евклід</span></div>`);
+    return card;
   }
 
   function eventsCard(f, arm, k) {

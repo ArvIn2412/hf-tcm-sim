@@ -1,4 +1,4 @@
-/* HF-TCM-SIM design system: light academic theme.
+/* HF-TCM-SIM design system: light instrument theme, square geometry.
    Loaded last by design_shell.js; every rule is scoped to body.ds so it wins over
    the legacy layers without touching their scripts or element ids. */
 
@@ -9,19 +9,20 @@ body.ds {
   --ds-ink: #142433;
   --ds-ink-2: #3f5161;
   --ds-muted: #6a7a87;
-  --ds-line: #dde4e9;
+  --ds-line: #d3dce2;
   --ds-line-2: #eef2f4;
-  --ds-accent: #0a7f8c;
-  --ds-accent-ink: #076b76;
-  --ds-accent-soft: #e5f3f4;
+  /* UI accent is ink-navy: teal and orange are reserved for the Euclid / Hamming data. */
+  --ds-accent: #22364d;
+  --ds-accent-ink: #16263a;
+  --ds-accent-soft: #e8edf3;
   --ds-hamming: #c2410c;
   --ds-euclid: #0a7f8c;
   --ds-warn-bg: #fdf6e7;
   --ds-warn-line: #f0dfb6;
   --ds-warn-ink: #6d5a2c;
-  --ds-radius: 12px;
-  --ds-radius-sm: 8px;
-  --ds-shadow: 0 1px 2px #14243308, 0 4px 16px #1424330a;
+  --ds-radius: 0;
+  --ds-radius-sm: 0;
+  --ds-shadow: none;
   --ds-page: 1320px;
   --ds-font: Inter, "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
   margin: 0;
@@ -124,7 +125,7 @@ body.ds .sync-status { margin-left: auto; font-size: 12px; color: var(--ds-muted
 body.ds main { max-width: var(--ds-page); width: 100%; margin: 0 auto; padding: 28px 32px 72px; }
 body.ds main > .view.active { display: block; max-width: none; margin: 0; padding: 0; color: var(--ds-ink); font-size: 15px; }
 body.ds .ds-page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin: 0 0 22px; }
-body.ds .ds-page-head .ds-eyebrow { margin: 0 0 6px; font: 800 11px var(--ds-font); letter-spacing: .12em; text-transform: uppercase; color: var(--ds-accent); }
+body.ds .ds-page-head .ds-eyebrow { margin: 0 0 6px; font: 700 13px var(--ds-font); letter-spacing: 0; text-transform: none; color: var(--ds-muted); }
 body.ds main h1, body.ds .page-heading h1 { margin: 0; font: 750 28px/1.2 var(--ds-font); letter-spacing: -.02em; color: var(--ds-ink); }
 body.ds .ds-page-head .ds-lead { margin: 8px 0 0; max-width: 780px; color: var(--ds-muted); font-size: 15px; line-height: 1.55; }
 body.ds main h2 { margin: 0 0 10px; font: 700 17px/1.3 var(--ds-font); color: var(--ds-ink); letter-spacing: -.005em; }
@@ -287,3 +288,44 @@ body.ds footer { display: none; }
   body.ds .ds-aside { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   body.ds #run-form .simulation-primary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* ------------------------------------------------------------------ square geometry
+   No rounded corners anywhere in the HTML chrome (SVG data marks keep their shapes). */
+body.ds, body.ds *, body.ds *::before, body.ds *::after { border-radius: 0 !important; }
+body.ds .card, body.ds .ds-card, body.ds .system-trellises > section, body.ds .system-result-columns > section,
+body.ds #view-saved table.system-study-table, body.ds #view-saved #system-study-search { box-shadow: none !important; }
+body.ds .card { border-color: var(--ds-line); }
+body.ds main button, body.ds .sync-toolbar button { box-shadow: none; }
+body.ds input:focus, body.ds select:focus { box-shadow: 0 0 0 2px #22364d33; }
+
+/* Accent re-mapping for modules that carried the old teal UI colour. */
+body.ds #view-result .r4-cells button[aria-pressed=true] { background: var(--ds-accent); border-color: var(--ds-accent); color: #fff; }
+body.ds #view-result td.primary { background: var(--ds-accent-soft); color: var(--ds-accent-ink); }
+body.ds #view-result .r4-h article { border-left-color: var(--ds-accent); }
+body.ds #view-result .r4-h article.r4-desc { border-left-color: #9fb3bd; }
+body.ds #view-result .eyebrow { font: 700 13px var(--ds-font); letter-spacing: 0; color: var(--ds-muted); text-transform: none; }
+body.ds #view-stages .st-shared .st-num { background: var(--ds-accent-soft); color: var(--ds-accent); }
+body.ds .mt-view .mt-tools .seg button[aria-pressed=true] { background: var(--ds-accent); color: #fff; }
+body.ds .st-flag { background: #eef6f0; }
+
+/* ------------------------------------------------------------------ header extras */
+body.ds .ds-header-tools { justify-self: end; display: flex; align-items: center; gap: 8px; }
+body.ds .ds-header-tools #job-status { justify-self: auto; }
+body.ds .ds-projector {
+  min-height: 30px; padding: 4px 10px; border: 1px solid var(--ds-line); background: var(--ds-surface);
+  font: 600 12px var(--ds-font); color: var(--ds-ink-2); cursor: pointer; white-space: nowrap;
+}
+body.ds .ds-projector[aria-pressed=true] { background: var(--ds-accent); border-color: var(--ds-accent); color: #fff; }
+
+/* ------------------------------------------------------------------ projector mode
+   Larger type and controls for a committee room; charts are SVG and scale with width. */
+body.ds.projector { font-size: 17px; --ds-page: 1560px; }
+body.ds.projector main h1, body.ds.projector .page-heading h1 { font-size: 34px; }
+body.ds.projector main h2 { font-size: 20px; }
+body.ds.projector main h3 { font-size: 17px; }
+body.ds.projector .tabs .tab { font-size: 16px; padding: 0 16px; }
+body.ds.projector main table { font-size: 15px; }
+body.ds.projector .st-note, body.ds.projector .mt-note, body.ds.projector .ds-lead { font-size: 16px !important; }
+body.ds.projector .st-bars, body.ds.projector .st-acs table, body.ds.projector .st-kv { font-size: 15px !important; }
+body.ds.projector .st-acs-c { font-size: 13.5px !important; }
+body.ds.projector input:not([type=checkbox]):not([type=radio]):not([type=range]), body.ds.projector select, body.ds.projector main button { font-size: 16px; min-height: 44px; }

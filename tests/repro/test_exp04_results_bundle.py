@@ -103,3 +103,30 @@ def test_studio_serves_exp04_results_read_only() -> None:
     finally:
         server.shutdown()
         server.server_close()
+
+
+def test_exp04_frames_listing_and_study_roots(tmp_path: Path) -> None:
+    from hf_tcm.repro.exp04_protocol import (
+        GUI_METRIC_ROOT,
+        list_exp04_frames,
+        metric_study_root,
+    )
+
+    assert metric_study_root("exp04-A1-awgn", tmp_path) == tmp_path / "studies"
+    assert metric_study_root("metric-known-1", tmp_path) == GUI_METRIC_ROOT
+    assert list_exp04_frames(output_root=tmp_path) == []
+    protocol, digest, _ = load_protocol(DEFAULT_PROTOCOL)
+    cell = protocol["cells"][0]
+    folder = tmp_path / "studies" / f"exp04-{cell['id']}"
+    folder.mkdir(parents=True)
+    (folder / "summary.json").write_text(
+        json.dumps({"protocol_sha256": digest, "status": "completed"}), encoding="utf-8"
+    )
+    listed = list_exp04_frames(output_root=tmp_path)
+    assert [c["cell"] for c in listed] == [cell["id"]]
+    assert listed[0]["full_array_stride"] == 100
+    assert listed[0]["eb_n0_grid_db"] == cell["eb_n0_grid_db"]
+    (folder / "summary.json").write_text(
+        json.dumps({"protocol_sha256": "0" * 64, "status": "completed"}), encoding="utf-8"
+    )
+    assert list_exp04_frames(output_root=tmp_path) == []

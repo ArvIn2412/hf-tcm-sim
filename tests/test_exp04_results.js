@@ -56,3 +56,13 @@ test('log plot model maps the axis ends to the frame', () => {
   assert.equal(m.ly(0.5), m.pad.top);
   assert.equal(m.ly(1e-9), m.height - m.pad.bottom);
 });
+
+test('typical frame point is the level where Euclid BER is closest to the primary target', () => {
+  const cell = {primary_target_ber: 1e-2, points: [
+    {bits: 1000, euclidean_errors: 200}, {bits: 1000, euclidean_errors: 12}, {bits: 1000, euclidean_errors: 1}, {bits: 1000, euclidean_errors: 0}]};
+  assert.equal(r.typicalPoint(cell), 1);
+  assert.equal(r.typicalPoint({primary_target_ber: 1e-3, points: [{bits: 10, euclidean_errors: 0}]}), -1);
+  const a3 = bundle.cells.find(c => c.id === 'A3-itu-moderate');
+  const i = r.typicalPoint(a3);
+  assert.ok(i >= 0 && a3.points[i].euclidean_errors > 0);
+});
