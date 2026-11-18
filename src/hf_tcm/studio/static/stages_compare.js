@@ -56,7 +56,7 @@
   const NS = 'http://www.w3.org/2000/svg';
   const C = {hamming: '#c2410c', euclid: '#0a7f8c', ink: '#142433', muted: '#6a7a87', line: '#dde4e9', grid: '#eef2f4', ok: '#16a34a', bad: '#dc2626', truth: '#142433'};
   const $ = id => document.getElementById(id);
-  const num = (v, d = 3) => Number(v).toLocaleString('uk-UA', {minimumFractionDigits: d, maximumFractionDigits: d});
+  const num = (v, d = 3) => ((Math.round(Number(v) * 10 ** d) / 10 ** d) || 0).toLocaleString('uk-UA', {minimumFractionDigits: d, maximumFractionDigits: d});
   const esc = s => String(s).replace(/[&<>]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;'}[c]));
   function svg(w, h, label) {
     const node = document.createElementNS(NS, 'svg');
@@ -79,7 +79,16 @@
   // ------------------------------------------------------------------ layout
   const css = document.createElement('style');
   css.textContent = `
-  .st-controls{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 12px}
+  .st-controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+  .st-controls label{flex-direction:row;align-items:center;gap:6px}
+  .st-source{position:relative}
+  .st-source>summary{list-style:none;cursor:pointer;min-height:36px;display:flex;align-items:center;padding:0 12px;border:1px solid #cfd8de;background:#fff;font:600 13px Inter,"Segoe UI",sans-serif;color:#142433;white-space:nowrap}
+  .st-source>summary::-webkit-details-marker{display:none}
+  .st-source>summary::after{content:"▾";margin-left:8px;color:#6a7a87}
+  .st-source[open]>summary{border-color:#22364d}
+  .st-source-panel{position:absolute;z-index:60;top:calc(100% + 4px);left:0;display:grid;gap:10px;padding:14px;background:#fff;border:1px solid #22364d;box-shadow:0 8px 24px #14243326;min-width:360px}
+  .st-source-panel label{flex-direction:column;align-items:stretch}
+  .st-source-panel #st-study,.st-source-panel #st-point{width:100%}
   .st-summary{display:flex;gap:8px;align-items:center;font:600 12.5px Inter,"Segoe UI",sans-serif;color:#3f5161;padding-bottom:9px}
   .st-summary .ok{color:#16a34a}.st-summary .bad{color:#dc2626}
   #view-stages .st-acs{margin-top:12px}
@@ -121,6 +130,7 @@
   #view-stages .st-col.hamming .st-num{background:#fbe9df;color:${C.hamming}}
   #view-stages svg.st-svg{width:100%;height:auto;display:block}
   #view-stages svg.st-svg text{font:12px Inter,"Segoe UI",sans-serif;fill:#3f5161}
+  #view-stages .st-note:empty{display:none}
   #view-stages .st-note{margin:10px 0 0;font-size:13px;line-height:1.5;color:#3f5161}
   #view-stages .st-note strong{color:#142433}
   #view-stages .st-bars{display:grid;gap:4px;font-size:12.5px;font-variant-numeric:tabular-nums}
@@ -171,6 +181,14 @@
     const header = document.querySelector('header.topbar');
     const bar = section.querySelector('.st-controls');
     header.insertBefore(bar, header.querySelector('.sync-toolbar'));
+    // Study / energy level / frame rarely change: keep them behind one compact source button.
+    const source = document.createElement('details');
+    source.className = 'st-source';
+    source.innerHTML = '<summary id="st-source-label">Джерело</summary><div class="st-source-panel"></div>';
+    const panel = source.querySelector('.st-source-panel');
+    for (const id of ['st-study', 'st-point', 'st-trial']) panel.append($(id).closest('label'));
+    bar.prepend(source);
+    document.addEventListener('click', e => { if (source.open && !source.contains(e.target)) source.open = false; });
 
     tab = document.createElement('button');
     tab.type = 'button';
@@ -366,14 +384,19 @@
     const euDecided = d.arms.euclidean.decoded_phases[state.k];
     const hmErr = state.frame.hammingErrors[state.k], euErr = state.frame.euclidErrors[state.k];
 
-    const flags = [];
-    flags.push(['Спостереження й z_k спільні для обох декодерів', d.pairing_verified]);
-    flags.push(['Рішення Вітербі відтворено', d.replay_verified]);
-    flags.push(['Метрики перераховано з z_k', true]);
-    $('st-flags').replaceChildren(...flags.map(([t, ok]) => { const s = document.createElement('span'); s.className = 'st-flag' + (ok ? '' : ' warn'); s.textContent = (ok ? '✓ ' : '! ') + t; return s; }));
+    const verified = d.pairing_verified && d.replay_verified;
+    const chip = document.createElement('span');
+    chip.className = 'st-flag' + (verified ? '' : ' warn');
+    chip.textContent = verified ? '✓ перевірено' : '! не перевірено';
+    chip.title = 'Обидва декодери отримали той самий z_k; рішення Вітербі відтворено; метрики перераховано з z_k';
+    $('st-flags').replaceChildren(chip);
+    const cellName = state.exp04?.[state.study]?.cell;
+    const level = state.exp04?.[state.study]?.eb_n0_grid_db?.[state.point] ?? d.record.gamma_b_discrete_db;
+    $('st-source-label').textContent = `${cellName ? 'EXP-04 ' + cellName : state.study} · ${num(level, 1)} дБ · кадр ${state.trial}`;
 
     const mark = (decided, wrong) => fw.pilot ? 'пілот' : `${bits3(decided)} <span class="${wrong ? 'bad' : 'ok'}">${wrong ? '✗' : '✓'}</span>`;
-    $('st-summary').innerHTML = `k = ${state.k} з ${state.frame.size - 1} · передано ${bits3(truth)} · Хемінг ${mark(hmDecided, hmErr)} · Евклід ${mark(euDecided, euErr)}`;
+    $('st-summary').innerHTML = `<span class="st-mono">${bits3(truth)}</span> → Хемінг ${mark(hmDecided, hmErr)}, Евклід ${mark(euDecided, euErr)}`;
+    $('st-summary').title = `Символ ${state.k} з ${state.frame.size - 1}; передано ${bits3(truth)}`;
     const body = $('st-body');
     body.replaceChildren();
     const shared = document.createElement('div');
@@ -389,13 +412,13 @@
       <dt>Стан кодера</dt><dd class="st-mono">${pre.join('')} → ${post.join('')}</dd>
       <dt>Кодові біти c</dt><dd class="st-mono">${tx.coded_triples[i].join('')}</dd>
       <dt>Точка 8PSK</dt><dd>m = ${truth} · s = ${num(A * Math.cos(truth * Math.PI / 4))} ${A * Math.sin(truth * Math.PI / 4) < 0 ? '−' : '+'} j${num(Math.abs(A * Math.sin(truth * Math.PI / 4)))}</dd></dl>
-      <p class="st-note">Природне маркування: мітка точки = номер фази m, тобто c₂c₁c₀ = двійковий запис m.</p>`);
+`);
 
     // 2 channel
     const s2 = card(shared, 2, 'Канал: 8 відліків елемента');
     s2.append(samplesPlot(tx, i));
     s2.insertAdjacentHTML('beforeend', `<div class="st-legend"><span><i style="border-color:#7c8b96"></i>TX (передано)</span><span><i style="border-color:#7c3aed"></i>RX I</span><span><i style="border-color:#db2777"></i>RX Q</span></div>
-      <p class="st-note">Канал: ${esc(channelText())}. RX = канал·TX + шум; обидва декодери отримують ці самі відліки.</p>`);
+      <p class="st-note">${esc(channelText())}</p>`);
 
     // 3 frontend
     const z = fw.z, zAbs = Math.hypot(z[0], z[1]);
@@ -408,7 +431,7 @@
       <dt>|z_k|, arg z_k</dt><dd>${num(zAbs)} · ${num(Math.atan2(z[1], z[0]) * 180 / Math.PI, 1)}°</dd>
       <dt>Зміщення від s</dt><dd>|z_k − s| = ${num(shift)} (${num(shift / A * 100, 0)} % амплітуди)</dd>
       <dt>Вага тракту P_k</dt><dd>${weight === undefined ? '— (пілот)' : num(weight, 2)}</dd></dl>
-      <p class="st-note">Далі шляхи розходяться: Хемінг спершу «округлює» z_k до точки, Евклід використовує z_k як є.</p>`);
+`);
 
     // split columns
     const split = document.createElement('div');
@@ -421,21 +444,21 @@
     // 4 decision
     const h4 = card(left, 4, 'Жорстке рішення на сузір’ї');
     h4.append(constellation('hamming', fw, A, truth));
-    h4.insertAdjacentHTML('beforeend', `<p class="st-note">z_k потрапляє в сектор точки <strong class="st-mono">${bits3(hard)}</strong> (m = ${hard})${hard === truth ? ' — збігається з переданою' : ` — <strong style="color:${C.bad}">передано ${bits3(truth)}</strong>`}. Далі декодер бачить лише ці 3 біти: відстань ${num(Math.sqrt(fw.distances[hard]))} до точки відкинуто.</p>`);
+    h4.insertAdjacentHTML('beforeend', `<p class="st-note">Сектор <strong class="st-mono">${bits3(hard)}</strong>${hard === truth ? ' = передано' : ` ≠ передано <strong style="color:${C.bad}" class="st-mono">${bits3(truth)}</strong>`}; відстань ${num(Math.sqrt(fw.distances[hard]))} відкинуто</p>`);
     const e4 = card(right, 4, 'М’яке рішення: відстані до всіх точок');
     e4.append(constellation('euclid', fw, A, truth));
     const order = [...fw.distances.keys()].sort((a, b) => fw.distances[a] - fw.distances[b]);
-    e4.insertAdjacentHTML('beforeend', `<p class="st-note">Найближча точка <strong class="st-mono">${bits3(order[0])}</strong> (d² = ${num(fw.distances[order[0]])}), друга <strong class="st-mono">${bits3(order[1])}</strong> (d² = ${num(fw.distances[order[1]])}). Усі 8 відстаней ідуть у Вітербі — надійність рішення зберігається.</p>`);
+    e4.insertAdjacentHTML('beforeend', `<p class="st-note">Найближча <strong class="st-mono">${bits3(order[0])}</strong> d² = ${num(fw.distances[order[0]])}; друга <strong class="st-mono">${bits3(order[1])}</strong> d² = ${num(fw.distances[order[1]])}</p>`);
 
     // 5 branch metrics
     const h5 = card(left, 5, 'Метрики гілок за мітками (0…3)');
     h5.append(bars(hmMetrics, truth, 'hamming', v => String(v)));
     const hTies = ties(hmMetrics);
-    h5.insertAdjacentHTML('beforeend', `<p class="st-note">Лише 4 можливі значення: ${hTies.map(([v, n]) => `<strong>${n}</strong> мітки з метрикою ${v}`).join(', ')}. Кандидати з однаковою метрикою декодер на цьому такті не розрізняє.</p>`);
+    h5.insertAdjacentHTML('beforeend', `<p class="st-note">Рівні метрики: ${hTies.map(([v, n]) => `<strong>${n}</strong> × ${v}`).join(', ')}</p>`);
     const e5 = card(right, 5, `Метрики гілок за мітками${weight !== undefined ? ' (P_k·d²)' : ''}`);
     e5.append(bars(euMetrics, truth, 'euclid', v => num(v, 2)));
     const ratio = fw.distances[order[1]] / Math.max(fw.distances[order[0]], 1e-12);
-    e5.insertAdjacentHTML('beforeend', `<p class="st-note">Кожна мітка має власне значення; друга найближча мітка «дорожча» за першу в <strong>${num(ratio, 1)}</strong> раза. Вага P_k = ${weight === undefined ? '—' : num(weight, 2)} масштабує всі метрики такту: слабкий сигнал важить менше.</p>`);
+    e5.insertAdjacentHTML('beforeend', `<p class="st-note">Друга / перша: <strong>${num(ratio, 1)}</strong>; P_k = ${weight === undefined ? '—' : num(weight, 2)}</p>`);
 
     // 6 trellis
     const h6 = card(left, 6, 'Вітербі: кандидати, вибір і шлях');
@@ -670,9 +693,9 @@
     const tieCount = groups.reduce((n, g) => n + g.candidates.filter(c => c.tied).length, 0);
     const box = document.createElement('div');
     box.className = 'st-acs';
-    box.innerHTML = `<div class="st-acs-head">Вибір на такті k = ${state.k}: шлях = метрика стану + метрика гілки (стан·u)</div>
+    box.innerHTML = `<div class="st-acs-head">Вибір на такті k = ${state.k}: метрика стану + метрика гілки</div>
       <table><thead><tr><th>У стан</th><th>Кандидати (переможець виділено)</th></tr></thead><tbody>${rows}</tbody></table>
-      <p class="st-note">${pilot ? 'Пілот: дозволено лише відомий вхід u, тому кандидатів менше. ' : ''}${tieCount ? `<strong style="color:#b45309">${tieCount} рівн${tieCount === 1 ? 'ий кандидат' : 'і кандидати'}</strong>: сума збігається з переможцем, і вибір робить лише правило «перше ребро в таблиці» — метрика не має інформації, щоб їх розрізнити. ` : 'Рівних кандидатів на цьому такті немає. '}Рядок зі смугою — стан, через який пройшов остаточний (відкладений на η = 20) шлях декодера.</p>`;
+      <p class="st-note">${pilot ? 'Пілот: лише відомий u. ' : ''}${tieCount ? `<strong style="color:#b45309">Рівних кандидатів: ${tieCount}</strong> — вибрано перше ребро таблиці.` : ''}</p>`;
     return box;
   }
 
@@ -699,7 +722,7 @@
   function resultNote(arm, decided, truth, wrong) {
     const s = state.data.arms[arm].statistics;
     const errors = (arm === 'hamming' ? state.frame.hammingErrors : state.frame.euclidErrors).filter(Boolean).length;
-    return `<p class="st-note">На такті k декодер вибрав точку <strong class="st-mono">${bits3(decided)}</strong> — ${wrong ? `<strong style="color:${C.bad}">помилка</strong> (передано ${bits3(truth)})` : '<strong style="color:#16a34a">правильно</strong>'}. Рішення видається із затримкою η = 20 тактів, тому воно враховує й наступні символи. У всьому кадрі: BER = ${Number(s.ber).toExponential(2)} (${s.bit_errors} з ${s.bits} біт), помилкових символів ${errors}.</p>`;
+    return `<p class="st-note">k: <strong class="st-mono">${bits3(decided)}</strong> ${wrong ? `<strong style="color:${C.bad}">помилка</strong>` : '<strong style="color:#16a34a">вірно</strong>'}; кадр: BER ${Number(s.ber) === 0 ? '0' : Number(s.ber).toExponential(2)} (${s.bit_errors} з ${s.bits} біт), помилкових символів ${errors}</p>`;
   }
 
   const METRIC_VIEWS = ['stages', 'mchannel', 'mdecoding'];

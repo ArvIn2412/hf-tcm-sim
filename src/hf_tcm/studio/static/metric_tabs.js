@@ -56,6 +56,7 @@
     return node;
   }
 
+  const RAW_WINDOW = 64;
   const state = {frame: null, key: '', request: 0, zoomChannel: 512, zoomTrellis: 96};
 
   const css = document.createElement('style');
@@ -220,14 +221,17 @@
     body.append(card);
     const tools = document.createElement('div');
     tools.className = 'mt-tools';
-    const options = [[64, '64'], [256, '256'], [1024, '1024'], [Infinity, 'Весь кадр']].filter(([v]) => v === Infinity || v < f.size);
+    const options = [[16, '16'], [64, '64'], [256, '256'], [1024, '1024'], [Infinity, 'Весь кадр']].filter(([v]) => v === Infinity || v < f.size);
     tools.append(zoomControl(state.zoomChannel, options, v => { state.zoomChannel = v; renderChannel(); }));
-    tools.insertAdjacentHTML('beforeend', `<span class="hint">символів у вікні · клік по графіку — вибрати символ k · ${f.size} символів у кадрі, Eb/N0 ${num(f.gamma_b_discrete_db, 1)} дБ</span>`);
+    tools.insertAdjacentHTML('beforeend', `<span class="hint">символів у вікні з ${f.size}</span>`);
     card.append(tools);
 
     const [a, b] = windowAround(k, f.size, state.zoomChannel === Infinity ? f.size : state.zoomChannel);
     const W = 1200, left = 70, right = 16;
-    const lanes = [['rx', 'RX I/Q', 110], ['snr', 'SNR z_k, дБ', 110], ['offset', '|z_k − s|', 90], ['hamming', 'Хемінг', 34], ['euclidean', 'Евклід', 34]];
+    const raw = b - a <= RAW_WINDOW;
+    const lanes = [
+      ...(raw ? [['rxi', 'I', 80], ['rxq', 'Q', 80]] : [['gain', '|ĝ_k|', 90]]),
+      ['snr', 'SNR z_k, дБ', 100], ['offset', '|z_k − s|', 90], ['hamming', 'Хемінг', 34], ['euclidean', 'Евклід', 34]];
     const H = lanes.reduce((s, l) => s + l[2] + 10, 0) + 26;
     const node = svg(W, H, 'Канал і помилки декодерів у часі');
     const X = s => left + (s - a) / (b - a) * (W - left - right);
@@ -242,17 +246,41 @@
       add(node, 'rect', {x: left, y, width: W - left - right, height: hh, fill: 'none', stroke: C.line});
       add(node, 'text', {x: left - 8, y: y + hh / 2 + 4, 'text-anchor': 'end', style: `font-weight:700;${key === 'hamming' ? `fill:${C.hamming}` : key === 'euclidean' ? `fill:${C.euclid}` : ''}`}, label);
     }
-    // RX envelope (min/max bins over samples)
-    {
-      const [y, hh] = laneY.rx;
-      const all = [...f.rx_i, ...f.rx_q].filter(p => p[0] / 8 >= a && p[0] / 8 < b);
-      const max = Math.max(1e-9, ...all.map(p => Math.max(Math.abs(p[1]), Math.abs(p[2]))));
-      const Y = v => y + hh / 2 - v / max * (hh / 2 - 4);
-      for (const [series, color] of [[f.rx_i, '#7c3aed'], [f.rx_q, '#db2777']]) {
-        let d = '';
-        for (const [i, lo, hi] of series) { const s = i / 8; if (s < a || s >= b) continue; d += `M${X(s)},${Y(lo)}L${X(s)},${Y(hi)}`; }
-        add(node, 'path', {d, stroke: color, 'stroke-width': 1.2, opacity: 0.75, fill: 'none'});
+    if (raw) {
+      // I and Q of the received samples with the transmitted samples (dashed), ±A scale.
+      const lanesIQ = {rxi: ['rx_i', 'tx_i'], rxq: ['rx_q', 'tx_q']};
+      const cached = state.samples?.key === `${state.key}|${a}|${b}`;
+      const samples = cached ? state.samples.data : null;
+      const A = f.amplitude;
+      for (const [lane, [rxKey, txKey]] of Object.entries(lanesIQ)) {
+        const [y, hh] = laneY[lane];
+        if (!samples) { add(node, 'text', {x: left + 10, y: y + hh / 2 + 4}, cached ? 'Відліки недоступні' : 'Завантаження відліків…'); continue; }
+        const values = [...samples[rxKey], ...samples[txKey]];
+        const max = Math.max(A * 1.2, ...values.map(Math.abs));
+        const Y = v => y + hh / 2 - v / max * (hh / 2 - 4);
+        for (const v of [A, -A]) {
+          add(node, 'line', {x1: left, x2: W - right, y1: Y(v), y2: Y(v), stroke: C.grid, 'stroke-dasharray': '2 3'});
+          add(node, 'text', {x: W - right - 4, y: Y(v) + (v > 0 ? -3 : 11), 'text-anchor': 'end', style: 'font-size:10px'}, v > 0 ? '+A' : '−A');
+        }
+        add(node, 'line', {x1: left, x2: W - right, y1: Y(0), y2: Y(0), stroke: C.line});
+        const step = (series, color, width, dash) => {
+          let d = '';
+          series.forEach((v, j) => { const s0 = a + j / 8, s1 = a + (j + 1) / 8; d += `${j ? 'L' : 'M'}${X(s0)},${Y(v)}L${X(s1)},${Y(v)}`; });
+          add(node, 'path', {d, fill: 'none', stroke: color, 'stroke-width': width, 'stroke-dasharray': dash || 'none'});
+        };
+        step(samples[txKey], '#7c8b96', 1.4, '5 3');
+        step(samples[rxKey], lane === 'rxi' ? '#7c3aed' : '#db2777', 1.6);
       }
+      if (!cached) loadSamples(a, b);
+    } else {
+      // channel strength per symbol: magnitude of the frontend composite gain
+      const [y, hh] = laneY.gain;
+      const vals = f.channel_gain.slice(a, b);
+      const hi = Math.max(1e-9, ...vals) * 1.1;
+      const Y = v => y + hh - 3 - v / hi * (hh - 6);
+      line(node, a, b, i => f.channel_gain[i], X, Y, C.gain, 1.6);
+      add(node, 'text', {x: W - right - 4, y: y + 12, 'text-anchor': 'end', style: 'font-size:10.5px'}, num(hi / 1.1, 2));
+      add(node, 'text', {x: W - right - 4, y: y + hh - 6, 'text-anchor': 'end', style: 'font-size:10.5px'}, '0');
     }
     // effective SNR of z_k
     {
@@ -272,7 +300,7 @@
       const hi = Math.max(margin * 1.6, ...vals);
       const Y = v => y + hh - 3 - Math.min(v, hi) / hi * (hh - 6);
       add(node, 'line', {x1: left, x2: W - right, y1: Y(margin), y2: Y(margin), stroke: C.hamming, 'stroke-dasharray': '5 4'});
-      add(node, 'text', {x: W - right - 4, y: Y(margin) - 4, 'text-anchor': 'end', style: `font-size:10.5px;fill:${C.hamming}`}, 'A·sin(π/8): мінімальна відстань до межі сектора');
+      add(node, 'text', {x: W - right - 4, y: Y(margin) - 4, 'text-anchor': 'end', style: `font-size:10.5px;fill:${C.hamming}`}, 'межа сектора A·sin(π/8)');
       const step = Math.max(1, Math.floor((b - a) / 1500));
       for (let i = a; i < b; i += step) {
         const bad = !f.hard_correct[i];
@@ -319,24 +347,19 @@
     });
     node.addEventListener('mouseleave', () => { cursor.setAttribute('opacity', 0); readout.innerHTML = describe(k); });
     card.append(readout, node);
-    card.insertAdjacentHTML('beforeend', `<div class="mt-legend"><span><i style="border-color:#7c3aed"></i>RX I</span><span><i style="border-color:#db2777"></i>RX Q</span><span><i style="border-color:${C.snr}"></i>SNR z_k = A²/σ²_z</span><span><b style="background:${C.bad}"></b>помилка символу / хибне жорстке рішення</span><span><b style="background:${C.hamming};opacity:.3"></b><b style="background:${C.euclid};opacity:.3"></b>подія помилки (шлях відійшов від переданого)</span><span><b style="background:${C.pilot};border:1px solid #dde4e9"></b>пілоти</span><span><b style="background:#f59e0b;opacity:.4"></b>символ k</span></div>`);
+    card.insertAdjacentHTML('beforeend', `<div class="mt-legend">${raw ? `<span><i style="border-color:#7c3aed"></i>RX I</span><span><i style="border-color:#db2777"></i>RX Q</span><span><i style="border-color:#7c8b96;border-top-style:dashed"></i>TX</span>` : `<span><i style="border-color:${C.gain}"></i>|ĝ_k| — сила каналу</span>`}<span><i style="border-color:${C.snr}"></i>SNR z_k = A²/σ²_z</span><span><b style="background:${C.bad}"></b>помилка символу / хибне жорстке рішення</span><span><b style="background:${C.hamming};opacity:.3"></b><b style="background:${C.euclid};opacity:.3"></b>подія помилки (шлях відійшов від переданого)</span><span><b style="background:${C.pilot};border:1px solid #dde4e9"></b>пілоти</span><span><b style="background:#f59e0b;opacity:.4"></b>символ k</span></div>`);
 
     // split summary
     const split = document.createElement('div');
     split.className = 'mt-split';
     body.append(split);
-    const hardWrong = f.hard_correct.filter((ok, i) => !ok && f.payload_mask[i]).length;
     for (const arm of ['hamming', 'euclidean']) {
       const a2 = f.arms[arm], ev = summarizeEvents(a2.events, a2.pair_errors);
       const snrAtErr = meanWhere(f.effective_snr_db, a2.pair_errors);
-      const snrAll = meanWhere(f.effective_snr_db, f.payload_mask);
       const box = document.createElement('article');
       box.className = 'card ' + (arm === 'hamming' ? 'hamming' : 'euclid');
       box.innerHTML = `<h2>${arm === 'hamming' ? 'Хемінг · жорстке рішення' : 'Евклід · м’яке рішення'}</h2>
-        <div class="mt-kpis"><div><small>Помилкових символів</small><strong>${ev.symbols}</strong></div><div><small>Подій помилок</small><strong>${ev.count}</strong></div><div><small>BER кадру</small><strong>${Number(a2.statistics.ber) === 0 ? "0" : Number(a2.statistics.ber).toExponential(1)}</strong></div><div><small>SNR на помилках</small><strong>${snrAtErr === null ? '—' : num(snrAtErr, 1) + ' дБ'}</strong></div></div>
-        <p class="mt-note">${arm === 'hamming'
-          ? `Жорстке рішення хибне на <strong>${hardWrong}</strong> символах даних (z_k за межею сектора — червоні точки). Хемінг отримує лише 3 біти, тож кожне таке рішення для нього — повна помилка без міри надійності.`
-          : `Евклід бачить ті самі z_k, але враховує, наскільки далеко кожне від усіх точок: близька до межі точка майже не «голосує».`} Середнє SNR z_k на символах даних — ${num(snrAll, 1)} дБ.</p>`;
+        <div class="mt-kpis"><div><small>Помилкових символів</small><strong>${ev.symbols}</strong></div><div><small>Подій помилок</small><strong>${ev.count}</strong></div><div><small>BER кадру</small><strong>${Number(a2.statistics.ber) === 0 ? "0" : Number(a2.statistics.ber).toExponential(1)}</strong></div><div><small>SNR на помилках</small><strong>${snrAtErr === null ? '—' : num(snrAtErr, 1) + ' дБ'}</strong></div></div>`;
       split.append(box);
     }
   }
@@ -357,6 +380,26 @@
     add(node, 'path', {d, fill: 'none', stroke: color, 'stroke-width': width});
   }
 
+  async function loadSamples(a, b) {
+    const ctx = window.metricContext?.get();
+    if (!ctx) return;
+    const key = `${state.key}|${a}|${b}`;
+    if (state.samplesPending === key) return;
+    state.samplesPending = key;
+    try {
+      const q = new URLSearchParams({study_id: ctx.study, point: ctx.point, trial: ctx.trial, start: a, count: b - a, limit: 8});
+      const response = await fetch('/api/scientific/metric-trace?' + q);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || response.statusText);
+      state.samples = {key, data: data.transmitter};
+      if (channelView.classList.contains('active')) renderChannel();
+    } catch (error) {
+      state.samples = {key, data: null};
+    } finally {
+      state.samplesPending = null;
+    }
+  }
+
   // ------------------------------------------------------------------ Whole-frame decoding
   function renderDecoding() {
     const f = state.frame, k = ctxK();
@@ -369,7 +412,7 @@
     tools.className = 'mt-tools';
     const options = [[48, '48'], [96, '96'], [192, '192']].filter(([v]) => v < f.size).concat(f.size <= 400 ? [[f.size, 'Весь кадр']] : []);
     tools.append(zoomControl(state.zoomTrellis, options, v => { state.zoomTrellis = v; renderDecoding(); }));
-    tools.insertAdjacentHTML('beforeend', '<span class="hint">тактів у вікні · клік по решітці — вибрати такт k · деталі вибору на такті — у «Етапах обробки»</span>');
+    tools.insertAdjacentHTML('beforeend', '<span class="hint">тактів у вікні</span>');
     card.append(tools);
 
     // event map over the whole frame
@@ -389,11 +432,7 @@
     split.className = 'mt-split';
     body.append(split);
     for (const arm of ['hamming', 'euclidean']) split.append(eventsCard(f, arm, k));
-    const h = summarizeEvents(f.arms.hamming.events, f.arms.hamming.pair_errors), e = summarizeEvents(f.arms.euclidean.events, f.arms.euclidean.pair_errors);
-    const note = document.createElement('p');
-    note.className = 'mt-note';
-    note.innerHTML = `Подія помилки — ділянка, де шлях Вітербі відходить від переданого шляху решітки і потім повертається на нього. У цьому кадрі: Хемінг — <strong>${h.count}</strong> подій (середня довжина ${num(h.meanLength, 1)}, найдовша ${h.maxLength}), Евклід — <strong>${e.count}</strong> (${num(e.meanLength, 1)}, ${e.maxLength}). Одна хибна гілка тягне за собою кілька тактів, доки шляхи не зійдуться.`;
-    body.append(note);
+
   }
 
   function eventMap(f, k) {
@@ -456,7 +495,7 @@
     const card = document.createElement('article');
     card.className = 'card';
     card.style.marginTop = '14px';
-    card.innerHTML = '<h2>Довжина подій помилок</h2><p class="mt-note" style="margin:0 0 6px">Скільки тактів шлях декодера йде поза переданим шляхом, перш ніж повернутися. Короткі події — одна-дві хибні гілки; довгі — декодер довго «вірить» хибному шляху.</p>';
+    card.innerHTML = '<h2>Довжина подій помилок</h2>';
     const W = 1200, H = 190, left = 70, right = 16, top = 12, bottom = 36;
     const node = svg(W, H, 'Гістограма довжин подій помилок для обох декодерів');
     const max = Math.max(1, ...hist.hamming, ...hist.euclidean);
@@ -495,7 +534,7 @@
     }).join('');
     box.innerHTML = `<h2>${arm === 'hamming' ? 'Події помилок · Хемінг' : 'Події помилок · Евклід'}</h2>${events.length
       ? `<div class="mt-scroll"><table class="mt-events"><thead><tr><th>#</th><th>Такти</th><th>Довжина</th><th>Помилк. симв.</th><th>Мін. SNR, дБ</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`
-      : '<p class="mt-note">Шлях декодера в цьому кадрі жодного разу не відійшов від переданого.</p>'}`;
+      : '<p class="mt-note">Подій немає.</p>'}`;
     box.querySelectorAll('button[data-k]').forEach(b => b.addEventListener('click', () => window.metricContext?.openStages(Number(b.dataset.k))));
     return box;
   }

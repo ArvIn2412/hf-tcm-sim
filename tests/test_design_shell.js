@@ -15,5 +15,5 @@ test('status chip tone follows the job status text', () => {
 test('workflow pages are numbered 1-5; archive and legacy Joint/B0 views have no step', () => {
   assert.deepEqual(['parameters', 'stages', 'mchannel', 'mdecoding', 'metric'].map(k => PAGES[k].step), ['1', '2', '3', '4', '5']);
   for (const key of ['saved', 'transmitter', 'viterbi']) assert.equal(PAGES[key].step, undefined);
-  for (const page of Object.values(PAGES)) assert.ok(page.tab && page.eyebrow && page.lead);
+  for (const page of Object.values(PAGES)) { assert.ok(page.tab); assert.equal(page.lead, undefined); }
 });

@@ -329,3 +329,35 @@ body.ds.projector .st-note, body.ds.projector .mt-note, body.ds.projector .ds-le
 body.ds.projector .st-bars, body.ds.projector .st-acs table, body.ds.projector .st-kv { font-size: 15px !important; }
 body.ds.projector .st-acs-c { font-size: 13.5px !important; }
 body.ds.projector input:not([type=checkbox]):not([type=radio]):not([type=range]), body.ds.projector select, body.ds.projector main button { font-size: 16px; min-height: 44px; }
+
+/* ------------------------------------------------------------------ header fit
+   Every tab stays visible: the tab row wraps instead of scrolling out of sight,
+   the run status is a compact chip (full text in its tooltip). */
+body.ds .tabs { flex-wrap: wrap; height: auto; overflow: visible; row-gap: 0; }
+body.ds .tabs .tab { height: 56px; padding: 0 9px; font-size: 13.5px; gap: 6px; }
+body.ds .tabs .tab[data-step]::before { width: 18px; height: 18px; font-size: 10.5px; }
+body.ds .ds-header-tools #job-status { max-width: 132px; }
+body.ds header.topbar { column-gap: 14px; padding-left: 24px; padding-right: 24px; }
+
+/* Shared context bar contents */
+body.ds header .st-controls .st-flags { margin-left: auto; }
+body.ds header .st-controls input { width: 88px !important; }
+
+/* Results (step 5) */
+body.ds .metric-mode-table small { color: var(--ds-muted); font-size: 11.5px; white-space: nowrap; }
+body.ds .metric-mode-table td:last-child { text-align: right; }
+body.ds .metric-mode-table td:last-child button { min-height: 30px; padding: 3px 10px; font-size: 12.5px; }
+body.ds .results-meta { font-size: 13.5px; color: var(--ds-muted); margin: 0 0 12px; }
+body.ds .results-gain { font-weight: 600; margin: 14px 0 8px; }
+body.ds .results-gain.warn { color: var(--ds-warn-ink); background: var(--ds-warn-bg); border: 1px solid var(--ds-warn-line); padding: 10px 14px; font-weight: 500; }
+
+/* No descriptive copy: hints, notes and leads are hidden; data lines stay. */
+body.ds #run-form .metric-mode-hint, body.ds #run-form details > p { display: none; }
+body.ds #view-parameters .ds-exp-layout { grid-template-columns: minmax(0, 1fr); max-width: 1040px; }
+body.ds .ds-empty p:empty { display: none; }
+body.ds .ds-page-head { margin-bottom: 18px; }
+body.ds #run-form #es-progress { visibility: hidden; }
+body.ds[data-busy] #run-form #es-progress { visibility: visible; }
+body.ds header .st-controls label { flex-direction: row; align-items: center; gap: 8px; white-space: nowrap; }
+body.ds header .st-controls .st-source-panel label { flex-direction: column; align-items: stretch; }
+body.ds header.topbar > .st-controls { padding-top: 8px; padding-bottom: 8px; }

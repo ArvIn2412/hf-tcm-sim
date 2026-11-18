@@ -143,7 +143,8 @@
     #view-result td.primary{background:#e9f4f3;font-weight:800;color:#086d78}
     #view-result tr[data-cell]{cursor:pointer}#view-result tr[data-cell]:hover td{background:#f6fafa}
     #view-result .r4-flag{color:#91631a}
-    #view-result .r4-h{display:grid;gap:10px}
+    #view-result .r4-verdict{margin:0 0 10px;font-size:14px;color:#142433}
+  #view-result .r4-h{display:grid;gap:10px}
     #view-result .r4-h article{border-left:4px solid var(--teal)}
     #view-result .r4-h article.r4-desc{border-left-color:#9fb3bd}
     #view-result .r4-h h3{margin:0 0 6px;font-size:14px;color:var(--navy)}
@@ -163,23 +164,16 @@
     section.className = 'view';
     section.id = 'view-result';
     section.innerHTML = `
-      <div class="page-heading"><div><p class="eyebrow">Підтверджувальна серія SCIENTIFIC-EXP-04</p>
-        <h1>Хемінг проти Евкліда у відомому тракті</h1>
-        <p>Роздільні демодуляція (жорстке рішення 8PSK) і декодування з метрикою Хемінга проти спільних демодуляції й декодування з м'якою евклідовою метрикою. Обидва декодери обробляють те саме спостереження в кожному кадрі.</p></div>
+      <div class="page-heading"><h1>Хемінг і Евклід у відомому тракті · EXP-04</h1>
         <span class="status-pill" id="r4-status">Завантаження…</span></div>
-      <div class="r4-grid">
-        <article class="card"><h2 id="r4-plot-title">BER від Eb/N0</h2><p id="r4-plot-sub"></p>
-          <div class="r4-cells" id="r4-cells" role="group" aria-label="Канал"></div>
-          <div id="r4-plot"></div>
-          <div class="r4-legend"><span><i style="background:${COLORS.hamming}"></i>Хемінг · жорстке рішення</span><span><i style="background:${COLORS.euclidean}"></i>Евклід · м'яке, спільне</span><span><i style="border-top:2px dashed ${COLORS.qpsk};height:0"></i>QPSK без кодування (AWGN)</span></div>
-          <div class="r4-kpi" id="r4-kpi"></div></article>
-        <div class="r4-h" id="r4-hyp"></div>
-      </div>
-      <article class="card" style="margin-top:16px"><h2>Енергетичний виграш Евкліда над Хемінгом</h2>
-        <p>Δ = Eb/N0(Хемінг) − Eb/N0(Евклід) при цільовому BER; 95 % ДІ — парний bootstrap за кадрами. Виділено первинну ціль комірки. Клацніть рядок, щоб показати криві.</p>
-        <div class="table-wrap" style="max-height:none;font-family:inherit"><table id="r4-table"></table></div></article>
-      <div class="card caveat"><strong>Як читати цей результат</strong>
-        <p id="r4-article"></p><p id="r4-limits"></p><p class="r4-meta" id="r4-meta"></p></div>`;
+      <article class="card"><h2 id="r4-plot-title">BER від Eb/N0</h2><p id="r4-plot-sub"></p>
+        <div class="r4-cells" id="r4-cells" role="group" aria-label="Канал"></div>
+        <div id="r4-plot"></div>
+        <div class="r4-legend"><span><i style="background:${COLORS.hamming}"></i>Хемінг</span><span><i style="background:${COLORS.euclidean}"></i>Евклід</span><span><i style="border-top:2px dashed ${COLORS.qpsk};height:0"></i>QPSK без кодування</span></div>
+        <div class="r4-kpi" id="r4-kpi"></div></article>
+      <article class="card" style="margin-top:16px"><h2>Виграш Евкліда над Хемінгом, дБ</h2>
+        <p class="r4-verdict" id="r4-verdict"></p>
+        <div class="table-wrap" style="max-height:none;font-family:inherit"><table id="r4-table"></table></div></article>`;
     document.querySelector('main').prepend(section);
 
     // Navigation: own tab first; other tabs' handlers deactivate this view themselves.
@@ -311,11 +305,11 @@
     const id = 'exp04-' + cell.id;
     const point = typicalPoint(cell);
     if (!state.frames?.includes(id) || point < 0 || !window.metricContext) {
-      slot.innerHTML = state.frames ? '<p>Сирі кадри серії в цій копії проєкту відсутні: доступні лише підсумкові числа.</p>' : '';
+      slot.innerHTML = state.frames ? '<p>Сирих кадрів серії в цій копії немає.</p>' : '';
       return;
     }
     const p = cell.points[point];
-    slot.innerHTML = `<button type="button" class="ds-primary">Розібрати типовий кадр</button><p>Кадр 0 на рівні Eb/N0 ${dec(p.eb_n0_db, 1)} дБ, де BER Евкліда найближчий до первинної цілі ${berLabel(cell.primary_target_ber)} (Хемінг ${(p.hamming_errors / p.bits).toExponential(1)}, Евклід ${(p.euclidean_errors / p.bits).toExponential(1)}). Відкриється на першій розбіжності декодерів у «Етапах обробки».</p>`;
+    slot.innerHTML = `<button type="button" class="ds-primary">Розібрати типовий кадр</button><p>Eb/N0 ${dec(p.eb_n0_db, 1)} дБ, кадр 0: BER Хемінг ${(p.hamming_errors / p.bits).toExponential(1)}, Евклід ${(p.euclidean_errors / p.bits).toExponential(1)}</p>`;
     const button = slot.querySelector('button');
     button.addEventListener('click', async () => {
       button.disabled = true;
@@ -346,40 +340,11 @@
     $('r4-table').querySelectorAll('tr[data-cell]').forEach(row => row.addEventListener('click', () => { state.cell = row.dataset.cell; renderCell(); }));
   }
 
-  function renderHypotheses() {
+  function renderVerdict() {
     const b = state.bundle, h = hypotheses(b);
-    const byId = Object.fromEntries(b.cells.map(c => [c.id, c]));
-    const gain = (id, t) => gainSummary(byId[id], t ?? byId[id].primary_target_ber);
-    const a1 = byId['A1-awgn'];
-    const qpsk3 = qpskRequiredDb(1e-3), euclid3 = a1?.targets['0.001']?.required_eb_n0_db?.joint, hamming3 = a1?.targets['0.001']?.required_eb_n0_db?.separate;
-    const items = [
-      ['H1 · первинна', h1Text(h.h1, b, gain), ''],
-      ['Чому без м\'якого рішення кодування не окупається', Number.isFinite(euclid3)
-        ? `В AWGN при BER 10⁻³ Хемінгу потрібно ${dec(hamming3)} дБ — на ${dec(hamming3 - qpsk3)} дБ більше, ніж QPSK без кодування (${dec(qpsk3)} дБ). Евклід потребує ${dec(euclid3)} дБ і виграє в QPSK ${dec(qpsk3 - euclid3)} дБ. Код TCM дає енергетичний виграш лише разом зі спільним м'яким декодуванням.` : '', ''],
-      ['H2 · CSI-вага (описова)', h.h2DifferenceDb === null ? 'Немає даних.' : `Зважена й незважена евклідові метрики в ITU moderate відрізняються на ${dec(h.h2DifferenceDb, 3)} дБ при первинній цілі: за повільних завмирань вага майже стала в межах вікна Вітербі (η = 20).`, 'r4-desc'],
-      ['H3 · практичний тракт (описова)', h.h3 ? `З причинною оцінкою каналу за пілотами виграш Евкліда зберігається: ${h.h3.text} ${h.h3.ci} при BER 10⁻². Неточність оцінки коштує обом декодерам приблизно однаково.` : 'Немає даних.', 'r4-desc'],
-    ];
-    $('r4-hyp').replaceChildren(...items.map(([title, text, cls]) => {
-      const card = document.createElement('article');
-      card.className = 'card ' + cls;
-      card.innerHTML = `<h3>${title}</h3><p>${text}</p>`;
-      return card;
-    }));
-  }
-  function h1Text(ok, b, gain) {
-    const list = b.cells.filter(c => c.role === 'primary').map(c => `${c.id.split('-')[0]} ${gain(c.id).text}`).join(', ');
-    return ok
-      ? `Підтверджено: в усіх первинних комірках Евклід потребує меншого Eb/N0, нижня межа 95 % ДІ > 0 і точність достатня (${list}).`
-      : `Не підтверджено в усіх первинних комірках (${list}).`;
-  }
-
-  function renderNotes() {
-    const b = state.bundle;
-    const byId = Object.fromEntries(b.cells.map(c => [c.id, c]));
-    const at = id => gainSummary(byId[id], b.article_reference_target_ber).text;
-    $('r4-article').textContent = `У статті повідомлено виграш близько 1,5 дБ при частоті помилок ≈ 5·10⁻²; умови моделювання (канал, сенс p′ₙ, опорний приймач) у ній не наведено, а уточнити їх немає змоги, тому порівняння лише описове (paper_exact = false). Тут при 5·10⁻²: AWGN ${at('A1-awgn')}, ITU moderate ${at('A3-itu-moderate')}, тракт за пілотами ${at('S2-itu-moderate-pilot')} — того самого знака й порядку.`;
-    $('r4-limits').textContent = 'Обмеження: дискретна модель (8 відліків на елемент, без фільтрів і синхронізації); другий промінь ITU — 3 відліки замість 0,5–2 мс; без перемежування; кодер і маркування 8PSK — реконструкція проєкту. «Відомий тракт» = точні коефіцієнти каналу.';
-    $('r4-meta').textContent = `Протокол ${b.protocol_id}, SHA-256 ${b.protocol_sha256} (заморожено до запуску) · ${b.cells.reduce((s, c) => s + c.trials, 0).toLocaleString('uk-UA')} парних кадрів · незалежний перерахунок помилок без розбіжностей · ${b.bootstrap_replicates} bootstrap-повторів · звіт ${b.report}`;
+    const list = b.cells.filter(c => c.role === 'primary').map(c => `${c.id.split('-')[0]} ${gainSummary(c, c.primary_target_ber).text}`).join(', ');
+    $('r4-verdict').innerHTML = `<strong>${h.h1 ? 'H1 підтверджено' : 'H1 не підтверджено'}</strong>: ${list} (первинні цілі, 95 % ДІ > 0).`;
+    $('r4-status').title = `Протокол ${b.protocol_id}, SHA-256 ${b.protocol_sha256}; ${b.cells.reduce((sum, c) => sum + c.trials, 0).toLocaleString('uk-UA')} парних кадрів; ${b.bootstrap_replicates} bootstrap-повторів; paper_exact = false; звіт ${b.report}`;
   }
 
   async function load() {
@@ -402,8 +367,7 @@
         return button;
       }));
       renderTable();
-      renderHypotheses();
-      renderNotes();
+      renderVerdict();
       renderCell();
       $('r4-status').textContent = 'Перевірено · протокол ' + data.protocol_sha256.slice(0, 12);
     } catch (error) {

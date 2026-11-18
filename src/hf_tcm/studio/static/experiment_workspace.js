@@ -28,7 +28,7 @@
     field('amplitude','Амплітуда',null,'1',advanced);field('channelSeed','Seed каналу (порожньо — автоматично)',null,'',advanced);
     fields.rays.onchange=()=>{for(const key of Object.keys(defaults)){const a=fields[key].value.split(',');fields[key].value=defaults[key].slice(0,Number(fields.rays.value)).map((v,i)=>a[i]??v).join(',');}};
     fields.awgn.onchange=()=>{fields.variance.closest('label').hidden=fields.awgn.value==='off';};
-    for(const [id,title]of Object.entries({'es-grid':'Енергетична сітка, дБ','es-trials':'Кадрів на точку','es-target':'Ціль BER','es-budget':'Бюджет, с','es-bootstrap':'Bootstrap-повторення','es-sweep':'Спосіб зміни енергії'})){
+    for(const [id,title]of Object.entries({'es-grid':'Сітка Eb/N0, дБ','es-trials':'Кадрів на точку','es-target':'Ціль BER','es-budget':'Бюджет, с','es-bootstrap':'Bootstrap-повторення','es-sweep':'Спосіб зміни енергії'})){
       const input=old(id),label=document.createElement('label');label.textContent=title;label.append(input);advanced.append(label);
     }
     const note=document.createElement('p');note.textContent='Пілоти в цьому системному API не застосовуються; обидва приймачі отримують одне спостереження.';more.append(note);

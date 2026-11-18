@@ -50,6 +50,13 @@ _PHASE_BY_EDGE = np.asarray(
 )
 
 
+# Frame length: the article uses N = 20000; longer frames are allowed for single-frame
+# demonstrations, but then only one full-array trial per energy point is stored
+# (about 5 MB per 10 000 symbols) to keep GUI studies small on disk.
+MAX_FRAME_SYMBOLS = 100_000
+FULL_ARRAY_FRAME_LIMIT = 20_000
+
+
 @dataclass(frozen=True, slots=True)
 class MetricTrialSpec:
     trial_id: str
@@ -496,8 +503,16 @@ class MetricStudyConfig:
             raise ValueError("full_array_stride must be an integer in [1,1000]")
         if type(self.common_random_numbers) is not bool:
             raise ValueError("common_random_numbers must be boolean")
-        if type(self.frame_symbols) is not int or not 20 <= self.frame_symbols <= 20_000:
-            raise ValueError("frame_symbols must be in [20,20000]")
+        if type(self.frame_symbols) is not int or not 20 <= self.frame_symbols <= MAX_FRAME_SYMBOLS:
+            raise ValueError(f"frame_symbols must be in [20,{MAX_FRAME_SYMBOLS}]")
+        if (
+            self.frame_symbols > FULL_ARRAY_FRAME_LIMIT
+            and self.full_array_stride < self.trials_per_point
+        ):
+            raise ValueError(
+                "frames longer than 20000 symbols keep full arrays only for trial 0 of each "
+                "point: set full_array_stride >= trials_per_point"
+            )
         if not self.energy_grid_db or len(self.energy_grid_db) > 21:
             raise ValueError("energy_grid_db must contain 1 to 21 levels")
         if any(not math.isfinite(float(value)) for value in self.energy_grid_db):

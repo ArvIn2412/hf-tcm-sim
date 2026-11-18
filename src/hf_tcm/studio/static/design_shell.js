@@ -7,36 +7,28 @@
 
   const PAGES = {
     parameters: {
-      step: '1', tab: 'Експеримент', eyebrow: 'Крок 1 · Експеримент',
-      lead: 'Задайте канал, тракт приймача й метрику. Обидва декодери — Хемінг із жорстким рішенням і Евклід із м’якою метрикою — обробляють одне й те саме спостереження.',
+      step: '1', tab: 'Експеримент',
     },
     stages: {
-      step: '2', tab: 'Етапи обробки', eyebrow: 'Крок 2 · Етапи обробки',
-      lead: 'Один парний кадр з режиму «Метрики», символ за символом. Спільні етапи — угорі; далі ліва половина показує Хемінга (жорстке рішення), права — Евкліда (м’яке рішення) на тому самому z_k.',
+      step: '2', tab: 'Етапи обробки',
     },
     mchannel: {
-      step: '3', tab: 'Канал у часі', eyebrow: 'Крок 3 · Канал у часі',
-      lead: 'Весь кадр на одній осі: прийнятий сигнал, якість z_k (SNR після фронтенду), зміщення z_k від переданої точки і помилки обох декодерів. Видно, де саме канал «ламає» жорстке рішення і що з цього робить кожна метрика.',
+      step: '3', tab: 'Канал у часі',
     },
     mdecoding: {
-      step: '4', tab: 'Декодування', eyebrow: 'Крок 4 · Декодування',
-      lead: 'Шляхи Вітербі обох декодерів на всьому кадрі проти переданого шляху. Кожна подія помилки — місце, де шлях відійшов від переданого; натисніть «Етапи ›», щоб розібрати її символ за символом.',
+      step: '4', tab: 'Декодування',
     },
     transmitter: {
-      tab: 'Сигнал і канал', eyebrow: 'Повні приймачі Joint / B0 · сигнал',
-      lead: 'Окремий режим повних приймачів (не ізольоване порівняння метрик): передані й прийняті відліки, сирі точки RX, шум і внесок променів останнього кадру.',
+      tab: 'Сигнал і канал',
     },
     viterbi: {
-      tab: 'Декодування', eyebrow: 'Повні приймачі Joint / B0 · решітка',
-      lead: 'Решітки Вітербі повних приймачів B0 (Хемінг) і Joint (Евклід з оцінюванням каналу на кожному шляху).',
+      tab: 'Декодування',
     },
     metric: {
-      step: '5', tab: 'Результати', eyebrow: 'Крок 5 · Результати',
-      lead: 'BER і час приймання для останнього запуску та енергетичний виграш за статистичною серією.',
+      step: '5', tab: 'Результати',
     },
     saved: {
-      tab: 'Дослідження', eyebrow: 'Архів',
-      lead: 'Усі збережені кадри й серії. Відкрийте запис, щоб переглянути його, або використайте його конфігурацію для нового запуску.',
+      tab: 'Дослідження',
     },
   };
 
@@ -71,9 +63,7 @@
     const h1 = view.querySelector(':scope > h1');
     if (!page || !h1) return;
     const head = el('div', {class: 'ds-page-head'});
-    const text = el('div');
-    text.append(el('p', {class: 'ds-eyebrow'}, page.eyebrow), h1, el('p', {class: 'ds-lead'}, page.lead));
-    head.append(text);
+    head.append(h1);
     view.prepend(head);
   }
 
@@ -115,9 +105,8 @@
     if (!form) return;
     const layout = el('div', {class: 'ds-exp-layout'});
     const left = el('div');
-    const aside = el('aside', {class: 'ds-aside', 'aria-label': 'Пояснення до експерименту'});
     view.append(layout);
-    layout.append(left, aside);
+    layout.append(left);
     left.append(form);
 
     const primary = form.querySelector(':scope > .simulation-primary');
@@ -134,15 +123,6 @@
     const details = form.querySelector(':scope > details');
     if (details) details.querySelector('summary').textContent = 'Додаткові параметри: кадр, пілоти, промені, seed';
 
-    aside.innerHTML = `
-      <div class="card"><h2>Що порівнюється</h2>
-        <div class="ds-legend-row"><span class="ds-swatch" style="background:var(--ds-hamming)"></span><span><strong>Хемінг</strong> — жорстке рішення 8PSK → 3 біти → Вітербі з цілочисельною метрикою.</span></div>
-        <div class="ds-legend-row"><span class="ds-swatch" style="background:var(--ds-euclid)"></span><span><strong>Евклід</strong> — спільні демодуляція й декодування: Вітербі з метрикою |z − s|², зваженою за станом тракту.</span></div>
-        <p style="margin:10px 0 0">Код TCM R = 2/3, 4 стани, 8PSK, глибина відкладеного рішення η = 20.</p></div>
-      <div class="card"><h2>Два режими запуску</h2><ul>
-        <li><strong>Метрики</strong> — ізольоване порівняння метрик на одному виході тракту; дає BER і енергетичний виграш.</li>
-        <li><strong>Повні приймачі Joint / B0</strong> — окремий режим повних приймачів; його сигнал і решітки — у вкладці «Joint / B0».</li></ul></div>
-      <div class="card"><h2>Після запуску</h2><p>Відкриється вкладка «Результати». Як відрізняються рішення Хемінга й Евкліда — у вкладках «Етапи обробки» (символ), «Канал у часі» та «Декодування» (весь кадр). Підтверджені висновки (серія EXP-04, 99 200 кадрів) — у вкладці «Головний результат».</p></div>`;
   }
 
   function signalLayout(view) {
@@ -202,7 +182,11 @@
     if (header && status) {
       tools.append(status, projector);
       status.setAttribute('role', 'status');
-      const refresh = () => { status.dataset.tone = tone(status.textContent); status.title = status.textContent; };
+      const refresh = () => {
+        status.dataset.tone = tone(status.textContent);
+        status.title = status.textContent;
+        document.body.toggleAttribute('data-busy', status.dataset.tone === 'busy');
+      };
       new MutationObserver(refresh).observe(status, {childList: true, characterData: true, subtree: true});
       refresh();
     }
@@ -235,6 +219,9 @@
       const view = $('view-' + key);
       if (view) pageHead(view, key);
     }
+    // The legacy statistical series panel reads Joint/B0 energy studies: show it with those views.
+    const legacySeries = [...($('view-metric')?.querySelectorAll(':scope > section') || [])].find(sec => sec.querySelector('#system-results-open'));
+    if (legacySeries && $('view-viterbi')) $('view-viterbi').append(legacySeries);
     const parameters = $('view-parameters');
     if (parameters) experimentLayout(parameters);
     const transmitter = $('view-transmitter');
@@ -247,14 +234,14 @@
     if (trellis) new MutationObserver(markRun).observe(trellis, {childList: true});
     markRun();
     if (transmitter) watchEmpty(transmitter, emptyState({
-      icon: 'signal', title: 'Сигнал ще не побудовано',
-      text: 'Відліки, сузір’я та внесок каналу зберігає режим «Повні приймачі Joint / B0». Для порівняння метрик символ за символом відкрийте «Етапи обробки». Запустіть короткий кадр (256 елементів) або налаштуйте власний.',
+      icon: 'signal', title: 'Немає запуску Joint / B0',
+      text: 'Сигнал і решітки зберігає лише режим «Повні приймачі Joint / B0».',
       actions: [['Запустити кадр N = 256', runDemoFrame, true], ['Налаштувати', configureSystemRun]],
     }), noSystemRun, [trellis]);
     const viterbi = $('view-viterbi');
     if (viterbi) watchEmpty(viterbi, emptyState({
-      icon: 'trellis', title: 'Решітки ще не побудовано',
-      text: 'Решітки Вітербі обох декодерів зберігає режим «Повні приймачі Joint / B0». Після запуску тут можна вибрати перехід і порівняти метрики.',
+      icon: 'trellis', title: 'Немає запуску Joint / B0',
+      text: 'Сигнал і решітки зберігає лише режим «Повні приймачі Joint / B0».',
       actions: [['Запустити кадр N = 256', runDemoFrame, true], ['Налаштувати', configureSystemRun]],
     }), noSystemRun, [trellis]);
     const metric = $('view-metric');
@@ -266,7 +253,7 @@
     }
     if (metric) watchEmpty(metric, emptyState({
       icon: 'chart', title: 'Запуску ще не було',
-      text: 'Виконайте експеримент, щоб побачити BER обох декодерів. Підтверджені результати серії EXP-04 вже доступні у вкладці «Головний результат».',
+      text: '',
       actions: [['До експерименту', () => go('parameters'), true], ['Головний результат', () => go('result')]],
     }), () => (!runResults || /^\s*Запуск ще не виконано/.test(runResults.textContent)) && (!metricResults || metricResults.hidden), [runResults, metricResults]);
   }

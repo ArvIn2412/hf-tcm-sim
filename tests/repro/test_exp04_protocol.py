@@ -210,3 +210,18 @@ def test_incomplete_crn_study_writes_summary_and_resumes(tmp_path: Path) -> None
     assert final["status"] == "completed"
     assert final["completed_trials"] == 6
     assert "bootstrap" in final["gain_analysis"]
+
+
+def test_long_metric_frames_require_sparse_full_arrays() -> None:
+    from hf_tcm.repro.metric_experiment import MAX_FRAME_SYMBOLS
+
+    protocol, digest, _ = load_protocol(DEFAULT_PROTOCOL)
+    base = cell_config(protocol, "A1-awgn", digest, phase="range_finding")
+    long_ok = dataclasses.replace(
+        base, frame_symbols=50_000, trials_per_point=3, full_array_stride=3
+    )
+    assert long_ok.frame_symbols == 50_000
+    with pytest.raises(ValueError, match="full_array_stride"):
+        dataclasses.replace(base, frame_symbols=50_000, trials_per_point=3, full_array_stride=1)
+    with pytest.raises(ValueError, match="frame_symbols"):
+        dataclasses.replace(base, frame_symbols=MAX_FRAME_SYMBOLS + 1, full_array_stride=1000)

@@ -2,7 +2,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const {build} = require('../src/hf_tcm/studio/static/channel_controls.js');
-const {buildMetricConfig, scenarioFor} = require('../src/hf_tcm/studio/static/metric_mode.js');
+const {buildMetricConfig, scenarioFor, payloadSymbols, referenceEbN0Db} = require('../src/hf_tcm/studio/static/metric_mode.js');
 
 const input = (extra = {}) => ({comparisonMode: 'single', tract: 'known', metric: 'csi_weighted',
   awgn: true, variance: 0.05, fading: 'rician', rays: 2, rho: 0.9999, seed: 7, frameSymbols: 256,
@@ -22,7 +22,9 @@ test('known tract with weighted metric maps to the metric-study API', () => {
 test('series mode uses the energy grid and pilot tract', () => {
   const c = buildMetricConfig(input({comparisonMode: 'series', tract: 'pilot', metric: 'unweighted'}), build);
   assert.equal(c.frontend_mode, 'pilot_equalized');
-  assert.deepEqual(c.energy_grid_db, [-3, 0, 3]);
+  // the grid is absolute Eb/N0; the API receives offsets from the base level of sigma^2
+  const ref = referenceEbN0Db(256, 1, 0.05);
+  c.energy_grid_db.forEach((offset, i) => assert.ok(Math.abs(offset + ref - [-3, 0, 3][i]) < 1e-9));
   assert.equal(c.trials_per_point, 5);
 });
 
@@ -30,7 +32,7 @@ test('scenario mapping and validation', () => {
   assert.equal(scenarioFor('none', 1), 'awgn');
   assert.equal(scenarioFor('none', 2), 'static');
   assert.equal(scenarioFor('rayleigh', 1), 'rician');
-  assert.throws(() => buildMetricConfig(input({frameSymbols: 20001}), build));
+  assert.throws(() => buildMetricConfig(input({frameSymbols: 100001}), build));
   assert.throws(() => buildMetricConfig(input({tract: 'x'}), build));
   assert.throws(() => buildMetricConfig(input({comparisonMode: 'series', grid: '1,1'}), build));
   assert.throws(() => buildMetricConfig(input({comparisonMode: 'series', sweep: 'noise', awgn: false}), build));
@@ -68,4 +70,20 @@ test('static channel ignores the Doppler option', () => {
     delays: [0, 3], powers: [1, 0.25], factors: [4, 1], phases: [0, 0.7], frontend: 'known_channel',
     doppler: {spreadHz: 1, baud: 2400}});
   assert.equal(c.fading_mode, 'constant');
+});
+
+test('reference Eb/N0 matches the study engine (pilot overhead counted)', () => {
+  assert.equal(payloadSymbols(256), 224);          // 4 preamble + 7 bursts x 4
+  assert.equal(payloadSymbols(20000), 17500);      // 4 + 624 x 4 pilots
+  // saved study metric-known-*: N = 20000, sigma^2 = 0.05, offset 0 -> 19.611 dB
+  assert.ok(Math.abs(referenceEbN0Db(20000, 1, 0.05) - 19.6115) < 1e-3);
+});
+
+test('long metric frames keep full arrays only for frame 0 of each point', () => {
+  const long = buildMetricConfig(input({comparisonMode: 'series', frameSymbols: 50000, trials: 4, grid: '0, 4'}), build);
+  assert.equal(long.full_array_stride, 4);
+  const short = buildMetricConfig(input({comparisonMode: 'series', frameSymbols: 20000}), build);
+  assert.equal(short.full_array_stride, undefined);
+  assert.throws(() => buildMetricConfig(input({frameSymbols: 100001}), build), /100/);
+  assert.throws(() => buildMetricConfig(input({comparisonMode: 'series', awgn: false, variance: 0}), build), /шум/);
 });

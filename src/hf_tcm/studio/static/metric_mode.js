@@ -10,26 +10,41 @@
     return rays > 1 ? 'static' : 'awgn';
   }
 
+  /* Pilot schedule of metric_isolation.build_pilot_schedule: preamble + bursts every period. */
+  function payloadSymbols(frameSymbols, preamble = 4, period = 32, burst = 4) {
+    const pilot = new Uint8Array(frameSymbols);
+    pilot.fill(1, 0, Math.min(preamble, frameSymbols));
+    for (let start = period; start < frameSymbols; start += period) pilot.fill(1, start, Math.min(frameSymbols, start + burst));
+    return frameSymbols - pilot.reduce((a, b) => a + b, 0);
+  }
+  /* Eb/N0 (= gamma_b,d) of one frame: E_tx = 8 A^2 N over all elements, 2 bits per payload element. */
+  function referenceEbN0Db(frameSymbols, amplitude, variance) {
+    return 10 * Math.log10(8 * amplitude ** 2 * frameSymbols / (2 * payloadSymbols(frameSymbols) * variance));
+  }
+
   function buildMetricConfig(input, channelBuilder) {
     const {comparisonMode, tract, metric, awgn, variance, fading, rays, rho, seed, frameSymbols,
       amplitude, delays, powers, factors, phases, grid, trials, target, budget, sweep, bootstrap, now,
       fadingModel = 'ar1', dopplerHz = 0, baud = 0} = input;
     if (!['known', 'pilot'].includes(tract)) throw new Error('Оберіть тракт приймача.');
     if (!['csi_weighted', 'unweighted'].includes(metric)) throw new Error('Оберіть евклідову метрику.');
-    if (!Number.isSafeInteger(frameSymbols) || frameSymbols < 20 || frameSymbols > 20000)
-      throw new Error('Для порівняння метрик N має бути цілим у межах 20…20 000.');
+    if (!Number.isSafeInteger(frameSymbols) || frameSymbols < 20 || frameSymbols > MAX_FRAME_SYMBOLS)
+      throw new Error(`Для порівняння метрик N має бути цілим у межах 20…${MAX_FRAME_SYMBOLS.toLocaleString('uk-UA')}.`);
     const frontend = tract === 'known' ? 'known_channel' : 'pilot_equalized';
     const doppler = fadingModel === 'doppler' ? {spreadHz: dopplerHz, baud} : null;
     const channel = channelBuilder({awgn, fading, rays, variance, seed, rho, delays, powers, factors, phases, frontend, doppler});
     const series = comparisonMode === 'series';
     let energyGrid = [0];
     if (series) {
-      energyGrid = String(grid).split(',').map(v => Number(v.trim()));
-      if (!energyGrid.length || energyGrid.some(v => !Number.isFinite(v)) || new Set(energyGrid).size !== energyGrid.length)
-        throw new Error('Енергетична сітка: унікальні числа через кому.');
+      const ebN0 = String(grid).split(',').map(v => Number(v.trim()));
+      if (!ebN0.length || ebN0.some(v => !Number.isFinite(v)) || new Set(ebN0).size !== ebN0.length)
+        throw new Error('Сітка Eb/N0: унікальні числа в дБ через кому.');
+      if (!(channel.noise_complex_variance > 0))
+        throw new Error('Сітка Eb/N0 потребує увімкненого шуму (σ² > 0).');
+      // The study API sweeps offsets from the base level; convert absolute Eb/N0 to offsets.
+      const reference = referenceEbN0Db(frameSymbols, amplitude, channel.noise_complex_variance);
+      energyGrid = ebN0.map(v => Math.round((v - reference) * 1e9) / 1e9);
     }
-    if (series && sweep === 'noise' && !(channel.noise_complex_variance > 0))
-      throw new Error('Зміна енергії шумом потребує увімкненого AWGN.');
     return {
       experiment_id: `metric-${tract}-${now}`,
       scenario: scenarioFor(fading, rays),
@@ -46,6 +61,8 @@
       frontend_mode: frontend,
       bootstrap_replicates: Math.max(100, bootstrap),
       euclidean_metric: metric,
+      // Long frames: keep full arrays only for frame 0 of each energy point.
+      ...(frameSymbols > 20000 ? {full_array_stride: Math.max(1, series ? trials : 1)} : {}),
     };
   }
 
@@ -71,7 +88,16 @@
   }
   function qpskReferenceBer(ebN0Db) { return qFunction(Math.sqrt(2 * 10 ** (ebN0Db / 10))); }
 
-  const api = {buildMetricConfig, scenarioFor, qFunction, qpskReferenceBer, dopplerSummary, ITU_PRESETS};
+  /* Wilson score interval of a binomial proportion (95 %). */
+  function wilsonInterval(errors, trials, z = 1.959963984540054) {
+    if (!(trials > 0)) return [NaN, NaN];
+    const p = errors / trials, z2 = z * z, denom = 1 + z2 / trials;
+    const centre = (p + z2 / (2 * trials)) / denom;
+    const half = z * Math.sqrt(p * (1 - p) / trials + z2 / (4 * trials * trials)) / denom;
+    return [Math.max(0, centre - half), Math.min(1, centre + half)];
+  }
+  const MAX_FRAME_SYMBOLS = 100000;
+  const api = {buildMetricConfig, scenarioFor, qFunction, qpskReferenceBer, dopplerSummary, ITU_PRESETS, payloadSymbols, referenceEbN0Db, wilsonInterval, MAX_FRAME_SYMBOLS};
   if (typeof module !== 'undefined') module.exports = api;
   if (typeof document === 'undefined') return;
   root.metricMode = api;
@@ -149,6 +175,9 @@
     $('exp-fading').addEventListener('change', syncFading);
     function syncFading() {
       const isMetric = contrast.input.value === 'metric';
+      // Metric isolation allows up to 100 000 elements; the Joint/B0 receivers keep 20 000.
+      const frameInput = [...document.querySelectorAll('#run-form label')].find(l => /^N/.test(l.textContent.trim()))?.querySelector('input');
+      if (frameInput) frameInput.max = String(isMetric ? MAX_FRAME_SYMBOLS : 20000);
       const faded = $('exp-fading').value !== 'none';
       const useDoppler = isMetric && faded && fadingModel.input.value === 'doppler';
       fadingModel.label.hidden = !(isMetric && faded);
@@ -259,60 +288,79 @@
     panel.hidden = true;
     view.querySelector('h1')?.after(panel);
     const fmt = v => typeof v === 'number' && Number.isFinite(v) ? v.toLocaleString('uk-UA', {maximumSignificantDigits: 5}) : '—';
+    const db = v => Number.isFinite(v) ? ((Math.round(v * 10) / 10) || 0).toLocaleString('uk-UA', {minimumFractionDigits: 1, maximumFractionDigits: 1}) : '—';
+    const sci = v => !Number.isFinite(v) ? '—' : v === 0 ? '0' : v.toExponential(1).replace('e', '·10^').replace(/\^\+?(-?)0*(\d+)/, (_, s, d) => `<sup>${s ? '−' : ''}${d}</sup>`);
     const count = v => Number.isSafeInteger(v) ? v.toLocaleString('uk-UA') : '—';
-    const arms = [['hamming', 'Роздільне — жорстке рішення, Хемінг', '#bb6518'], ['joint', 'Спільне — м’яка метрика, Евклід', '#087f8c']];
+    const arms = [['hamming', 'Хемінг', '#c2410c'], ['joint', 'Евклід', '#0a7f8c']];
 
     function renderResults(summary) {
       const c = summary.configuration || {};
-      const rows = (summary.aggregates || []).filter(r => Number.isFinite(r.gamma_db)).slice().sort((a, b) => a.gamma_db - b.gamma_db);
+      const rows = (summary.aggregates || []).map((r, point) => ({...r, point}))
+        .filter(r => Number.isFinite(r.gamma_db)).sort((a, b) => a.gamma_db - b.gamma_db);
       panel.hidden = false;
       panel.replaceChildren();
       const h = document.createElement('h2');
-      h.textContent = 'Порівняння метрик Хемінга та Евкліда';
+      h.textContent = 'Хемінг і Евклід';
       const meta = document.createElement('p');
-      const tractText = c.frontend_mode === 'known_channel' ? 'відомий тракт' : c.frontend_mode === 'pilot_equalized' ? 'оцінений за пілотами' : c.frontend_mode;
+      meta.className = 'results-meta';
+      const tractText = c.frontend_mode === 'known_channel' ? 'відомий тракт' : c.frontend_mode === 'pilot_equalized' ? 'тракт за пілотами' : c.frontend_mode;
       const ch = c.channel_config || {};
-      const fadingText = ch.fading_mode === 'rician_doppler' ? ` · Доплер ${fmt(ch.doppler_spread_hz)} Гц при ${fmt(ch.symbol_rate_baud)} Бод` : ch.fading_mode === 'rician_ar1' ? ` · AR(1) ρ=${fmt(ch.correlation)}` : '';
-      meta.textContent = `Канал: ${c.scenario}${fadingText} · тракт: ${tractText} · евклідова метрика: ${c.euclidean_metric === 'csi_weighted' ? 'зважена Σ|ĥ|²' : 'незважена'} · N=${count(c.frame_symbols)} · ${count(summary.completed_trials)} парних кадрів · серія ${summary.experiment_id}`;
+      const fadingText = ch.fading_mode === 'rician_doppler' ? `, Доплер ${fmt(ch.doppler_spread_hz)} Гц` : ch.fading_mode === 'rician_ar1' ? `, AR(1) ρ = ${fmt(ch.correlation)}` : '';
+      meta.textContent = `${c.scenario}${fadingText}; ${tractText}; метрика ${c.euclidean_metric === 'csi_weighted' ? 'зважена' : 'незважена'}; N = ${count(c.frame_symbols)}; ${count(summary.completed_trials)} парних кадрів`;
       panel.append(h, meta);
 
       const table = document.createElement('table');
       table.className = 'metric-mode-table';
-      table.innerHTML = '<thead><tr><th>Eb/N0, дБ</th><th>Кадрів</th><th>BER Хемінг</th><th>BER Евклід</th><th>Помилки H / E</th><th>Біт</th></tr></thead>';
+      table.innerHTML = '<thead><tr><th>Eb/N0, дБ</th><th>Кадрів</th><th>BER Хемінг, 95 % ДІ</th><th>BER Евклід, 95 % ДІ</th><th>Помилок Х / Е</th><th>Біт</th><th></th></tr></thead>';
       const body = document.createElement('tbody');
       for (const r of rows) {
         const tr = document.createElement('tr');
-        for (const text of [fmt(r.gamma_db), count(r.trials), fmt(r.ber?.hamming), fmt(r.ber?.joint),
-          `${count(r.bit_errors?.hamming)} / ${count(r.bit_errors?.joint)}`, count(r.bits)]) {
-          const td = document.createElement('td'); td.textContent = text; tr.append(td);
+        const cell = key => {
+          const errors = r.bit_errors?.[key], bits = r.bits;
+          if (!Number.isSafeInteger(errors) || !(bits > 0)) return '—';
+          const [lo, hi] = wilsonInterval(errors, bits);
+          return `${sci(errors / bits)} <small>[${sci(lo)}; ${sci(hi)}]</small>`;
+        };
+        tr.innerHTML = `<td>${db(r.gamma_db)}</td><td>${count(r.trials)}</td><td>${cell('hamming')}</td><td>${cell('joint')}</td><td>${count(r.bit_errors?.hamming)} / ${count(r.bit_errors?.joint)}</td><td>${count(r.bits)}</td><td></td>`;
+        if (window.metricContext) {
+          const open = document.createElement('button');
+          open.type = 'button';
+          open.textContent = 'Етапи';
+          open.title = 'Відкрити кадр 0 цього рівня у «Етапах обробки» на першій розбіжності';
+          open.addEventListener('click', async () => {
+            await window.metricContext.open({study: summary.experiment_id, point: r.point, trial: 0, jumpTo: 'disagree'});
+            window.metricContext.showStages();
+          });
+          tr.lastElementChild.append(open);
         }
         body.append(tr);
       }
       table.append(body);
       panel.append(table);
 
-      const gain = document.createElement('p');
-      gain.className = 'results-gain';
       const g = summary.gain_analysis || {};
       const ci = g.bootstrap?.confidence_interval_db;
       const hasCi = Array.isArray(ci) && ci.length === 2 && ci.every(Number.isFinite);
-      const valid = g.bootstrap?.valid_fraction;
-      gain.textContent = Number.isFinite(g.gain_db) && hasCi
-        ? `Енергетичний виграш Евкліда над Хемінгом при BER ${fmt(g.target_ber)}: ${fmt(g.gain_db)} дБ · 95% ДІ [${ci.map(fmt).join('; ')}] (розвідувальна серія).`
-        : Number.isFinite(g.gain_db)
-          ? `Точкова оцінка виграшу при BER ${fmt(g.target_ber)}: ${fmt(g.gain_db)} дБ — недостатня точність: валідних bootstrap-перетинів ${Number.isFinite(valid) ? fmt(100 * valid) + '%' : '—'} (потрібно ≥ 95%). Збільште кількість кадрів на точку.`
-        : rows.length < 2
-          ? 'Один енергетичний рівень: для оцінки виграшу оберіть «Статистична серія» з кількома рівнями енергії.'
-          : `Виграш не оцінено (${g.status || 'немає перетину цільового BER'}): криві мають перетнути ціль BER ${fmt(g.target_ber ?? c.target_ber)}.`;
-      panel.append(gain);
-      if (rows.length >= 2) panel.append(plot(rows, Number(g.target_ber ?? c.target_ber)));
+      const anyErrors = rows.some(r => (r.bit_errors?.hamming || 0) + (r.bit_errors?.joint || 0) > 0);
+      const gain = document.createElement('p');
+      gain.className = 'results-gain';
+      if (rows.length >= 2 && !anyErrors) {
+        gain.classList.add('warn');
+        gain.textContent = `Помилок немає на жодному рівні (${db(rows[0].gamma_db)}…${db(rows.at(-1).gamma_db)} дБ): сітка вища за робочу зону. Для AWGN задайте Eb/N0 0…10 дБ, для завмирань 0…40 дБ.`;
+      } else if (Number.isFinite(g.gain_db)) {
+        gain.textContent = `Виграш Евкліда при BER ${fmt(g.target_ber)}: ${db(g.gain_db)} дБ${hasCi ? `, 95 % ДІ [${db(ci[0])}; ${db(ci[1])}]` : ' (точності недостатньо: потрібно більше кадрів)'}.`;
+      } else if (rows.length >= 2) {
+        gain.textContent = `Виграш при BER ${fmt(g.target_ber ?? c.target_ber)} не оцінено: обидві криві мають перетнути цей рівень у межах сітки.`;
+      }
+      if (gain.textContent) panel.append(gain);
+      if (rows.length >= 2 && anyErrors) panel.append(plot(rows, Number(g.target_ber ?? c.target_ber)));
     }
 
     function plot(rows, target) {
       const ns = 'http://www.w3.org/2000/svg';
       const svg = document.createElementNS(ns, 'svg');
       svg.setAttribute('viewBox', '0 0 1200 500');
-      svg.setAttribute('aria-label', 'BER Хемінг / Евклід');
+      svg.setAttribute('aria-label', 'BER Хемінга та Евкліда від Eb/N0');
       svg.style.width = '100%';
       const el = (tag, attrs, text) => {
         const n = document.createElementNS(ns, tag);
@@ -321,29 +369,27 @@
         svg.append(n); return n;
       };
       const ys = rows.flatMap(r => arms.map(([k]) => r.ber?.[k])).filter(v => Number.isFinite(v) && v > 0);
-      if (Number.isFinite(target) && target > 0) ys.push(target);
-      if (!ys.length) { el('text', {x: 400, y: 250, 'font-size': 18}, 'Помилок не спостережено на жодному рівні.'); return svg; }
-      const lo = Math.floor(Math.log10(Math.min(...ys))), hi = Math.max(lo + 1, Math.ceil(Math.log10(Math.max(...ys))));
+      const lo = Math.floor(Math.log10(Math.min(...ys, Number.isFinite(target) && target > 0 ? target : Infinity)));
+      const hi = Math.max(lo + 1, Math.ceil(Math.log10(Math.max(...ys))));
       const x0 = rows[0].gamma_db, x1 = rows.at(-1).gamma_db;
-      const x = v => 80 + (v - x0) / (x1 - x0) * 1040, y = v => 430 - (Math.log10(v) - lo) / (hi - lo) * 380;
+      const x = v => 90 + (v - x0) / (x1 - x0) * 1030, y = v => 440 - (Math.log10(v) - lo) / (hi - lo) * 400;
+      const sup = d => String(d).replace('-', '−').split('').map(ch => ({'−': '⁻', 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹'}[ch])).join('');
       for (let d = lo; d <= hi; d++) {
-        el('line', {x1: 80, x2: 1120, y1: y(10 ** d), y2: y(10 ** d), stroke: '#ddd'});
-        el('text', {x: 10, y: y(10 ** d) + 5, 'font-size': 14}, `1e${d}`);
+        el('line', {x1: 90, x2: 1120, y1: y(10 ** d), y2: y(10 ** d), stroke: '#e3e9ec'});
+        el('text', {x: 80, y: y(10 ** d) + 5, 'font-size': 14, 'text-anchor': 'end', fill: '#3f5161'}, `10${sup(d)}`);
       }
-      for (const r of rows) el('text', {x: x(r.gamma_db) - 12, y: 458, 'font-size': 14}, fmt(r.gamma_db));
-      el('text', {x: 330, y: 490, 'font-size': 16}, 'Eb/N0, дБ (дискретна модель, N0 = σ²; валідовано за теорією 8PSK)');
+      el('rect', {x: 90, y: 40, width: 1030, height: 400, fill: 'none', stroke: '#c9d5da'});
+      for (const r of rows) el('text', {x: x(r.gamma_db), y: 462, 'font-size': 14, 'text-anchor': 'middle', fill: '#3f5161'}, db(r.gamma_db));
+      el('text', {x: 605, y: 492, 'font-size': 15, 'text-anchor': 'middle', fill: '#3f5161'}, 'Eb/N0, дБ');
       const reference = [];
       for (let k = 0; k <= 60; k++) {
         const g = x0 + (x1 - x0) * k / 60, v = qpskReferenceBer(g);
         if (v >= 10 ** lo && v <= 10 ** hi) reference.push(`${reference.length ? 'L' : 'M'}${x(g)} ${y(v)}`);
       }
-      if (reference.length > 1) {
-        el('path', {d: reference.join(' '), stroke: '#222', fill: 'none', 'stroke-width': 1.5, 'stroke-dasharray': '8 6'});
-        el('text', {x: 900, y: 25, fill: '#222', 'font-size': 16}, '- - некодована QPSK');
-      }
-      if (Number.isFinite(target) && target > 0) {
-        el('line', {x1: 80, x2: 1120, y1: y(target), y2: y(target), stroke: '#555', 'stroke-dasharray': '5 5'});
-        el('text', {x: 86, y: y(target) - 8, 'font-size': 14}, `Ціль BER ${fmt(target)}`);
+      if (reference.length > 1) el('path', {d: reference.join(' '), stroke: '#6b7785', fill: 'none', 'stroke-width': 1.5, 'stroke-dasharray': '6 5'});
+      if (Number.isFinite(target) && target > 0 && target >= 10 ** lo) {
+        el('line', {x1: 90, x2: 1120, y1: y(target), y2: y(target), stroke: '#9fb3bd', 'stroke-dasharray': '2 4'});
+        el('text', {x: 1114, y: y(target) - 6, 'font-size': 13, 'text-anchor': 'end', fill: '#6a7a87'}, `ціль ${fmt(target)}`);
       }
       arms.forEach(([key, label, color], index) => {
         let path = '', connected = false;
@@ -353,12 +399,15 @@
           path += `${connected ? ' L' : ' M'}${x(r.gamma_db)} ${y(v)}`; connected = true;
           const point = el('circle', {cx: x(r.gamma_db), cy: y(v), r: 5, fill: color});
           const title = document.createElementNS(ns, 'title');
-          title.textContent = `${label} · Eb/N0 ${fmt(r.gamma_db)} дБ · BER ${fmt(v)} · ${count(r.bit_errors?.[key])} із ${count(r.bits)}`;
+          title.textContent = `${label}: Eb/N0 ${db(r.gamma_db)} дБ, BER ${fmt(v)} (${count(r.bit_errors?.[key])} з ${count(r.bits)})`;
           point.append(title);
         }
         el('path', {d: path.trim(), stroke: color, fill: 'none', 'stroke-width': 2.5});
-        el('text', {x: 90 + index * 400, y: 25, fill: color, 'font-size': 16}, label);
+        el('rect', {x: 100 + index * 130, y: 12, width: 22, height: 4, fill: color});
+        el('text', {x: 128 + index * 130, y: 19, fill: '#142433', 'font-size': 14}, label);
       });
+      el('path', {d: 'M360 14 L382 14', stroke: '#6b7785', 'stroke-dasharray': '6 5', 'stroke-width': 1.5});
+      el('text', {x: 388, y: 19, fill: '#142433', 'font-size': 14}, 'QPSK без кодування');
       return svg;
     }
   });
